@@ -1,20 +1,14 @@
-/**
- * The full roadmap, shown in the sidebar so readers see where Level 1 sits.
- * Only Level 1 is interactive in this app; later levels live in sibling
- * workspace apps (apps/level-2-..., etc.) and are marked "coming soon" here.
- */
-export interface RoadmapLevel {
-  level: number;
-  title: string;
-  status: 'active' | 'planned';
-  concepts: string[];
-}
+import type { RoadmapLevel } from './types';
 
+/**
+ * The full curriculum roadmap, shown in every level's sidebar so readers see
+ * where the current level sits. Each level app marks its own level as active by
+ * matching `level.level`; the other rows render as "planned/locked".
+ */
 export const ROADMAP: RoadmapLevel[] = [
   {
     level: 1,
-    title: 'Fundamentals (clear, never fuzzy)',
-    status: 'active',
+    title: 'Fundamentals',
     concepts: [
       'Hydration',
       'Virtual DOM diffing complexity',
@@ -31,7 +25,6 @@ export const ROADMAP: RoadmapLevel[] = [
   {
     level: 2,
     title: 'React Core & Rendering Mechanics',
-    status: 'planned',
     concepts: [
       'Reconciliation algorithm',
       'Fiber architecture',
@@ -48,7 +41,6 @@ export const ROADMAP: RoadmapLevel[] = [
   {
     level: 3,
     title: 'Browser Performance',
-    status: 'planned',
     concepts: [
       'Layout thrashing',
       'Paint vs Layout vs Composite',
@@ -65,7 +57,6 @@ export const ROADMAP: RoadmapLevel[] = [
   {
     level: 4,
     title: 'Advanced Data & State',
-    status: 'planned',
     concepts: [
       'Structural sharing',
       'Immutable data patterns',
@@ -82,7 +73,6 @@ export const ROADMAP: RoadmapLevel[] = [
   {
     level: 5,
     title: 'Caching & Networking',
-    status: 'planned',
     concepts: [
       'Cache invalidation strategies',
       'Stale-while-revalidate',
@@ -99,7 +89,6 @@ export const ROADMAP: RoadmapLevel[] = [
   {
     level: 6,
     title: 'Security',
-    status: 'planned',
     concepts: [
       'CSP (Content Security Policy)',
       'Trusted Types',

@@ -1,18 +1,19 @@
 import { Card, Container, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
-import { LEVEL } from '../concepts';
+import { useLevel } from './context';
 
 export function Overview() {
+  const level = useLevel();
   const navigate = useNavigate();
   return (
     <Container size="lg" pb={80}>
       <Stack gap="xs" mb="xl">
         <Title order={1}>
-          Level {LEVEL.level} — {LEVEL.title}
+          Level {level.level} — {level.title}
         </Title>
         <Text c="dimmed" size="lg">
-          {LEVEL.tagline}
+          {level.tagline}
         </Text>
         <Text>
           Each concept has 3 parts: <b>Theory</b> (in-depth markdown + references), an
@@ -23,7 +24,7 @@ export function Overview() {
       </Stack>
 
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-        {LEVEL.concepts.map((c, i) => (
+        {level.concepts.map((c, i) => (
           <Card
             key={c.slug}
             withBorder

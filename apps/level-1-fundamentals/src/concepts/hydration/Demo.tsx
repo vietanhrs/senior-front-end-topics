@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Badge, Button, Group, Stack, Switch, Text } from '@mantine/core';
 import { IconBolt, IconRefresh } from '@tabler/icons-react';
-import { Callout, DemoCard, LogConsole, useLogger } from '../../workbook/ui';
+import { Callout, DemoCard, LogConsole, useLogger } from '@sfe/workbook';
 
 /**
  * We can't run a real SSR server inside this SPA, so we *simulate* the

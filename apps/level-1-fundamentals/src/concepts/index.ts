@@ -1,4 +1,4 @@
-import type { LevelMeta } from '../workbook/types';
+import type { LevelMeta } from '@sfe/workbook';
 import { hydration } from './hydration';
 import { vdomDiffing } from './vdom-diffing';
 import { eventLoop } from './event-loop';

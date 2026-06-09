@@ -15,8 +15,10 @@
 @import 'tailwindcss/theme.css' layer(tw-utils);
 @import 'tailwindcss/utilities.css' layer(tw-utils);
 
-/* Tell Tailwind v4 where to scan for class names (no tailwind.config.js needed). */
+/* Tell Tailwind v4 where to scan for class names (no tailwind.config.js needed).
+   Include the shared workbook engine so its utility classes are generated too. */
 @source './**/*.{ts,tsx,html}';
+@source '../../../packages/workbook/src/**/*.{ts,tsx}';
 
 html,
 body,

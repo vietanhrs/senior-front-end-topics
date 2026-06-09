@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Badge, Button, Group, Stack, Text } from '@mantine/core';
 import { IconBolt, IconClockBolt } from '@tabler/icons-react';
-import { Callout, DemoCard, LogConsole, useLogger } from '../../workbook/ui';
+import { Callout, DemoCard, LogConsole, useLogger } from '@sfe/workbook';
 
 type MathPack = typeof import('./mathPack');
 

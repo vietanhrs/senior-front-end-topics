@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Badge, Button, Group, Stack, Text, TextInput } from '@mantine/core';
 import { IconCpu, IconHandStop } from '@tabler/icons-react';
-import { Callout, DemoCard } from '../../workbook/ui';
+import { Callout, DemoCard } from '@sfe/workbook';
 
 const LIMIT = 2_000_000;
 

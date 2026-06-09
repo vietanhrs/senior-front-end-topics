@@ -7,19 +7,20 @@ import {
   IconPencil,
 } from '@tabler/icons-react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { LEVEL } from '../concepts';
+import { useLevel } from './context';
 import { DocView } from './DocView';
 
 export function ConceptPage() {
+  const level = useLevel();
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  const index = LEVEL.concepts.findIndex((c) => c.slug === slug);
+  const index = level.concepts.findIndex((c) => c.slug === slug);
   if (index === -1) return <Navigate to="/" replace />;
 
-  const concept = LEVEL.concepts[index];
-  const prev = index > 0 ? LEVEL.concepts[index - 1] : null;
-  const next = index < LEVEL.concepts.length - 1 ? LEVEL.concepts[index + 1] : null;
+  const concept = level.concepts[index];
+  const prev = index > 0 ? level.concepts[index - 1] : null;
+  const next = index < level.concepts.length - 1 ? level.concepts[index + 1] : null;
   const { Demo, Exercise } = concept;
 
   return (
@@ -27,7 +28,7 @@ export function ConceptPage() {
       <Stack gap="lg">
         <Stack gap={4}>
           <Text size="sm" c="dimmed">
-            Concept {String(index + 1).padStart(2, '0')} of {LEVEL.concepts.length}
+            Concept {String(index + 1).padStart(2, '0')} of {level.concepts.length}
           </Text>
           <Title order={2}>{concept.title}</Title>
           <Text c="dimmed">{concept.summary}</Text>

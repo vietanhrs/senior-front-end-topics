@@ -32,7 +32,14 @@ export interface LevelMeta {
   level: number;
   /** e.g. "Fundamentals" */
   title: string;
-  /** Vietnamese tagline shown under the title. */
+  /** Tagline shown under the title. */
   tagline: string;
   concepts: ConceptModule[];
+}
+
+/** One row in the global roadmap sidebar (all levels of the curriculum). */
+export interface RoadmapLevel {
+  level: number;
+  title: string;
+  concepts: string[];
 }

@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
+import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
 
 const before = `<!doctype html>
 <html>

@@ -1,6 +1,6 @@
 import { Button, Group, Stack } from '@mantine/core';
 import { IconPlayerPlay, IconRefresh } from '@tabler/icons-react';
-import { Callout, DemoCard, LogConsole, useLogger } from '../../workbook/ui';
+import { Callout, DemoCard, LogConsole, useLogger } from '@sfe/workbook';
 
 export function Demo() {
   const { logs, log, clear } = useLogger();

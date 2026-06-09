@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState } from 'react';
 import { Button, Group, Loader, Stack, Text } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
-import { Callout, DemoCard } from '../../workbook/ui';
+import { Callout, DemoCard } from '@sfe/workbook';
 import { ChunkErrorBoundary } from './ChunkErrorBoundary';
 
 // The import() call is what creates a separate chunk. React.lazy turns the
