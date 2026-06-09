@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
+import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
 
 const buggy = `// An image filter (grayscale) runs right in the event handler on the main
 // thread -> for large images, the whole UI freezes for seconds. Move it to a Web Worker.

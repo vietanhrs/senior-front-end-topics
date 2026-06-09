@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Badge, Button, Group, Paper, SegmentedControl, Stack, Text, TextInput } from '@mantine/core';
 import { IconArrowsShuffle, IconRefresh } from '@tabler/icons-react';
-import { Callout, DemoCard } from '../../workbook/ui';
+import { Callout, DemoCard } from '@sfe/workbook';
 
 interface Item {
   id: number;

@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
+import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
 
 const before = `// Two problems: (1) a sequential waterfall, (2) re-imports on every call
 async function openEditor() {

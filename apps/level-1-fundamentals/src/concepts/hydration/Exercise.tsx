@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Badge, Group, Stack, Text } from '@mantine/core';
-import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
+import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
 
 /**
  * BUGGY component (simulated): renders the current time directly during render.

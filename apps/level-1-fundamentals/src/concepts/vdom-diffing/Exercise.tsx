@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Checkbox, Group, Stack, Text } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
-import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
+import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
 
 interface Task {
   id: number;

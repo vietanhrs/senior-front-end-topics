@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Badge, Code, Group, SegmentedControl, Select, Stack, Text, Textarea } from '@mantine/core';
-import { Callout, DemoCard } from '../../workbook/ui';
+import { Callout, DemoCard } from '@sfe/workbook';
 
 const DEFAULT_PAYLOAD = `<img src=x onerror="document.body.innerHTML='💥 XSS executed: this is where the attacker script reads your cookies/DOM';document.body.style.cssText='background:#7f1d1d;color:#fff;padding:12px;font-family:sans-serif'">`;
 

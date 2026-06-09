@@ -1,7 +1,7 @@
 import { Button, Stack } from '@mantine/core';
 import { IconPlayerPlay } from '@tabler/icons-react';
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Callout, DemoCard, LogConsole, SolutionReveal, useLogger } from '../../workbook/ui';
+import { Callout, DemoCard, LogConsole, SolutionReveal, useLogger } from '@sfe/workbook';
 
 const snippet = `console.log('1');
 

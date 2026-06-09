@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Alert, Badge, Chip, Code, Group, Select, Stack, Switch, Text } from '@mantine/core';
 import { IconCheck, IconExclamationCircle } from '@tabler/icons-react';
-import { Callout, DemoCard } from '../../workbook/ui';
+import { Callout, DemoCard } from '@sfe/workbook';
 import { evaluatePreflight } from './preflight';
 
 const CONTENT_TYPES = [

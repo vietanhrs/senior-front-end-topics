@@ -14,10 +14,11 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { IconLock, IconStairs } from '@tabler/icons-react';
 import { NavLink as RouterNavLink, Outlet, useLocation } from 'react-router-dom';
-import { LEVEL } from '../concepts';
+import { useLevel } from './context';
 import { ROADMAP } from './curriculum';
 
 export function Layout() {
+  const level = useLevel();
   const [opened, { toggle, close }] = useDisclosure(false);
   const location = useLocation();
 
@@ -36,10 +37,10 @@ export function Layout() {
             </ThemeIcon>
             <div>
               <Title order={5} lh={1}>
-                Level {LEVEL.level} · {LEVEL.title}
+                Level {level.level} · {level.title}
               </Title>
               <Text size="xs" c="dimmed">
-                {LEVEL.tagline}
+                {level.tagline}
               </Text>
             </div>
           </Group>
@@ -61,7 +62,7 @@ export function Layout() {
             active={location.pathname === '/'}
             onClick={close}
           />
-          {LEVEL.concepts.map((c, i) => (
+          {level.concepts.map((c, i) => (
             <NavLink
               key={c.slug}
               component={RouterNavLink}
@@ -84,7 +85,7 @@ export function Layout() {
             Roadmap (other levels)
           </Text>
           <Stack gap={2} px="xs" pb="md">
-            {ROADMAP.filter((l) => l.status === 'planned').map((l) => (
+            {ROADMAP.filter((l) => l.level !== level.level).map((l) => (
               <Tooltip
                 key={l.level}
                 multiline

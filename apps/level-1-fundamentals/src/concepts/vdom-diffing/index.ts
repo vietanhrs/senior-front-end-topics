@@ -1,4 +1,4 @@
-import type { ConceptModule } from '../../workbook/types';
+import type { ConceptModule } from '@sfe/workbook';
 import doc from './doc.md?raw';
 import { Demo } from './Demo';
 import { Exercise } from './Exercise';

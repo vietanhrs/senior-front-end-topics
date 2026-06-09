@@ -1,6 +1,6 @@
 import { List, Stack, ThemeIcon } from '@mantine/core';
 import { IconQuestionMark } from '@tabler/icons-react';
-import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
+import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
 
 const scenarios = [
   'A. The page uses Google Fonts (fonts loaded from fonts.gstatic.com).',

@@ -1,0 +1,26 @@
+/*
+ * CSS layer order matters when combining Mantine + Tailwind.
+ *
+ * We declare `mantine` BEFORE `tw-utils` so that Tailwind utility classes
+ * always win specificity ties against Mantine's component styles. We also
+ * deliberately DO NOT import Tailwind's Preflight (base reset) — Mantine ships
+ * its own normalize, and Preflight would fight it.
+ */
+@layer mantine, tw-utils;
+
+@import '@mantine/core/styles.layer.css';
+@import '@mantine/code-highlight/styles.layer.css';
+
+@import 'tailwindcss/theme.css' layer(tw-utils);
+@import 'tailwindcss/utilities.css' layer(tw-utils);
+
+/* Tell Tailwind v4 where to scan for class names (no tailwind.config.js needed).
+   Include the shared workbook engine so its utility classes are generated too. */
+@source './**/*.{ts,tsx,html}';
+@source '../../../packages/workbook/src/**/*.{ts,tsx}';
+
+html,
+body,
+#root {
+  height: 100%;
+}

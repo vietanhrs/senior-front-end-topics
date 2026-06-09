@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Badge, Button, Code, Group, Stack, Table, Text } from '@mantine/core';
 import { IconPlugConnected, IconTrash } from '@tabler/icons-react';
-import { Callout, DemoCard } from '../../workbook/ui';
+import { Callout, DemoCard } from '@sfe/workbook';
 
 interface InjectedHint {
   id: number;

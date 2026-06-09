@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
+import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
 
 const buggy = `// Shows a bio (user-supplied HTML) and an avatar.
 // It has an XSS hole. Find and fix it, while keeping basic formatting (bold, links).

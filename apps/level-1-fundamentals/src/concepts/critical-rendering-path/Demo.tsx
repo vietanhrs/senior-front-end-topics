@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Badge, Group, Slider, Stack, Table, Text } from '@mantine/core';
-import { Callout, DemoCard } from '../../workbook/ui';
+import { Callout, DemoCard } from '@sfe/workbook';
 
 /** Read real CRP-related timings for THIS page from the Performance API. */
 function useRealMetrics() {

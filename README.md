@@ -12,17 +12,20 @@ Tailwind + Mantine), where each *concept* has 3 parts:
 
 ```
 senior-front-end-topics/
-├── package.json                 # workspace root
+├── package.json                  # workspace root
+├── packages/
+│   └── workbook/                 # shared engine: WorkbookApp, layout, doc renderer, UI, roadmap
+│       └── src/                  # consumed by every level via the @sfe/workbook alias
 ├── apps/
-│   └── level-1-fundamentals/    # ✅ Level 1 SPA workbook (all 10 concepts)
-│       └── src/
-│           ├── workbook/        # shared "engine": layout, registry, doc renderer, UI
-│           └── concepts/<slug>/ # per concept: doc.md + Demo.tsx + Exercise.tsx + index.ts
-└── packages/                    # (reserved for shared code later)
+│   ├── level-1-fundamentals/     # ✅ Level 1 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/  # per concept: doc.md + Demo.tsx + Exercise.tsx + index.ts
+│   └── level-2-react-rendering/  # ✅ Level 2 SPA workbook (10 concepts)
+│       └── src/concepts/<slug>/
 ```
 
-Each subsequent level will be a new workspace app (`apps/level-2-...`, …) following the same
-template as Level 1.
+The reusable workbook engine lives in `packages/workbook` (`@sfe/workbook`). Each level app only
+provides its own `concepts/` + `LevelMeta` and renders `<WorkbookApp level={LEVEL} />`. New levels
+are new workspace apps following the same template.
 
 ## Running it
 
@@ -31,9 +34,10 @@ Requires **Bun ≥ 1.3**.
 ```bash
 bun install           # install deps for the whole workspace
 bun run dev           # run Level 1 (Vite dev server)
+bun run dev:l2        # run Level 2
 # or directly:
-bun run --filter level-1-fundamentals dev
-bun run --filter level-1-fundamentals build
+bun run --filter level-2-react-rendering dev
+bun run --filter '*' build      # build everything
 ```
 
 ## Roadmap (10 levels — added incrementally)
@@ -41,7 +45,7 @@ bun run --filter level-1-fundamentals build
 | Level | Topic | Status |
 |---|---|---|
 | 1 | Fundamentals (clear, never fuzzy) | ✅ Done |
-| 2 | React Core & Rendering Mechanics | 🔜 |
+| 2 | React Core & Rendering Mechanics | ✅ Done |
 | 3 | Browser Performance | 🔜 |
 | 4 | Advanced Data & State management | 🔜 |
 | 5 | Caching & Networking strategies | 🔜 |
@@ -60,6 +64,19 @@ bun run --filter level-1-fundamentals build
 8. **CORS preflight** — when the browser auto-sends OPTIONS.
 9. **CSRF vs XSS mitigation** — the distinction & how to defend.
 10. **Web workers vs Service workers** — off-main-thread vs network proxy/offline.
+
+### Level 2 — React Core & Rendering Mechanics (10 concepts)
+
+1. **Reconciliation algorithm** — state lives at (position + type + key); preserve vs remount.
+2. **Fiber architecture** — interruptible units of work; pure render vs atomic commit.
+3. **Concurrent rendering** — interruptible, cooperative rendering (transitions/deferred values).
+4. **Time slicing** — render large updates in ~5ms chunks, yielding to the browser.
+5. **Scheduler priorities** — lanes & tiers; urgent updates preempt transitions.
+6. **Suspense boundaries** — declarative waiting; `use()`; avoiding fallback flashes.
+7. **Selective hydration** — independent, interaction-prioritized hydration via Suspense.
+8. **Server components** — server-only, zero-JS components; the `'use client'` boundary.
+9. **Tearing in concurrent UI** — inconsistent external-store reads; `useSyncExternalStore`.
+10. **Stale closure problems** — callbacks capturing old renders; updaters/deps/refs.
 
 ## Tech stack
 

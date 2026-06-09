@@ -12,6 +12,7 @@
         "@mantine/code-highlight": "^8.0.0",
         "@mantine/core": "^8.0.0",
         "@mantine/hooks": "^8.0.0",
+        "@sfe/workbook": "workspace:*",
         "@tabler/icons-react": "^3.0.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
@@ -27,6 +28,51 @@
         "tailwindcss": "^4.0.0",
         "typescript": "^5.6.0",
         "vite": "^6.0.0",
+      },
+    },
+    "apps/level-2-react-rendering": {
+      "name": "level-2-react-rendering",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mantine/code-highlight": "^8.0.0",
+        "@mantine/core": "^8.0.0",
+        "@mantine/hooks": "^8.0.0",
+        "@sfe/workbook": "workspace:*",
+        "@tabler/icons-react": "^3.0.0",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-markdown": "^9.0.0",
+        "react-router-dom": "^7.0.0",
+        "remark-gfm": "^4.0.0",
+      },
+      "devDependencies": {
+        "@tailwindcss/vite": "^4.0.0",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@vitejs/plugin-react": "^4.3.0",
+        "tailwindcss": "^4.0.0",
+        "typescript": "^5.6.0",
+        "vite": "^6.0.0",
+      },
+    },
+    "packages/workbook": {
+      "name": "@sfe/workbook",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mantine/code-highlight": "^8.0.0",
+        "@mantine/core": "^8.0.0",
+        "@mantine/hooks": "^8.0.0",
+        "@tabler/icons-react": "^3.0.0",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-markdown": "^9.0.0",
+        "react-router-dom": "^7.0.0",
+        "remark-gfm": "^4.0.0",
+      },
+      "devDependencies": {
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "typescript": "^5.6.0",
       },
     },
   },
@@ -201,6 +247,8 @@
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.61.1", "", { "os": "win32", "cpu": "x64" }, "sha512-X+zaP2x+j4RXGfbp/seSoRHWnPxzApilDszisZxbYH5C/jTxFhCtDNdPGZb9lJyYPs24wGxruPF7Y+sIXt9Gzw=="],
 
+    "@sfe/workbook": ["@sfe/workbook@workspace:packages/workbook"],
+
     "@tabler/icons": ["@tabler/icons@3.44.0", "", {}, "sha512-Wn0AOZG9sg0L+bjfMqq4eNhC6pQjIrk94LvvWYNYkY8KH8wC3YILRzQlrnVJc4FUeMxH/AK97QsYCX35H3LndA=="],
 
     "@tabler/icons-react": ["@tabler/icons-react@3.44.0", "", { "dependencies": { "@tabler/icons": "3.44.0" }, "peerDependencies": { "react": ">= 16" } }, "sha512-8+rvzBbVm/1Z3sG3x7GUNAaxIKxwgz8xaMhRs23nrCnMTKRFAhEC+82zAIFeAA0seXdrAGX5HFCkaLpGK2rVHg=="],
@@ -356,6 +404,8 @@
     "json5": ["json5@2.2.3", "", { "bin": { "json5": "lib/cli.js" } }, "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="],
 
     "level-1-fundamentals": ["level-1-fundamentals@workspace:apps/level-1-fundamentals"],
+
+    "level-2-react-rendering": ["level-2-react-rendering@workspace:apps/level-2-react-rendering"],
 
     "lightningcss": ["lightningcss@1.32.0", "", { "dependencies": { "detect-libc": "^2.0.3" }, "optionalDependencies": { "lightningcss-android-arm64": "1.32.0", "lightningcss-darwin-arm64": "1.32.0", "lightningcss-darwin-x64": "1.32.0", "lightningcss-freebsd-x64": "1.32.0", "lightningcss-linux-arm-gnueabihf": "1.32.0", "lightningcss-linux-arm64-gnu": "1.32.0", "lightningcss-linux-arm64-musl": "1.32.0", "lightningcss-linux-x64-gnu": "1.32.0", "lightningcss-linux-x64-musl": "1.32.0", "lightningcss-win32-arm64-msvc": "1.32.0", "lightningcss-win32-x64-msvc": "1.32.0" } }, "sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ=="],
 
