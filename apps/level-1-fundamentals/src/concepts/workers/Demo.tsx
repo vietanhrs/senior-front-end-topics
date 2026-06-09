@@ -46,23 +46,23 @@ export function Demo() {
 
   function runOnMainThread() {
     setBusy('main');
-    setResult('đang tính trên main thread…');
+    setResult('computing on the main thread…');
     // Defer one frame so the label paints before we freeze the thread.
     requestAnimationFrame(() => {
       const t0 = performance.now();
       const primes = countPrimes(LIMIT);
-      setResult(`main thread: ${primes} primes trong ${Math.round(performance.now() - t0)}ms (UI vừa đứng hình!)`);
+      setResult(`main thread: ${primes} primes in ${Math.round(performance.now() - t0)}ms (the UI just froze!)`);
       setBusy('none');
     });
   }
 
   function runInWorker() {
     setBusy('worker');
-    setResult('đang tính trong Web Worker…');
+    setResult('computing in a Web Worker…');
     const worker = new Worker(new URL('./heavy.worker.ts', import.meta.url), { type: 'module' });
     workerRef.current = worker;
     worker.onmessage = (e: MessageEvent<{ result: number; ms: number }>) => {
-      setResult(`worker: ${e.data.result} primes trong ${e.data.ms}ms (UI vẫn mượt suốt quá trình)`);
+      setResult(`worker: ${e.data.result} primes in ${e.data.ms}ms (the UI stayed smooth the whole time)`);
       setBusy('none');
       worker.terminate();
       workerRef.current = null;
@@ -72,17 +72,18 @@ export function Demo() {
 
   return (
     <Stack gap="md">
-      <Callout kind="info" title="Cách quan sát responsiveness">
-        Nhịp tim bên dưới tăng mỗi animation frame và ô input phải gõ được mượt. Bấm{' '}
-        <b>Block main thread</b> → nhịp tim ĐỨNG, gõ phím khựng. Bấm <b>Web Worker</b> → nhịp tim
-        vẫn chạy đều, gõ phím mượt vì tính toán ở luồng khác.
+      <Callout kind="info" title="How to observe responsiveness">
+        The heartbeat below increments every animation frame, and the input should type smoothly.
+        Click <b>Block main thread</b> → the heartbeat STOPS and typing stutters. Click{' '}
+        <b>Web Worker</b> → the heartbeat keeps ticking and typing stays smooth because the
+        computation runs on another thread.
       </Callout>
 
       <DemoCard
         title="Main thread vs Web Worker"
         right={
           <Badge color={busy === 'main' ? 'red' : busy === 'worker' ? 'grape' : 'gray'} variant="filled">
-            {busy === 'none' ? 'idle' : busy === 'main' ? 'blocking main' : 'worker chạy'}
+            {busy === 'none' ? 'idle' : busy === 'main' ? 'blocking main' : 'worker running'}
           </Badge>
         }
       >
@@ -90,7 +91,7 @@ export function Demo() {
           <Group align="flex-end">
             <Stack gap={2}>
               <Text size="xs" c="dimmed">
-                Nhịp tim (rAF) — phải nhấp nháy liên tục
+                Heartbeat (rAF) — should keep blinking
               </Text>
               <Group gap="xs">
                 <div
@@ -100,7 +101,7 @@ export function Demo() {
                 <Text ff="monospace">frame #{tick}</Text>
               </Group>
             </Stack>
-            <TextInput label="Gõ thử để cảm nhận độ mượt" placeholder="abc…" className="flex-1" />
+            <TextInput label="Type here to feel the smoothness" placeholder="abc…" className="flex-1" />
           </Group>
 
           <Group>
@@ -108,12 +109,12 @@ export function Demo() {
               Block main thread (sync)
             </Button>
             <Button color="grape" leftSection={<IconCpu size={16} />} onClick={runInWorker} disabled={busy !== 'none'}>
-              Tính trong Web Worker
+              Compute in a Web Worker
             </Button>
           </Group>
 
           <Text size="sm">
-            Kết quả: <b>{result}</b>
+            Result: <b>{result}</b>
           </Text>
         </Stack>
       </DemoCard>

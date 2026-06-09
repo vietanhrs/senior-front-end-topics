@@ -9,15 +9,16 @@ interface Task {
 }
 
 const SEED: Task[] = [
-  { id: 1, label: 'Đọc lý thuyết hydration' },
-  { id: 2, label: 'Làm demo event loop' },
-  { id: 3, label: 'Ôn CORS preflight' },
+  { id: 1, label: 'Read the hydration theory' },
+  { id: 2, label: 'Do the event-loop demo' },
+  { id: 3, label: 'Review CORS preflight' },
 ];
 
 /**
- * BUG: dùng `index` làm key trong một list CÓ thể xoá phần tử. Tick checkbox
- * dòng đầu rồi xoá nó → checkbox "tích" nhảy sang dòng kế tiếp vì state DOM của
- * checkbox bị gắn theo vị trí, không theo task. Hãy đổi sang key ổn định.
+ * BUG: uses `index` as the key in a list that CAN remove items. Tick the first
+ * row's checkbox then delete it → the "checked" mark jumps to the next row,
+ * because the checkbox's DOM state is keyed by position, not by task. Switch to
+ * a stable key.
  */
 export function Exercise() {
   const [tasks, setTasks] = useState(SEED);
@@ -27,11 +28,11 @@ export function Exercise() {
   return (
     <Stack gap="md">
       <DemoCard
-        title="Bài tập: sửa key cho danh sách có thể xoá"
-        description="Tick checkbox dòng ĐẦU (uncontrolled), sau đó bấm xoá dòng đó. Vì đang dùng key=index, dấu tick sẽ dính sai. Nhiệm vụ: đổi sang key={task.id}."
+        title="Exercise: fix the key for a removable list"
+        description="Tick the FIRST row's checkbox (uncontrolled), then delete that row. Because it uses key=index, the tick sticks to the wrong row. Task: switch to key={task.id}."
       >
         <Stack gap="xs">
-          {/* ❌ key={index} — nguồn gốc của bug */}
+          {/* ❌ key={index} — the source of the bug */}
           {tasks.map((task, index) => (
             <Group key={index} justify="space-between">
               <Checkbox label={task.label} />
@@ -42,28 +43,29 @@ export function Exercise() {
                 leftSection={<IconTrash size={14} />}
                 onClick={() => remove(task.id)}
               >
-                Xoá
+                Delete
               </Button>
             </Group>
           ))}
-          {tasks.length === 0 && <Text c="dimmed">Hết task.</Text>}
+          {tasks.length === 0 && <Text c="dimmed">No tasks left.</Text>}
         </Stack>
         <Button mt="md" size="xs" variant="default" onClick={reset}>
           Reset
         </Button>
       </DemoCard>
 
-      <Callout kind="tip" title="Gợi ý">
-        Checkbox ở đây là <i>uncontrolled</i> nên trạng thái tick sống trong DOM. Key quyết
-        định DOM node nào được giữ lại khi list thay đổi. Index không ổn định khi xoá phần tử.
+      <Callout kind="tip" title="Hint">
+        The checkbox here is <i>uncontrolled</i>, so its checked state lives in the DOM. The key
+        decides which DOM node is kept when the list changes. Index is not stable when items are
+        removed.
       </Callout>
 
       <SolutionReveal
-        notes="Chỉ cần đổi key. Với list động (thêm/xoá/sắp xếp), luôn dùng id ổn định."
+        notes="Just change the key. For dynamic lists (add/remove/reorder), always use a stable id."
         code={`{tasks.map((task) => (
   <Group key={task.id} justify="space-between">
     <Checkbox label={task.label} />
-    <Button onClick={() => remove(task.id)}>Xoá</Button>
+    <Button onClick={() => remove(task.id)}>Delete</Button>
   </Group>
 ))}`}
       />

@@ -27,7 +27,7 @@ export function ConceptPage() {
       <Stack gap="lg">
         <Stack gap={4}>
           <Text size="sm" c="dimmed">
-            Concept {String(index + 1).padStart(2, '0')} / {LEVEL.concepts.length}
+            Concept {String(index + 1).padStart(2, '0')} of {LEVEL.concepts.length}
           </Text>
           <Title order={2}>{concept.title}</Title>
           <Text c="dimmed">{concept.summary}</Text>
@@ -43,14 +43,14 @@ export function ConceptPage() {
         <Tabs defaultValue="theory" keepMounted={false}>
           <Tabs.List>
             <Tabs.Tab value="theory" leftSection={<IconBook2 size={16} />}>
-              Lý thuyết
+              Theory
             </Tabs.Tab>
             <Tabs.Tab value="demo" leftSection={<IconFlask size={16} />}>
               Demo
             </Tabs.Tab>
             {Exercise && (
               <Tabs.Tab value="exercise" leftSection={<IconPencil size={16} />}>
-                Bài tập
+                Exercise
               </Tabs.Tab>
             )}
           </Tabs.List>
@@ -75,7 +75,7 @@ export function ConceptPage() {
             disabled={!prev}
             onClick={() => prev && navigate(`/${prev.slug}`)}
           >
-            {prev ? prev.title : 'Bắt đầu'}
+            {prev ? prev.title : 'Start'}
           </Button>
           <Button
             variant="default"
@@ -83,7 +83,7 @@ export function ConceptPage() {
             disabled={!next}
             onClick={() => next && navigate(`/${next.slug}`)}
           >
-            {next ? next.title : 'Hết level'}
+            {next ? next.title : 'End of level'}
           </Button>
         </Group>
       </Stack>

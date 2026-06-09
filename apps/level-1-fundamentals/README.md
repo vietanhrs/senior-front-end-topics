@@ -1,53 +1,53 @@
 # Level 1 — Fundamentals
 
-SPA workbook tương tác cho 10 concept nền tảng. Stack: Bun · React 19 · TypeScript · Vite ·
-Tailwind v4 · Mantine v8 · React Router (hash router để deploy tĩnh dễ dàng).
+Interactive SPA workbook for 10 fundamental concepts. Stack: Bun · React 19 · TypeScript ·
+Vite · Tailwind v4 · Mantine v8 · React Router (hash router for easy static deployment).
 
-## Chạy
+## Running
 
 ```bash
-bun install                  # (chạy ở repo root)
+bun install                  # (run at the repo root)
 bun run --filter level-1-fundamentals dev      # dev server
 bun run --filter level-1-fundamentals build    # type-check + production build
 ```
 
-## Kiến trúc
+## Architecture
 
 ```
 src/
-├── main.tsx               # MantineProvider + mount; gom toàn bộ import CSS
-├── index.css              # thứ tự CSS layer: @layer mantine, tw-utils (Tailwind không reset Mantine)
+├── main.tsx               # MantineProvider + mount; gathers all CSS imports
+├── index.css              # CSS layer order: @layer mantine, tw-utils (Tailwind doesn't reset Mantine)
 ├── App.tsx                # createHashRouter
-├── workbook/              # "engine" tái sử dụng được cho các level sau
+├── workbook/              # reusable "engine" for later levels
 │   ├── types.ts           # ConceptModule, LevelMeta
-│   ├── curriculum.ts      # roadmap đầy đủ (hiển thị ở sidebar)
+│   ├── curriculum.ts      # full roadmap (shown in the sidebar)
 │   ├── Layout.tsx         # AppShell + nav
-│   ├── Overview.tsx       # trang tổng quan
-│   ├── ConceptPage.tsx    # tabs Lý thuyết / Demo / Bài tập + điều hướng prev/next
-│   ├── DocView.tsx        # render markdown (react-markdown + Mantine CodeHighlight)
+│   ├── Overview.tsx       # overview page
+│   ├── ConceptPage.tsx    # Theory / Demo / Exercise tabs + prev/next navigation
+│   ├── DocView.tsx        # markdown renderer (react-markdown + Mantine CodeHighlight)
 │   └── ui.tsx             # DemoCard, Callout, LogConsole+useLogger, SolutionReveal
 └── concepts/
-    ├── index.ts           # LEVEL registry (ráp 10 concept)
+    ├── index.ts           # LEVEL registry (assembles the 10 concepts)
     └── <slug>/
-        ├── doc.md         # lý thuyết (import ?raw)
-        ├── Demo.tsx       # demo tương tác
-        ├── Exercise.tsx   # bài tập + lời giải
-        └── index.ts       # export ConceptModule
+        ├── doc.md         # theory (imported via ?raw)
+        ├── Demo.tsx       # interactive demo
+        ├── Exercise.tsx   # exercise + solution
+        └── index.ts       # exports a ConceptModule
 ```
 
-## Thêm một concept mới
+## Adding a new concept
 
-1. Tạo thư mục `src/concepts/<slug>/` với `doc.md`, `Demo.tsx`, `Exercise.tsx`, `index.ts`.
-2. Trong `index.ts`, export một `ConceptModule` (xem `types.ts`).
-3. Thêm vào mảng `concepts` trong `src/concepts/index.ts`.
+1. Create `src/concepts/<slug>/` with `doc.md`, `Demo.tsx`, `Exercise.tsx`, `index.ts`.
+2. In `index.ts`, export a `ConceptModule` (see `types.ts`).
+3. Add it to the `concepts` array in `src/concepts/index.ts`.
 
-Layout, routing, tabs, doc renderer tự động áp dụng — không cần đụng gì thêm.
+Layout, routing, tabs, and the doc renderer apply automatically — nothing else to touch.
 
-## Lưu ý kỹ thuật đáng chú ý
+## Notable technical details
 
-- **Tailwind + Mantine cùng tồn tại**: khai báo `@layer mantine, tw-utils` và **bỏ Preflight**
-  của Tailwind để không reset style Mantine (xem `index.css`).
-- **Code splitting quan sát được**: `HeavyWidget`, `mathPack`, `heavy.worker` được Vite tách
-  thành chunk riêng — thấy rõ trong Network tab và output build.
-- **Web Worker**: dùng cú pháp `new Worker(new URL('./x.worker.ts', import.meta.url), { type:
-  'module' })` mà Vite hỗ trợ sẵn.
+- **Tailwind + Mantine coexistence**: declare `@layer mantine, tw-utils` and **drop Tailwind's
+  Preflight** so it doesn't reset Mantine's styles (see `index.css`).
+- **Observable code splitting**: `HeavyWidget`, `mathPack`, and `heavy.worker` are emitted as
+  separate chunks by Vite — visible in the Network tab and in the build output.
+- **Web Worker**: uses the `new Worker(new URL('./x.worker.ts', import.meta.url), { type:
+  'module' })` syntax that Vite supports natively.

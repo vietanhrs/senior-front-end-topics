@@ -6,7 +6,7 @@ import { Exercise } from './Exercise';
 export const vdomDiffing: ConceptModule = {
   slug: 'vdom-diffing',
   title: 'Virtual DOM diffing complexity',
-  summary: 'Vì sao diff O(n³) hạ về O(n) nhờ heuristic type + key, và bẫy key=index.',
+  summary: 'Why diffing drops from O(n³) to O(n) via type + key heuristics, and the key=index trap.',
   tags: ['React', 'Reconciliation', 'Complexity'],
   doc,
   Demo,

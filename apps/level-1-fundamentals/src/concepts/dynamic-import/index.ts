@@ -6,7 +6,7 @@ import { Exercise } from './Exercise';
 export const dynamicImport: ConceptModule = {
   slug: 'dynamic-import',
   title: 'Dynamic import chunking',
-  summary: 'import() trả Promise, bundler cắt chunk, module cache theo specifier; khử waterfall.',
+  summary: 'import() returns a Promise, the bundler cuts chunks, modules cache by specifier; avoid waterfalls.',
   tags: ['Bundling', 'Runtime', 'Vite'],
   doc,
   Demo,

@@ -13,13 +13,13 @@ export function Demo() {
 
   function loadPack(): Promise<MathPack> {
     if (loaderRef.current) {
-      log('import(\'./mathPack\') — đã có trong cache, trả về Promise cũ (không tải lại)', 'micro');
+      log("import('./mathPack') — already cached, returns the existing Promise (no refetch)", 'micro');
       return loaderRef.current;
     }
-    log('import(\'./mathPack\') — lần đầu: tải chunk qua mạng…', 'macro');
+    log("import('./mathPack') — first call: fetching the chunk over the network…", 'macro');
     const t0 = performance.now();
     loaderRef.current = import('./mathPack').then((m) => {
-      log(`Chunk tải xong sau ${Math.round(performance.now() - t0)}ms`, 'success');
+      log(`Chunk loaded in ${Math.round(performance.now() - t0)}ms`, 'success');
       return m;
     });
     return loaderRef.current;
@@ -29,33 +29,33 @@ export function Demo() {
     const pack = await loadPack();
     const fib = pack.nthFibonacci(30);
     setResult(`fib(30) = ${fib}, sample = ${pack.seedSample()}`);
-    log(`Dùng module: nthFibonacci(30) = ${fib}`, 'sync');
+    log(`Using the module: nthFibonacci(30) = ${fib}`, 'sync');
   }
 
   function prefetch() {
-    log('Prefetch chủ động (vd khi hover / lúc nhàn rỗi)…', 'sync');
+    log('Proactive prefetch (e.g. on hover / when idle)…', 'sync');
     void loadPack();
   }
 
   return (
     <Stack gap="md">
-      <Callout kind="tip" title="Mở Network tab">
-        Bấm "Prefetch" hoặc "Tính toán" lần đầu → thấy một chunk <code>.js</code> tải về. Bấm
-        các lần sau → <b>không</b> có request mới: module đã được cache theo specifier.
+      <Callout kind="tip" title="Open the Network tab">
+        Click "Prefetch" or "Compute" the first time → you'll see a <code>.js</code> chunk load.
+        Click again → <b>no</b> new request: the module is cached by specifier.
       </Callout>
 
       <DemoCard
-        title="import() là Promise, module được cache"
+        title="import() is a Promise; modules are cached"
         right={
           <Badge variant="light" color={loaderRef.current ? 'teal' : 'gray'}>
-            {loaderRef.current ? 'chunk đã nạp' : 'chưa nạp'}
+            {loaderRef.current ? 'chunk loaded' : 'not loaded'}
           </Badge>
         }
       >
         <Stack gap="md">
           <Group>
             <Button leftSection={<IconBolt size={16} />} onClick={compute}>
-              Tính toán (tải khi cần)
+              Compute (load on demand)
             </Button>
             <Button variant="light" leftSection={<IconClockBolt size={16} />} onClick={prefetch}>
               Prefetch
@@ -71,7 +71,7 @@ export function Demo() {
             </Button>
           </Group>
           <Text size="sm">
-            Kết quả: <b>{result}</b>
+            Result: <b>{result}</b>
           </Text>
           <LogConsole logs={logs} height={180} />
         </Stack>

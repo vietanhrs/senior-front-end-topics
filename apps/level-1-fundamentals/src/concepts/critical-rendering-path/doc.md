@@ -1,76 +1,78 @@
 # Critical Rendering Path (CRP)
 
-## CRP là gì
+## What the CRP is
 
-Critical Rendering Path là **chuỗi bước trình duyệt phải thực hiện** để biến HTML/CSS/JS
-nhận được thành pixel trên màn hình. Tối ưu CRP = rút ngắn thời gian tới **First Paint /
-First Contentful Paint**.
+The Critical Rendering Path is the **sequence of steps the browser must perform** to turn
+the HTML/CSS/JS it receives into pixels on screen. Optimizing the CRP = shortening the time
+to **First Paint / First Contentful Paint**.
 
 ```
 Bytes ──▶ DOM ──┐
                  ├──▶ Render Tree ──▶ Layout (reflow) ──▶ Paint ──▶ Composite ──▶ Pixels
 Bytes ──▶ CSSOM ─┘
                  ▲
-              JavaScript có thể chặn/sửa cả DOM lẫn CSSOM
+            JavaScript can block/modify both DOM and CSSOM
 ```
 
-## Các bước chi tiết
+## The steps in detail
 
-1. **HTML → DOM**: parser đọc HTML, dựng cây DOM. Parser **tạm dừng** khi gặp `<script>`
-   đồng bộ (không `defer`/`async`).
-2. **CSS → CSSOM**: CSS là **render-blocking**. Trình duyệt không paint nội dung cho tới
-   khi CSSOM sẵn sàng (để tránh "flash" nội dung chưa style — FOUC).
-3. **DOM + CSSOM → Render Tree**: chỉ gồm node sẽ hiển thị (bỏ `display:none`, `<head>`…),
-   kèm style đã tính.
-4. **Layout (reflow)**: tính kích thước & vị trí từng node (geometry).
-5. **Paint**: vẽ pixel cho từng layer (text, màu, ảnh, border…).
-6. **Composite**: ghép các layer lại theo đúng thứ tự (GPU). (Sâu hơn ở Level 3.)
+1. **HTML → DOM**: the parser reads HTML and builds the DOM tree. It **pauses** when it hits
+   a synchronous `<script>` (no `defer`/`async`).
+2. **CSS → CSSOM**: CSS is **render-blocking**. The browser won't paint content until the
+   CSSOM is ready (to avoid a flash of unstyled content — FOUC).
+3. **DOM + CSSOM → Render Tree**: only the nodes that will be displayed (drops
+   `display:none`, `<head>`…), with computed styles attached.
+4. **Layout (reflow)**: compute the size & position (geometry) of every node.
+5. **Paint**: rasterize pixels for each layer (text, color, images, borders…).
+6. **Composite**: assemble the layers in the correct order (GPU). (Deeper dive in Level 3.)
 
-## Hai "kẻ chặn đường" chính
+## The two main blockers
 
-### CSS là render-blocking
-Trình duyệt **không paint** cho đến khi tải & parse xong CSS cần thiết. CSS càng nặng/nhiều
-file → first paint càng trễ. Giải pháp: inline critical CSS, tách CSS không quan trọng, dùng
-`media` để hạ ưu tiên (`<link media="print">` → không render-blocking).
+### CSS is render-blocking
+The browser **won't paint** until the required CSS is downloaded & parsed. Heavier/more CSS
+files → later first paint. Fixes: inline critical CSS, split non-critical CSS, use `media`
+to deprioritize (`<link media="print">` → not render-blocking).
 
-### JavaScript là parser-blocking
-`<script>` đồng bộ trong `<head>` **chặn parser**: trình duyệt dừng dựng DOM để tải + chạy
-script. Tệ hơn: script muốn đọc CSSOM phải đợi CSS xong → JS bị chặn bởi CSS, mà JS lại chặn
-DOM. Đây là chuỗi phụ thuộc gây chậm điển hình.
+### JavaScript is parser-blocking
+A synchronous `<script>` in `<head>` **blocks the parser**: the browser stops building the
+DOM to download + run the script. Worse: a script that wants to read the CSSOM must wait for
+CSS to finish → JS is blocked by CSS, while JS itself blocks the DOM. This dependency chain
+is the classic source of slowness.
 
-| Thuộc tính script | Chặn parser? | Khi nào chạy | Giữ thứ tự? |
+| Script attribute | Blocks parser? | When it runs | Order preserved? |
 |---|---|---|---|
-| (không có) | ✔ chặn | ngay khi tải xong, dừng parse | có |
-| `async` | ✘ | tải xong là chạy ngay (bất kỳ lúc nào) | **không** |
-| `defer` | ✘ | sau khi DOM dựng xong, trước `DOMContentLoaded` | có |
-| `type="module"` | ✘ (mặc định defer) | sau parse | có |
+| (none) | ✔ blocks | as soon as fetched, pausing parse | yes |
+| `async` | ✘ | as soon as fetched (any time) | **no** |
+| `defer` | ✘ | after the DOM is built, before `DOMContentLoaded` | yes |
+| `type="module"` | ✘ (deferred by default) | after parse | yes |
 
-## Các chỉ số cần biết
+## Metrics to know
 
-- **FP / FCP**: lần đầu có pixel / có nội dung. Phụ thuộc CRP.
-- **DOMContentLoaded (DCL)**: DOM dựng xong (đợi script defer/sync).
-- **Load**: mọi tài nguyên (ảnh, css, js) tải xong.
-- **LCP**: phần tử nội dung lớn nhất hiển thị (Core Web Vital). Tối ưu CRP + preload ảnh LCP.
+- **FP / FCP**: first pixels / first content. Depends on the CRP.
+- **DOMContentLoaded (DCL)**: DOM fully built (waits for sync/defer scripts).
+- **Load**: every resource (images, css, js) finished.
+- **LCP**: the largest content element painted (a Core Web Vital). Optimize the CRP + preload
+  the LCP image.
 
-## Chiến lược tối ưu CRP (thực chiến)
+## CRP optimization strategy (practical)
 
-1. **Giảm số byte render-blocking**: minify, nén (gzip/brotli), tree-shake CSS.
-2. **Inline critical CSS** cho phần above-the-fold; lazy-load phần còn lại.
-3. **Đưa script xuống cuối `<body>` hoặc dùng `defer`** để không chặn parser.
-4. **`async`** cho script độc lập (analytics) không phụ thuộc DOM/thứ tự.
-5. **Preload** tài nguyên quan trọng (font, ảnh LCP) — xem concept "Resource Hints".
-6. **Giảm số round-trip** (HTTP/2-3, preconnect tới origin bên thứ ba).
+1. **Reduce render-blocking bytes**: minify, compress (gzip/brotli), tree-shake CSS.
+2. **Inline critical CSS** for above-the-fold; lazy-load the rest.
+3. **Move scripts to the end of `<body>` or use `defer`** so they don't block the parser.
+4. **`async`** for independent scripts (analytics) that don't depend on the DOM/order.
+5. **Preload** important resources (fonts, LCP image) — see the "Resource Hints" concept.
+6. **Reduce round-trips** (HTTP/2-3, preconnect to third-party origins).
 
-## Checklist cho senior
+## Senior checklist
 
-- Vẽ được pipeline DOM/CSSOM → Render Tree → Layout → Paint → Composite.
-- Giải thích vì sao CSS render-blocking và JS parser-blocking.
-- Phân biệt async vs defer vs module chính xác.
-- Biết chỉ số nào đo cái gì (FCP/DCL/Load/LCP).
+- Draw the pipeline DOM/CSSOM → Render Tree → Layout → Paint → Composite.
+- Explain why CSS is render-blocking and JS is parser-blocking.
+- Distinguish async vs defer vs module precisely.
+- Know which metric measures what (FCP/DCL/Load/LCP).
 
 ## References
 
 - [web.dev: Critical Rendering Path](https://web.dev/articles/critical-rendering-path)
 - [MDN: Critical rendering path](https://developer.mozilla.org/en-US/docs/Web/Performance/Critical_rendering_path)
-- [web.dev: script async/defer](https://web.dev/articles/efficiently-load-third-party-javascript)
+- [web.dev: efficiently load third-party JavaScript (async/defer)](https://web.dev/articles/efficiently-load-third-party-javascript)
 - [web.dev: Largest Contentful Paint (LCP)](https://web.dev/articles/lcp)

@@ -2,10 +2,10 @@ import { Stack } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
 import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
 
-const before = `// Hai vấn đề: (1) waterfall tuần tự, (2) mỗi lần gọi lại import lại
+const before = `// Two problems: (1) a sequential waterfall, (2) re-imports on every call
 async function openEditor() {
-  const editor = await import('./editor');   // chờ xong cái này…
-  const theme = await import('./editorTheme'); // …mới bắt đầu cái kia (waterfall)
+  const editor = await import('./editor');     // wait for this…
+  const theme = await import('./editorTheme'); // …before even starting this (waterfall)
   return editor.create({ theme: theme.dark });
 }`;
 
@@ -13,16 +13,16 @@ export function Exercise() {
   return (
     <Stack gap="md">
       <DemoCard
-        title="Bài tập: khử waterfall và double-fetch"
-        description="Hàm dưới tải hai chunk tuần tự (waterfall) và không cache. Hãy tải song song và đảm bảo gọi nhiều lần chỉ tải một lần."
+        title="Exercise: remove the waterfall and the double-fetch"
+        description="The function below loads two chunks sequentially (a waterfall) and doesn't cache. Load them in parallel and make repeated calls fetch only once."
       >
         <CodeHighlight code={before} language="ts" radius="md" />
       </DemoCard>
 
-      <Callout kind="tip" title="Gợi ý">
-        Hai import độc lập → <code>Promise.all</code>. Để gọi nhiều lần không tải lại, hãy
-        cache <b>Promise</b> ở module scope (không cache giá trị đã resolve, để tránh race khi
-        gọi đồng thời).
+      <Callout kind="tip" title="Hint">
+        Two independent imports → <code>Promise.all</code>. To avoid refetching on repeated
+        calls, cache the <b>Promise</b> at module scope (not the resolved value, to avoid a race
+        on concurrent calls).
       </Callout>
 
       <SolutionReveal
@@ -30,8 +30,8 @@ export function Exercise() {
         code={`let editorBundle: Promise<{ editor: Editor; theme: Theme }> | null = null;
 
 function loadEditorBundle() {
-  if (editorBundle) return editorBundle;       // cache theo Promise
-  editorBundle = Promise.all([                 // tải SONG SONG, hết waterfall
+  if (editorBundle) return editorBundle;       // cache by Promise
+  editorBundle = Promise.all([                 // load IN PARALLEL, no waterfall
     import('./editor'),
     import('./editorTheme'),
   ]).then(([editor, theme]) => ({ editor, theme: theme.dark }));
@@ -43,7 +43,7 @@ async function openEditor() {
   return editor.create({ theme });
 }
 
-// (tuỳ chọn) prefetch khi hover để click là tức thì:
+// (optional) prefetch on hover so the click is instant:
 button.addEventListener('mouseenter', () => void loadEditorBundle());`}
       />
     </Stack>

@@ -5,13 +5,13 @@ import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
 const before = `<!doctype html>
 <html>
   <head>
-    <!-- analytics chặn parser dù chẳng cần cho first paint -->
+    <!-- analytics blocks the parser even though it's not needed for first paint -->
     <script src="/analytics.js"></script>
 
-    <!-- toàn bộ CSS render-blocking, kể cả phần dưới màn hình -->
+    <!-- all CSS is render-blocking, including below-the-fold styles -->
     <link rel="stylesheet" href="/all.css" />
 
-    <!-- app bundle nặng, đồng bộ, đặt trên cùng -->
+    <!-- heavy app bundle, synchronous, at the very top -->
     <script src="/app.bundle.js"></script>
   </head>
   <body>
@@ -23,38 +23,38 @@ export function Exercise() {
   return (
     <Stack gap="md">
       <DemoCard
-        title="Bài tập: tối ưu Critical Rendering Path của <head>"
-        description="<head> dưới đây làm FCP rất chậm. Hãy chỉ ra 3 vấn đề và viết lại để first paint nhanh nhất có thể mà không đổi hành vi."
+        title="Exercise: optimize the <head> for the Critical Rendering Path"
+        description="The <head> below makes FCP very slow. Identify the 3 problems and rewrite it so first paint is as fast as possible without changing behavior."
       >
         <CodeHighlight code={before} language="html" radius="md" />
       </DemoCard>
 
-      <Callout kind="tip" title="Gợi ý — tự trả lời trước khi mở lời giải">
-        (1) analytics có cần chạy trước first paint không? (2) toàn bộ CSS có thực sự
-        render-blocking cần thiết không? (3) app bundle đồng bộ trong <code>&lt;head&gt;</code>
-        ảnh hưởng gì tới parser?
+      <Callout kind="tip" title="Hint — answer these before revealing the solution">
+        (1) Does analytics need to run before first paint? (2) Is ALL of the CSS truly
+        render-blocking-critical? (3) What does a synchronous app bundle in{' '}
+        <code>&lt;head&gt;</code> do to the parser?
       </Callout>
 
       <SolutionReveal
         language="html"
-        notes="Ý chính: tách critical CSS, dùng defer/async đúng chỗ, không để script độc lập chặn parser."
+        notes="Key idea: split out critical CSS, use defer/async in the right places, and don't let an independent script block the parser."
         code={`<!doctype html>
 <html>
   <head>
-    <!-- 1) Inline critical CSS cho above-the-fold -> paint sớm -->
-    <style>/* critical css ngắn gọn */</style>
+    <!-- 1) Inline critical CSS for above-the-fold -> paint early -->
+    <style>/* small critical css */</style>
 
-    <!-- 2) Phần CSS còn lại: nạp không chặn render
-            (preload + onload đổi thành stylesheet) -->
+    <!-- 2) The rest of the CSS: load without blocking render
+            (preload + onload swaps it to a stylesheet) -->
     <link rel="preload" href="/rest.css" as="style"
           onload="this.rel='stylesheet'" />
 
-    <!-- 3) App bundle: defer -> không chặn parser, vẫn giữ thứ tự,
-            chạy trước DOMContentLoaded -->
+    <!-- 3) App bundle: defer -> doesn't block the parser, keeps order,
+            runs before DOMContentLoaded -->
     <script src="/app.bundle.js" defer></script>
 
-    <!-- 4) Analytics độc lập, không cần thứ tự, không cần DOM:
-            async -> tải/chạy bất kỳ lúc nào, không chặn -->
+    <!-- 4) Independent analytics, no ordering, no DOM needed:
+            async -> fetch/run any time, never blocks -->
     <script src="/analytics.js" async></script>
   </head>
   <body>

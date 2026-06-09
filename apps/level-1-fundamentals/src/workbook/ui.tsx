@@ -43,7 +43,7 @@ export function SolutionReveal({
         onClick={() => setOpen((o) => !o)}
         w="fit-content"
       >
-        {open ? 'Ẩn lời giải' : 'Xem lời giải'}
+        {open ? 'Hide solution' : 'Show solution'}
       </Button>
       <Collapse in={open}>
         <Stack gap="xs">

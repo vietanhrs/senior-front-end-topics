@@ -6,7 +6,7 @@ import { Exercise } from './Exercise';
 export const hydration: ConceptModule = {
   slug: 'hydration',
   title: 'Hydration',
-  summary: 'Gắn event handlers & state lên HTML render sẵn từ server, không vẽ lại DOM.',
+  summary: 'Attach event handlers & state onto server-rendered HTML without repainting the DOM.',
   tags: ['SSR', 'React', 'TTI'],
   doc,
   Demo,

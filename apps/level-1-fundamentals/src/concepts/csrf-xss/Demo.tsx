@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Badge, Code, Group, SegmentedControl, Select, Stack, Text, Textarea } from '@mantine/core';
 import { Callout, DemoCard } from '../../workbook/ui';
 
-const DEFAULT_PAYLOAD = `<img src=x onerror="document.body.innerHTML='💥 XSS đã chạy: đây là nơi script của kẻ tấn công đọc cookie/DOM của bạn';document.body.style.cssText='background:#7f1d1d;color:#fff;padding:12px;font-family:sans-serif'">`;
+const DEFAULT_PAYLOAD = `<img src=x onerror="document.body.innerHTML='💥 XSS executed: this is where the attacker script reads your cookies/DOM';document.body.style.cssText='background:#7f1d1d;color:#fff;padding:12px;font-family:sans-serif'">`;
 
 /**
  * Naive sanitizer for teaching ONLY — strips <script> and on* handlers via
@@ -17,8 +17,8 @@ function naiveSanitize(html: string): string {
 }
 
 function SandboxFrame({ html, title }: { html: string; title: string }) {
-  // sandbox="allow-scripts" (KHÔNG allow-same-origin): script chạy được nhưng ở
-  // origin "opaque" cô lập — không đọc được cookie/parent. Đủ để DEMO an toàn.
+  // sandbox="allow-scripts" (NO allow-same-origin): scripts can run but in an
+  // isolated "opaque" origin — they can't read cookies/parent. Safe to DEMO.
   return (
     <iframe
       title={title}
@@ -35,9 +35,9 @@ function CsrfSimulator() {
   const [scenario, setScenario] = useState('toplevel-get');
 
   const sent = useMemo(() => {
-    if (sameSite === 'None') return true; // gửi với mọi cross-site (cần Secure)
-    if (sameSite === 'Strict') return false; // không gửi với bất kỳ cross-site nào
-    // Lax: chỉ gửi với điều hướng top-level GET
+    if (sameSite === 'None') return true; // sent on all cross-site (requires Secure)
+    if (sameSite === 'Strict') return false; // not sent on any cross-site request
+    // Lax: only sent on top-level GET navigations
     return scenario === 'toplevel-get';
   }, [sameSite, scenario]);
 
@@ -56,22 +56,22 @@ function CsrfSimulator() {
           />
         </div>
         <Select
-          label="Request cross-site từ evil.com tới bank.com"
+          label="Cross-site request from evil.com to bank.com"
           value={scenario}
           onChange={(v) => setScenario(v ?? 'toplevel-get')}
           data={[
-            { value: 'toplevel-get', label: 'Click link (top-level GET)' },
+            { value: 'toplevel-get', label: 'Click a link (top-level GET)' },
             { value: 'form-post', label: 'Auto-submit <form method=POST>' },
-            { value: 'subresource', label: '<img>/fetch ngầm tới endpoint' },
+            { value: 'subresource', label: '<img>/fetch background request' },
           ]}
         />
       </Group>
       <Badge size="lg" color={sent ? 'red' : 'teal'} variant="filled">
-        {sent ? 'Cookie phiên ĐƯỢC gửi → CSRF có thể thành công' : 'Cookie KHÔNG gửi → CSRF bị chặn'}
+        {sent ? 'Session cookie IS sent → CSRF could succeed' : 'Cookie NOT sent → CSRF blocked'}
       </Badge>
       <Text size="xs" c="dimmed">
-        Lax (mặc định): chỉ gửi với điều hướng top-level GET. POST/subresource cross-site không
-        kèm cookie → chặn được phần lớn CSRF cổ điển. None bắt buộc Secure (HTTPS).
+        Lax (default): only sent on top-level GET navigations. Cross-site POST/subresource
+        requests carry no cookie → blocks most classic CSRF. None requires Secure (HTTPS).
       </Text>
     </Stack>
   );
@@ -82,14 +82,14 @@ export function Demo() {
 
   return (
     <Stack gap="md">
-      <Callout kind="warning" title="XSS — demo chạy trong iframe cô lập">
-        Payload thực thi bên trong <code>&lt;iframe sandbox="allow-scripts"&gt;</code> nên KHÔNG
-        đọc được cookie/DOM của trang workbook. Trong một trang thật mà bạn nhúng thẳng HTML này
-        bằng <code>dangerouslySetInnerHTML</code>, nó sẽ chạy dưới <b>origin của bạn</b> và đọc
-        được cookie/session.
+      <Callout kind="warning" title="XSS — demo runs in an isolated iframe">
+        The payload executes inside an <code>&lt;iframe sandbox="allow-scripts"&gt;</code>, so it
+        CANNOT read the workbook's cookies/DOM. In a real page that injects this HTML directly via{' '}
+        <code>dangerouslySetInnerHTML</code>, it would run under <b>your origin</b> and could read
+        cookies/session.
       </Callout>
 
-      <DemoCard title="Nhập payload (giả lập input người dùng)">
+      <DemoCard title="Enter a payload (simulating user input)">
         <Textarea
           autosize
           minRows={2}
@@ -99,36 +99,36 @@ export function Demo() {
       </DemoCard>
 
       <Group grow align="stretch">
-        <DemoCard title="① React {payload} — escape mặc định" right={<Badge color="teal">An toàn</Badge>}>
+        <DemoCard title="① React {payload} — escaped by default" right={<Badge color="teal">Safe</Badge>}>
           <Text size="sm" c="dimmed" mb="xs">
-            React hiển thị như text, không parse thành HTML:
+            React displays it as text, not parsed as HTML:
           </Text>
           <Code block>{payload}</Code>
         </DemoCard>
 
         <DemoCard
-          title="② dangerouslySetInnerHTML (chưa sanitize)"
-          right={<Badge color="red">Lỗ hổng</Badge>}
+          title="② dangerouslySetInnerHTML (not sanitized)"
+          right={<Badge color="red">Vulnerable</Badge>}
         >
           <SandboxFrame title="vulnerable" html={payload} />
         </DemoCard>
       </Group>
 
       <DemoCard
-        title="③ Sanitize trước khi render"
-        right={<Badge color="teal">An toàn (đã lọc)</Badge>}
+        title="③ Sanitize before rendering"
+        right={<Badge color="teal">Safe (filtered)</Badge>}
       >
         <Text size="sm" c="dimmed" mb="xs">
-          Sau khi loại <code>&lt;script&gt;</code> và thuộc tính <code>on*</code> (demo dùng
-          regex; thực tế hãy dùng DOMPurify):
+          After stripping <code>&lt;script&gt;</code> and <code>on*</code> attributes (this demo
+          uses regex; in practice use DOMPurify):
         </Text>
-        <SandboxFrame title="sanitized" html={naiveSanitize(payload) || '(rỗng sau khi lọc)'} />
+        <SandboxFrame title="sanitized" html={naiveSanitize(payload) || '(empty after filtering)'} />
         <Code block mt="xs">
-          {naiveSanitize(payload) || '(rỗng)'}
+          {naiveSanitize(payload) || '(empty)'}
         </Code>
       </DemoCard>
 
-      <DemoCard title="CSRF — SameSite cookie quyết định cookie có được gửi không">
+      <DemoCard title="CSRF — SameSite cookies decide whether the cookie is sent">
         <CsrfSimulator />
       </DemoCard>
     </Stack>

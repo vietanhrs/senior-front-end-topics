@@ -13,7 +13,7 @@ export interface RoadmapLevel {
 export const ROADMAP: RoadmapLevel[] = [
   {
     level: 1,
-    title: 'Fundamentals (rõ ràng, không mơ hồ)',
+    title: 'Fundamentals (clear, never fuzzy)',
     status: 'active',
     concepts: [
       'Hydration',

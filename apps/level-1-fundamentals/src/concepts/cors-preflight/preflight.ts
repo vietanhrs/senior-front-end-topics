@@ -35,16 +35,16 @@ export function evaluatePreflight(cfg: RequestConfig): PreflightVerdict {
   const reasons: string[] = [];
 
   if (!SIMPLE_METHODS.has(cfg.method.toUpperCase())) {
-    reasons.push(`Method ${cfg.method} không thuộc {GET, HEAD, POST}.`);
+    reasons.push(`Method ${cfg.method} is not in {GET, HEAD, POST}.`);
   }
   if (!SAFELISTED_CONTENT_TYPES.has(cfg.contentType)) {
-    reasons.push(`Content-Type "${cfg.contentType}" không nằm trong safelist.`);
+    reasons.push(`Content-Type "${cfg.contentType}" is not on the safelist.`);
   }
   const offendingHeaders = cfg.customHeaders
     .map((h) => h.toLowerCase())
     .filter((h) => !SAFELISTED_HEADERS.has(h));
   if (offendingHeaders.length > 0) {
-    reasons.push(`Header tuỳ biến không safelisted: ${offendingHeaders.join(', ')}.`);
+    reasons.push(`Non-safelisted custom headers: ${offendingHeaders.join(', ')}.`);
   }
 
   return { needsPreflight: reasons.length > 0, reasons };

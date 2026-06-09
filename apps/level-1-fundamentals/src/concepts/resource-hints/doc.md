@@ -1,77 +1,80 @@
 # Preload vs Prefetch vs Preconnect (Resource Hints)
 
-Resource hints cho trình duyệt biết **trước** rằng ta sẽ cần thứ gì đó, để nó chuẩn bị sớm.
-Dùng đúng → giảm độ trễ; dùng sai → lãng phí băng thông và **tranh giành** với tài nguyên
-thực sự quan trọng.
+Resource hints tell the browser **in advance** that we'll need something, so it can prepare
+early. Used well → lower latency; used wrong → wasted bandwidth and **contention** with the
+resources that actually matter.
 
-## Bảng phân biệt cốt lõi
+## Core comparison
 
-| Hint | Mục đích | Ưu tiên | Khi nào dùng |
+| Hint | Purpose | Priority | When to use |
 |---|---|---|---|
-| `preconnect` | Thiết lập sẵn **kết nối** (DNS + TCP + TLS) tới một origin | — | Bạn chắc chắn sẽ tải tài nguyên từ origin bên thứ ba (font, CDN, API) |
-| `dns-prefetch` | Chỉ phân giải **DNS** trước (rẻ hơn preconnect) | — | Fallback cho trình duyệt cũ, hoặc nhiều origin chỉ cần DNS |
-| `preload` | Tải sớm **một tài nguyên cụ thể** của trang **hiện tại**, ưu tiên cao | cao | Tài nguyên quan trọng bị phát hiện muộn (font, ảnh LCP, CSS/JS critical) |
-| `prefetch` | Tải sẵn tài nguyên cho **điều hướng tương lai**, ưu tiên rất thấp | thấp nhất | Tài nguyên của trang/route người dùng *có thể* vào tiếp |
-| `modulepreload` | Như preload nhưng cho **ES module** (parse + nạp vào module map) | cao | Module JS critical |
+| `preconnect` | Set up a **connection** ahead (DNS + TCP + TLS) to an origin | — | You're sure you'll fetch from a third-party origin (font, CDN, API) |
+| `dns-prefetch` | Resolve **DNS** only, ahead of time (cheaper than preconnect) | — | Fallback for old browsers, or many origins needing just DNS |
+| `preload` | Fetch a **specific resource** of the **current** page early, high priority | high | A critical resource discovered late (font, LCP image, critical CSS/JS) |
+| `prefetch` | Pre-fetch a resource for a **future navigation**, very low priority | lowest | A resource for a page/route the user *might* go to next |
+| `modulepreload` | Like preload but for an **ES module** (parse + add to the module map) | high | Critical JS modules |
 
-## `preconnect` — tiết kiệm round-trip kết nối
+## `preconnect` — save connection round-trips
 
-Kết nối tới origin mới tốn DNS lookup + bắt tay TCP + bắt tay TLS — có thể vài trăm ms. Nếu
-biết chắc sẽ tải từ origin đó, mở kết nối trước:
+Connecting to a new origin costs a DNS lookup + TCP handshake + TLS handshake — potentially
+hundreds of ms. If you know you'll fetch from that origin, open the connection early:
 
 ```html
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" /> <!-- fallback -->
 ```
 
-> Chỉ preconnect **những origin chắc chắn dùng** (giới hạn ~vài cái). Mở kết nối thừa làm
-> lãng phí và có thể bị trình duyệt đóng trước khi dùng.
+> Only preconnect to **origins you're sure you'll use** (limit to a handful). Opening spare
+> connections wastes resources and the browser may close them before they're used.
 
-## `preload` — "tôi cần cái này sớm, cho trang NÀY"
+## `preload` — "I need this early, for THIS page"
 
-Trình duyệt phát hiện một số tài nguyên muộn (font khai báo trong CSS, ảnh trong JS). `preload`
-nâng ưu tiên và bắt đầu tải ngay:
+The browser discovers some resources late (a font declared in CSS, an image referenced in
+JS). `preload` raises the priority and starts fetching immediately:
 
 ```html
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/hero.jpg" as="image" fetchpriority="high" />
 ```
 
-- **Bắt buộc có `as`** (font, image, script, style, fetch…) để trình duyệt đặt đúng ưu tiên,
-  áp đúng CSP và **tái sử dụng** kết nối/đối tượng đã tải.
-- Font cần `crossorigin` (font luôn fetch ở chế độ CORS).
-- Preload sai (tải mà không dùng trong vài giây) → cảnh báo console + lãng phí.
+- **`as` is required** (font, image, script, style, fetch…) so the browser sets the right
+  priority, applies the right CSP, and **reuses** the loaded connection/object.
+- Fonts need `crossorigin` (fonts are always fetched in CORS mode).
+- A bad preload (fetched but unused within a few seconds) → console warning + wasted bandwidth.
 
-## `prefetch` — "có thể cần cho trang SAU"
+## `prefetch` — "might need it for a LATER page"
 
-Ưu tiên thấp nhất, dùng cho điều hướng tương lai (route kế, ảnh trang sản phẩm tiếp theo):
+Lowest priority, for future navigations (the next route, the next product page's images):
 
 ```html
 <link rel="prefetch" href="/next-page.js" as="script" />
 ```
 
-Trình duyệt chỉ tải khi nhàn rỗi và sẽ cất vào HTTP cache cho lần điều hướng sau. **Không**
-dùng prefetch cho tài nguyên cần ngay ở trang hiện tại (dùng preload).
+The browser fetches only when idle and stores it in the HTTP cache for the next navigation.
+**Don't** use prefetch for a resource needed now on the current page (use preload).
 
-## So sánh nhanh "preload vs prefetch"
+## Quick "preload vs prefetch"
 
-- **preload** = *trang này, ngay bây giờ, ưu tiên cao*.
-- **prefetch** = *trang tương lai, lúc rảnh, ưu tiên thấp*.
+- **preload** = *this page, right now, high priority*.
+- **prefetch** = *a future page, when idle, low priority*.
 
-Nhầm lẫn kinh điển: dùng `prefetch` cho font của trang hiện tại → font tải muộn, vẫn FOIT/FOUT;
-hoặc `preload` cho tài nguyên của trang sau → tranh băng thông với tài nguyên trang hiện tại.
+The classic mix-up: using `prefetch` for the current page's font → the font loads late, still
+causing FOIT/FOUT; or `preload`-ing a next-page resource → it contends with current-page
+resources.
 
 ## `fetchpriority` & Priority Hints
 
-Thuộc tính `fetchpriority="high|low|auto"` (trên `<img>`, `<link>`, `fetch()`) tinh chỉnh ưu
-tiên trong cùng loại — ví dụ nâng ảnh LCP, hạ ảnh dưới màn hình. (Học sâu ở Level 5 — "Priority hints".)
+The `fetchpriority="high|low|auto"` attribute (on `<img>`, `<link>`, `fetch()`) fine-tunes
+priority within the same type — e.g. boost the LCP image, lower below-the-fold images.
+(Deeper dive in Level 5 — "Priority hints".)
 
-## Checklist cho senior
+## Senior checklist
 
-- Phân biệt rạch ròi preconnect (kết nối) vs preload (tài nguyên trang này) vs prefetch (trang sau).
-- `preload` luôn có `as`; font cần `crossorigin`.
-- Chỉ preconnect vài origin chắc chắn dùng; tránh hint thừa gây tranh chấp.
-- Biết hậu quả khi dùng sai (cảnh báo, lãng phí, FOUT).
+- Cleanly distinguish preconnect (connection) vs preload (current-page resource) vs prefetch
+  (future page).
+- `preload` always has `as`; fonts need `crossorigin`.
+- Only preconnect to a few origins you'll definitely use; avoid spare hints that cause contention.
+- Know the consequences of misuse (warnings, waste, FOUT).
 
 ## References
 

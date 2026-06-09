@@ -1,92 +1,92 @@
 # Hydration
 
-## Định nghĩa ngắn gọn
+## In one sentence
 
-**Hydration** là quá trình client-side JavaScript "gắn" (attach) event handlers và
-khôi phục state của một cây React (hay framework khác) lên trên **HTML tĩnh đã được
-render sẵn từ server** (SSR/SSG), để biến HTML "chết" thành UI tương tác mà
-**không vẽ lại (re-create) DOM từ đầu**.
+**Hydration** is the process where client-side JavaScript *attaches* event handlers and
+restores state onto **static HTML that was already rendered by the server** (SSR/SSG),
+turning "dead" markup into an interactive UI **without re-creating the DOM from scratch**.
 
 ```
-SSR/SSG:  Server  ──render──▶  HTML string  ──gửi──▶  Browser hiển thị ngay (FCP nhanh)
-                                                          │ (chưa click được)
-Hydration: Client tải JS ──▶ React dựng lại Virtual DOM ──▶ so khớp với DOM có sẵn
-                                                          │
-                                                          ▼
-                                                  Gắn event listeners → tương tác được
+SSR/SSG:   Server  ──render──▶  HTML string  ──ship──▶  Browser paints it (fast FCP)
+                                                            │ (not clickable yet)
+Hydration: Client loads JS ──▶ React rebuilds the VDOM ──▶ matches it to existing DOM
+                                                            │
+                                                            ▼
+                                                    Attaches listeners → interactive
 ```
 
-## Tại sao cần hydration?
+## Why hydration exists
 
-SSR cho ta **First Contentful Paint (FCP)** và **SEO** tốt vì người dùng thấy nội
-dung ngay, không phải chờ JS chạy. Nhưng HTML từ server không có event listener, không
-có state — nó "chết". Hydration là cây cầu nối giữa HTML tĩnh và app tương tác.
+SSR gives us a fast **First Contentful Paint (FCP)** and good **SEO** because users see
+content immediately, before any JS runs. But server HTML has no event listeners and no
+state — it's inert. Hydration is the bridge between static markup and an interactive app.
 
-Điểm mấu chốt mà nhiều người mơ hồ: **giữa lúc HTML hiển thị và lúc hydration xong, UI
-trông như đã sẵn sàng nhưng click/typing không ăn**. Khoảng này gọi là
-**"uncanny valley"** của SSR. Nếu bundle JS lớn, khoảng trễ này dài → người dùng bấm mà
-không phản hồi.
+The key thing many people are fuzzy about: **between the moment HTML paints and the moment
+hydration finishes, the UI looks ready but clicks/typing do nothing**. That gap is the
+**"uncanny valley"** of SSR. If the JS bundle is large, this delay is long → users click
+and get no response.
 
 ## React: `hydrateRoot` vs `createRoot`
 
 | | `createRoot` (CSR) | `hydrateRoot` (SSR) |
 |---|---|---|
-| DOM ban đầu | rỗng (`<div id="root"></div>`) | đã có HTML từ server |
-| Hành vi | tạo mới toàn bộ DOM | tái sử dụng DOM, chỉ gắn listeners |
-| Yêu cầu | không | render đầu tiên của client **phải khớp** với HTML server |
+| Initial DOM | empty (`<div id="root"></div>`) | already contains server HTML |
+| Behavior | builds the whole DOM | reuses the DOM, only attaches listeners |
+| Requirement | none | the client's first render **must match** the server HTML |
 
 ```tsx
-// Client entry cho app SSR
+// Client entry for an SSR app
 import { hydrateRoot } from 'react-dom/client';
 hydrateRoot(document.getElementById('root')!, <App />);
 ```
 
-## Hydration mismatch — lỗi kinh điển
+## Hydration mismatch — the classic bug
 
-React giả định render đầu tiên ở client **giống hệt** HTML server. Nếu khác, bạn nhận
-warning *"Hydration failed... server rendered HTML didn't match the client"* và React
-sẽ phải sửa DOM (tốn kém), thậm chí vứt bỏ và render lại cả subtree.
+React assumes the client's first render is **identical** to the server HTML. If they differ
+you get the warning *"Hydration failed... server rendered HTML didn't match the client"*,
+and React must patch the DOM (expensive) — sometimes discarding and re-rendering the whole
+subtree.
 
-Nguyên nhân phổ biến:
+Common causes:
 
-- **Giá trị không tất định**: `Date.now()`, `Math.random()`, `new Date().toLocaleString()`
-  (khác timezone/locale giữa server và client).
-- **Truy cập browser-only API khi render**: `window`, `localStorage`, `navigator`.
-- **HTML không hợp lệ**: `<p><div/></p>` bị trình duyệt tự sửa cấu trúc.
-- **Nội dung phụ thuộc `typeof window`** rẽ nhánh khác nhau hai phía.
+- **Non-deterministic values**: `Date.now()`, `Math.random()`, `new Date().toLocaleString()`
+  (differs by timezone/locale between server and client).
+- **Touching browser-only APIs during render**: `window`, `localStorage`, `navigator`.
+- **Invalid HTML**: `<p><div/></p>` gets auto-corrected by the browser parser.
+- **Content branching on `typeof window`** that diverges on the two sides.
 
-Cách xử lý đúng:
+The correct fix:
 
 ```tsx
-// Pattern: render giống server ở lần đầu, cập nhật sau khi mounted
+// Pattern: render the same as the server first, update after mount
 function ClientOnlyTime() {
   const [time, setTime] = useState<string | null>(null);
   useEffect(() => {
-    setTime(new Date().toLocaleTimeString()); // chỉ chạy ở client, SAU hydration
+    setTime(new Date().toLocaleTimeString()); // client only, AFTER hydration
   }, []);
-  return <span>{time ?? 'Đang tải…'}</span>; // lần đầu khớp server
+  return <span>{time ?? 'Loading…'}</span>; // first render matches the server
 }
 ```
 
-Hoặc dùng `suppressHydrationWarning` cho các node thực sự không thể tránh khác biệt
-(ví dụ timestamp), nhưng đây là "lối thoát hiểm", không phải giải pháp mặc định.
+You can also use `suppressHydrationWarning` for nodes that genuinely can't avoid differing
+(e.g. timestamps), but that's an escape hatch, not a default.
 
-## Các biến thể hiện đại (đặt nền cho Level 2)
+## Modern variants (groundwork for Level 2)
 
-- **Partial / Selective hydration**: chỉ hydrate phần cần tương tác, theo độ ưu tiên
-  (React 18 + Suspense). Sẽ học sâu ở Level 2.
-- **Progressive hydration**: hydrate dần theo viewport/tương tác.
-- **Islands architecture** (Astro, Fresh): phần lớn trang là HTML tĩnh, chỉ vài "đảo"
-  được hydrate.
-- **Resumability** (Qwik): tránh hydration hoàn toàn bằng cách "serialize" trạng thái và
-  "resume" thay vì "replay".
+- **Partial / Selective hydration**: hydrate only the parts that need interactivity, by
+  priority (React 18 + Suspense). Covered in depth in Level 2.
+- **Progressive hydration**: hydrate gradually by viewport/interaction.
+- **Islands architecture** (Astro, Fresh): most of the page is static HTML; only a few
+  "islands" hydrate.
+- **Resumability** (Qwik): avoids hydration entirely by serializing state and *resuming*
+  instead of *replaying*.
 
-## Checklist cho senior
+## Senior checklist
 
-- Hiểu hydration là **gắn listeners lên DOM có sẵn**, không phải vẽ lại.
-- Biết FCP đến từ SSR còn **TTI (Time To Interactive)** mới đến sau hydration.
-- Tránh mọi giá trị không tất định trong lần render đầu.
-- Biết khi nào dùng `useEffect` để defer logic browser-only.
+- Understand hydration is **attaching listeners onto existing DOM**, not repainting it.
+- Know FCP comes from SSR while **TTI (Time To Interactive)** only arrives after hydration.
+- Avoid every non-deterministic value in the first render.
+- Know when to defer browser-only logic to `useEffect`.
 
 ## References
 

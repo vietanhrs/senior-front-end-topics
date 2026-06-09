@@ -75,12 +75,12 @@ export function Demo() {
 
   return (
     <Stack gap="md">
-      <Callout kind="info" title="Số đo CRP thật của trang này">
-        Đọc trực tiếp từ <code>performance</code> API của chính trang workbook bạn đang xem.
-        Mở DevTools → Performance để thấy waterfall chi tiết.
+      <Callout kind="info" title="This page's real CRP metrics">
+        Read directly from the <code>performance</code> API of the very workbook page you're
+        viewing. Open DevTools → Performance to see the detailed waterfall.
       </Callout>
 
-      <DemoCard title="Performance API — trang hiện tại">
+      <DemoCard title="Performance API — current page">
         <Table withRowBorders={false}>
           <Table.Tbody>
             {real.map((r) => (
@@ -100,8 +100,8 @@ export function Demo() {
       </DemoCard>
 
       <DemoCard
-        title="Mô phỏng: vị trí/loại script ảnh hưởng FCP thế nào"
-        description="Kéo các tham số chi phí (cùng một bộ tài nguyên), rồi so 3 chiến lược nạp script. Đường kẻ đỏ là thời điểm First Contentful Paint. Script đồng bộ trong <head> đẩy FCP ra xa vì chặn parser."
+        title="Simulation: how script placement/type affects FCP"
+        description="Drag the cost parameters (same set of resources), then compare 3 script-loading strategies. The red dashed line is First Contentful Paint. A synchronous script in <head> pushes FCP out because it blocks the parser."
       >
         <Stack gap="lg">
           <Group grow>
@@ -127,7 +127,7 @@ export function Demo() {
 
           <Stack gap="md">
             <Timeline
-              title="① <script> đồng bộ trong <head> (chặn parser)"
+              title="① sync <script> in <head> (blocks the parser)"
               total={total}
               fcp={blockingFcp}
               phases={[
@@ -138,7 +138,7 @@ export function Demo() {
               ]}
             />
             <Timeline
-              title="② <script defer> (không chặn parser)"
+              title="② <script defer> (does not block the parser)"
               total={total}
               fcp={deferFcp}
               phases={[
@@ -147,7 +147,7 @@ export function Demo() {
               ]}
             />
             <Timeline
-              title="③ <script async> (không chặn parser, chạy khi tải xong)"
+              title="③ <script async> (doesn't block the parser, runs once fetched)"
               total={total}
               fcp={asyncFcp}
               phases={[
@@ -157,8 +157,8 @@ export function Demo() {
             />
           </Stack>
           <Text size="xs" c="dimmed">
-            * Mô hình đơn giản hoá để dạy trực giác (CSS luôn render-blocking; script đồng bộ
-            chặn dựng DOM). Không phản ánh chính xác từng byte.
+            * A simplified model to build intuition (CSS is always render-blocking; a sync script
+            blocks DOM construction). It is not byte-accurate.
           </Text>
         </Stack>
       </DemoCard>

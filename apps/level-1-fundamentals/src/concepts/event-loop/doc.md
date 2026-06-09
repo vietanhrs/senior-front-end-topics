@@ -1,42 +1,43 @@
 # Event loop: macrotasks vs microtasks
 
-## Mô hình tinh thần
+## Mental model
 
-JavaScript chạy **single-threaded**: một call stack, một luồng. Để xử lý bất đồng bộ mà
-không block, runtime dùng **event loop** điều phối giữa **call stack** và hai loại hàng đợi:
+JavaScript runs **single-threaded**: one call stack, one thread. To handle async work
+without blocking, the runtime uses the **event loop** to coordinate between the **call
+stack** and two kinds of queues:
 
 ```
         ┌─────────────┐
-        │  Call Stack │  ← chạy code đồng bộ tới khi rỗng
+        │  Call Stack │  ← runs synchronous code until empty
         └─────────────┘
-              │ (stack rỗng)
+              │ (stack empty)
               ▼
    ┌────────────────────────┐
-   │  Microtask queue        │  ← XẢ SẠCH toàn bộ trước khi qua bước sau
+   │  Microtask queue        │  ← DRAINED COMPLETELY before moving on
    │  (Promise.then,         │
    │   queueMicrotask,        │
    │   MutationObserver)      │
    └────────────────────────┘
               │
               ▼
-   ┌────────────────────────┐   (thường) render / paint
-   │  Macrotask queue        │  ← lấy ĐÚNG 1 task mỗi vòng
+   ┌────────────────────────┐   (usually) render / paint
+   │  Macrotask queue        │  ← takes EXACTLY one task per loop
    │  (setTimeout, events,    │
    │   message, I/O)          │
    └────────────────────────┘
 ```
 
-## Quy tắc vàng
+## The golden rules
 
-1. Chạy hết code đồng bộ (call stack về rỗng).
-2. **Xả sạch toàn bộ microtask queue** — kể cả microtask mới được thêm trong lúc xả.
-3. (Trình duyệt có thể) render.
-4. Lấy **một** macrotask, chạy nó → quay lại bước 2.
+1. Run all synchronous code (call stack returns to empty).
+2. **Drain the entire microtask queue** — including microtasks added *while* draining.
+3. (The browser may) render.
+4. Take **one** macrotask, run it → go back to step 2.
 
-Hệ quả quan trọng nhất: **microtask luôn chạy trước macrotask kế tiếp**, và một microtask
-có thể "chen" thêm microtask khác làm trễ cả render.
+The most important consequence: **microtasks always run before the next macrotask**, and a
+microtask can "cut in line" with more microtasks, delaying rendering.
 
-## Ví dụ kinh điển
+## The classic example
 
 ```js
 console.log('1: script start');           // sync
@@ -49,29 +50,29 @@ queueMicrotask(() => console.log('4: queueMicrotask'));   // microtask
 
 console.log('5: script end');             // sync
 
-// Thứ tự in: 1 → 5 → 3 → 4 → 2
-// sync trước (1,5), xả microtask (3,4), rồi mới tới macrotask (2)
+// Print order: 1 → 5 → 3 → 4 → 2
+// sync first (1,5), drain microtasks (3,4), then the macrotask (2)
 ```
 
-## Vì sao đây là kiến thức "không được mơ hồ"
+## Why this is "must-not-be-fuzzy" knowledge
 
-- **`await` = microtask**: phần code sau `await` được xếp vào microtask queue. Nhiều bug
-  ordering đến từ việc nghĩ `await` đồng bộ.
-- **Microtask starvation**: nếu một microtask liên tục `queueMicrotask` thêm cái mới, event
-  loop **không bao giờ** tới được macrotask/render → UI treo dù không có vòng lặp vô hạn rõ ràng.
-- **`setTimeout(fn, 0)` không phải "ngay lập tức"**: nó là macrotask, chạy sau toàn bộ
-  microtask hiện có, và bị clamp tối thiểu (~4ms khi lồng sâu).
-- **Render xen giữa các macrotask**: muốn để trình duyệt vẽ trước khi làm việc nặng tiếp,
-  hãy nhường bằng macrotask (`setTimeout`/`MessageChannel`/`scheduler.postTask`), không phải microtask.
+- **`await` = microtask**: the code after `await` is scheduled as a microtask. Many ordering
+  bugs come from thinking `await` is synchronous.
+- **Microtask starvation**: if a microtask keeps `queueMicrotask`-ing more work, the event
+  loop **never** reaches a macrotask/render → the UI freezes with no obvious infinite loop.
+- **`setTimeout(fn, 0)` is not "immediately"**: it's a macrotask, running after all current
+  microtasks, and is clamped to a minimum (~4ms when deeply nested).
+- **Rendering happens between macrotasks**: to let the browser paint before more heavy work,
+  yield with a macrotask (`setTimeout`/`MessageChannel`/`scheduler.postTask`), not a microtask.
 
-## `requestAnimationFrame` đứng ở đâu?
+## Where does `requestAnimationFrame` fit?
 
-`rAF` callbacks chạy **ngay trước paint**, sau microtask của frame đó. Dùng cho công việc
-liên quan tới vẽ/animation. Không phải micro cũng không phải macro queue thông thường.
+`rAF` callbacks run **right before paint**, after that frame's microtasks. Use it for
+paint/animation-related work. It's neither the regular micro nor macro queue.
 
-## Microtask vs Macrotask — bảng tra nhanh
+## Microtask vs macrotask — quick reference
 
-| Nguồn | Loại |
+| Source | Kind |
 |---|---|
 | `Promise.then/catch/finally`, `await` | microtask |
 | `queueMicrotask` | microtask |
@@ -79,22 +80,23 @@ liên quan tới vẽ/animation. Không phải micro cũng không phải macro q
 | `setTimeout`, `setInterval` | macrotask |
 | `MessageChannel`, `postMessage` | macrotask |
 | DOM events, `setImmediate` (Node) | macrotask |
-| `requestAnimationFrame` | trước paint (riêng) |
+| `requestAnimationFrame` | before paint (separate) |
 
-## Pattern thực chiến
+## Practical patterns
 
-- **Nhường luồng để không block UI**: chia việc nặng thành nhiều macrotask
-  (`setTimeout`/`MessageChannel`), hoặc đẩy sang Web Worker (xem concept "Web/Service Workers").
-- **Gom cập nhật sau microtask**: dùng microtask khi muốn chạy "sau code đồng bộ hiện tại
-  nhưng trước khi nhường cho trình duyệt" (vd React batch updates).
-- **Tránh starvation**: đừng đệ quy bằng microtask cho việc dài; dùng macrotask để cho phép render.
+- **Yield the thread so you don't block the UI**: split heavy work into multiple macrotasks
+  (`setTimeout`/`MessageChannel`), or move it to a Web Worker (see "Web/Service Workers").
+- **Batch work after the current sync run**: use a microtask when you want to run "after the
+  current synchronous code but before yielding to the browser" (e.g. how React batches updates).
+- **Avoid starvation**: don't recurse via microtasks for long-running work; use a macrotask
+  to allow rendering.
 
-## Checklist cho senior
+## Senior checklist
 
-- Giải thích đúng thứ tự sync → microtask (xả sạch) → render → 1 macrotask.
-- Biết `await` tạo microtask; biết hậu quả ordering.
-- Biết starvation và cách nhường luồng bằng macrotask.
-- Phân biệt `rAF` với micro/macro.
+- State the correct order: sync → microtasks (fully drained) → render → one macrotask.
+- Know `await` schedules a microtask, and the ordering consequences.
+- Know starvation and how to yield via a macrotask.
+- Distinguish `rAF` from micro/macro.
 
 ## References
 

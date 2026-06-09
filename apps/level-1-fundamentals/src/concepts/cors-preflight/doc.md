@@ -1,94 +1,100 @@
 # CORS preflight
 
-## Bối cảnh: Same-Origin Policy
+## Background: the Same-Origin Policy
 
-Trình duyệt mặc định chặn JS đọc **response** từ origin khác (khác scheme/host/port). **CORS**
-(Cross-Origin Resource Sharing) là cơ chế để **server** chủ động cho phép origin khác đọc
-response, thông qua các header `Access-Control-*`.
+By default the browser blocks JS from reading a **response** from a different origin
+(different scheme/host/port). **CORS** (Cross-Origin Resource Sharing) is the mechanism by
+which the **server** explicitly allows another origin to read a response, via
+`Access-Control-*` headers.
 
-> Lưu ý: CORS bảo vệ ở tầng **đọc response bằng JS**. Request vẫn có thể được gửi đi (với
-> "simple request"); cái bị chặn là việc JS đọc kết quả nếu server không cho phép.
+> Note: CORS protects at the level of **JS reading the response**. The request may still be
+> sent (for "simple requests"); what's blocked is JS reading the result if the server doesn't
+> allow it.
 
-## Simple request vs Preflighted request
+## Simple request vs preflighted request
 
-Trình duyệt chia request cross-origin làm hai nhóm:
+The browser divides cross-origin requests into two groups:
 
-### "Simple request" — KHÔNG preflight
-Gửi thẳng, kèm header `Origin`. Điều kiện (phải thoả **tất cả**):
+### "Simple request" — NO preflight
+Sent directly, with an `Origin` header. Conditions (must satisfy **all**):
 
 - Method ∈ { `GET`, `HEAD`, `POST` }.
-- Chỉ dùng các header "an toàn" do tác giả set: `Accept`, `Accept-Language`,
-  `Content-Language`, `Content-Type`, `Range` (và vài header CORS-safelisted, có giới hạn giá trị).
+- Only "safe" author-set headers: `Accept`, `Accept-Language`, `Content-Language`,
+  `Content-Type`, `Range` (and a few CORS-safelisted headers, with value restrictions).
 - `Content-Type` ∈ { `application/x-www-form-urlencoded`, `multipart/form-data`, `text/plain` }.
-- Không gắn `ReadableStream` upload; không có event listener trên `XMLHttpRequestUpload`.
+- No `ReadableStream` upload; no event listeners on `XMLHttpRequestUpload`.
 
-### Preflighted request — CÓ preflight
-Nếu **không** thoả điều kiện trên (vd `PUT`/`DELETE`, header `Authorization` tuỳ biến,
-`Content-Type: application/json`, header `X-*`…), trình duyệt **tự động** gửi trước một request
-`OPTIONS` để "hỏi phép".
+### Preflighted request — HAS a preflight
+If the conditions above are **not** met (e.g. `PUT`/`DELETE`, a custom `Authorization` header,
+`Content-Type: application/json`, an `X-*` header…), the browser **automatically** sends an
+`OPTIONS` request first to "ask permission".
 
 ```
-JS gọi fetch(PUT, Content-Type: application/json, X-Token: ...)
+JS calls fetch(PUT, Content-Type: application/json, X-Token: ...)
         │
-        ▼  (trình duyệt tự gửi, JS không thấy)
+        ▼  (browser sends this; JS never sees it)
 OPTIONS /api  ───────────────▶  Server
   Origin: https://app.example
   Access-Control-Request-Method: PUT
   Access-Control-Request-Headers: content-type, x-token
-        ◀───────────────  Server trả lời preflight:
+        ◀───────────────  Server's preflight response:
   Access-Control-Allow-Origin: https://app.example
   Access-Control-Allow-Methods: PUT, POST, GET
   Access-Control-Allow-Headers: content-type, x-token
   Access-Control-Max-Age: 600
-        │  (nếu hợp lệ)
+        │  (if valid)
         ▼
-PUT /api  ───────────────────▶  Request THẬT mới được gửi
+PUT /api  ───────────────────▶  the REAL request is finally sent
 ```
 
-`json` body chính là lý do phổ biến nhất khiến API REST luôn có preflight: `Content-Type:
-application/json` không nằm trong danh sách safelist.
+A `json` body is the most common reason REST APIs always trigger a preflight:
+`Content-Type: application/json` isn't on the safelist.
 
-## Các header CORS quan trọng
+## Important CORS headers
 
-| Header (response) | Ý nghĩa |
+| Response header | Meaning |
 |---|---|
-| `Access-Control-Allow-Origin` | Origin được phép (`*` hoặc origin cụ thể) |
-| `Access-Control-Allow-Methods` | Method được phép (trả ở response preflight) |
-| `Access-Control-Allow-Headers` | Header tuỳ biến được phép |
-| `Access-Control-Allow-Credentials` | `true` nếu cho gửi cookie/credentials |
-| `Access-Control-Max-Age` | Cache kết quả preflight (giây) → đỡ phải OPTIONS lại |
-| `Access-Control-Expose-Headers` | Header response nào JS được phép đọc |
+| `Access-Control-Allow-Origin` | the allowed origin (`*` or a specific origin) |
+| `Access-Control-Allow-Methods` | allowed methods (returned on the preflight response) |
+| `Access-Control-Allow-Headers` | allowed custom headers |
+| `Access-Control-Allow-Credentials` | `true` if cookies/credentials are allowed |
+| `Access-Control-Max-Age` | cache the preflight result (seconds) → avoid re-OPTIONS |
+| `Access-Control-Expose-Headers` | which response headers JS is allowed to read |
 
-## Credentials (cookie) làm luật chặt hơn
+## Credentials (cookies) make the rules stricter
 
-Khi `fetch(url, { credentials: 'include' })`:
+With `fetch(url, { credentials: 'include' })`:
 
-- `Access-Control-Allow-Origin` **không được** là `*` — phải là origin cụ thể.
-- Phải có `Access-Control-Allow-Credentials: true`.
-- `Access-Control-Allow-Headers`/`Methods` cũng không được dùng `*` (wildcard bị bỏ qua khi
-  có credentials).
+- `Access-Control-Allow-Origin` **must not** be `*` — it must be a specific origin.
+- `Access-Control-Allow-Credentials: true` is required.
+- `Access-Control-Allow-Headers`/`Methods` can't use `*` either (wildcards are ignored when
+  credentials are present).
 
-## Tối ưu
+## Optimization
 
-- **`Access-Control-Max-Age`**: cache preflight để không phải OPTIONS mỗi lần (trình duyệt có
-  trần riêng, vd Chrome ~2 giờ).
-- **Tránh header/`Content-Type` không cần thiết** để giữ request ở dạng "simple" khi có thể.
-- **Gộp endpoint** để giảm số origin/preflight.
+- **`Access-Control-Max-Age`**: cache the preflight so you don't OPTIONS every time (browsers
+  have their own cap, e.g. Chrome ~2 hours).
+- **Avoid unnecessary headers/`Content-Type`** to keep a request "simple" when possible.
+- **Consolidate endpoints** to reduce the number of origins/preflights.
 
-## Cạm bẫy
+## Pitfalls
 
-- Tưởng `OPTIONS` là do code mình gửi — không, **trình duyệt tự gửi**.
-- Server quên xử lý `OPTIONS` → preflight fail → request thật không bao giờ chạy.
-- Lỗi CORS hiện ở Console nhưng **request vẫn tới server** (server vẫn xử lý!) — quan trọng
-  cho các thao tác side-effect: một POST "simple" vẫn chạy ở server dù JS không đọc được response.
-- `mode: 'no-cors'` → response **opaque**, không đọc được body/status; không phải cách "vượt CORS".
+- Thinking `OPTIONS` is sent by your code — it isn't, **the browser sends it**.
+- The server forgets to handle `OPTIONS` → the preflight fails → the real request never runs.
+- A CORS error shows in the Console but **the request still reached the server** (the server
+  still processed it!) — important for side-effecting operations: a "simple" POST still runs
+  on the server even if JS can't read the response.
+- `mode: 'no-cors'` → an **opaque** response, body/status unreadable; it's not a way to
+  "bypass CORS".
 
-## Checklist cho senior
+## Senior checklist
 
-- Đọc đúng điều kiện simple vs preflighted (đặc biệt `Content-Type: application/json`).
-- Biết preflight là OPTIONS do trình duyệt tự gửi, và các header trả lời cần thiết.
-- Hiểu ràng buộc khi `credentials: include` (không `*`).
-- Biết `Access-Control-Max-Age` để giảm preflight.
+- State the simple vs preflighted conditions correctly (especially `Content-Type:
+  application/json`).
+- Know the preflight is an OPTIONS the browser sends automatically, and the response headers it
+  needs.
+- Understand the constraints when `credentials: include` (no `*`).
+- Know `Access-Control-Max-Age` to reduce preflights.
 
 ## References
 

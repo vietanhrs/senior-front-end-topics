@@ -15,7 +15,7 @@ export function Demo() {
 
     queueMicrotask(() => {
       log('queueMicrotask', 'micro');
-      // microtask thêm microtask: vẫn được xả trong cùng vòng, trước macrotask
+      // a microtask scheduling a microtask: still drained this round, before any macrotask
       queueMicrotask(() => log('queueMicrotask (nested)', 'micro'));
     });
 
@@ -27,28 +27,28 @@ export function Demo() {
   function runAwait() {
     clear();
     const inner = async () => {
-      log('A: trước await (sync, chạy ngay khi gọi)', 'sync');
+      log('A: before await (sync, runs immediately on call)', 'sync');
       await Promise.resolve();
-      log('C: sau await (microtask)', 'micro');
-      log('D: tiếp tục trong cùng microtask', 'micro');
+      log('C: after await (microtask)', 'micro');
+      log('D: continues in the same microtask', 'micro');
     };
     void inner();
-    log('B: ngay sau lời gọi hàm async (sync)', 'sync');
+    log('B: right after the async call (sync)', 'sync');
   }
 
   return (
     <Stack gap="md">
-      <Callout kind="info" title="Cách đọc">
-        Số thứ tự bên trái là <b>trình tự thực thi thực tế</b>. Badge cho biết task thuộc loại
-        nào. Hãy dự đoán trước khi bấm.
+      <Callout kind="info" title="How to read this">
+        The number on the left is the <b>actual execution order</b>. The badge tells you which
+        kind of task it is. Predict before you click.
       </Callout>
 
       <DemoCard
-        title="Thử nghiệm thứ tự thực thi"
+        title="Execution-order experiments"
         right={
           <Group gap="xs">
             <Button size="xs" leftSection={<IconPlayerPlay size={14} />} onClick={runClassic}>
-              Ví dụ kinh điển
+              Classic example
             </Button>
             <Button size="xs" color="grape" leftSection={<IconPlayerPlay size={14} />} onClick={runAwait}>
               await = microtask
@@ -61,9 +61,9 @@ export function Demo() {
       >
         <Stack gap="sm">
           <div className="text-sm text-[var(--mantine-color-dimmed)]">
-            <b>Ví dụ kinh điển:</b> kỳ vọng 2 dòng sync → tất cả microtask (kể cả nested) →
-            cuối cùng setTimeout. <br />
-            <b>await:</b> dòng B (sync sau lời gọi) chạy trước C/D (sau await).
+            <b>Classic example:</b> expect both sync lines → all microtasks (including the nested
+            one) → finally setTimeout. <br />
+            <b>await:</b> line B (sync, after the call) runs before C/D (after the await).
           </div>
           <LogConsole logs={logs} />
         </Stack>

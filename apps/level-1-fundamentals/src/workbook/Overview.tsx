@@ -15,10 +15,10 @@ export function Overview() {
           {LEVEL.tagline}
         </Text>
         <Text>
-          Mỗi concept gồm 3 phần: <b>Lý thuyết</b> (markdown đủ sâu + references),{' '}
-          <b>Demo</b> tương tác để quan sát hành vi thật trong trình duyệt, và <b>Bài tập</b>{' '}
-          để bạn tự hoàn thiện/sửa/cải tiến code. Mở DevTools (Console, Network, Performance)
-          khi chạy demo để thấy rõ điều đang diễn ra.
+          Each concept has 3 parts: <b>Theory</b> (in-depth markdown + references), an
+          interactive <b>Demo</b> to observe real browser behavior, and an <b>Exercise</b> for
+          you to complete/fix/improve the code. Open DevTools (Console, Network, Performance)
+          while running a demo to see exactly what's happening.
         </Text>
       </Stack>
 

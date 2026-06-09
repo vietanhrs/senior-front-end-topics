@@ -21,25 +21,25 @@ export function Demo() {
 
   const serverHtml = `
     <div style="font-family:inherit">
-      <p style="margin:0 0 8px">Render từ server — token: <b>#${serverValue}</b></p>
+      <p style="margin:0 0 8px">Rendered by the server — token: <b>#${serverValue}</b></p>
       <button style="padding:6px 12px;border-radius:8px;border:1px solid #ccc;background:#f1f3f5">
-        Count: 0 (chưa tương tác được)
+        Count: 0 (not interactive yet)
       </button>
     </div>`;
 
   function hydrate() {
-    log('Browser hiển thị HTML tĩnh từ server (FCP) ✔', 'success');
-    log('Tải & parse client JS bundle…', 'sync');
+    log('Browser paints the static server HTML (FCP) ✔', 'success');
+    log('Downloading & parsing the client JS bundle…', 'sync');
     // Simulated client-side value at hydration time.
     const clientValue = mismatch ? Math.floor(Math.random() * 1000) : 42;
-    log(`React dựng lại Virtual DOM, so khớp với DOM có sẵn (token client #${clientValue})`, 'sync');
+    log(`React rebuilds the VDOM and matches it to existing DOM (client token #${clientValue})`, 'sync');
     if (mismatch && clientValue !== serverValue) {
       log(
-        `⚠ Hydration mismatch: server="#${serverValue}" ≠ client="#${clientValue}". React phải sửa DOM.`,
+        `⚠ Hydration mismatch: server="#${serverValue}" ≠ client="#${clientValue}". React must patch the DOM.`,
         'error',
       );
     }
-    log('Gắn event listeners → UI tương tác được (TTI) ✔', 'success');
+    log('Attaches event listeners → UI is interactive (TTI) ✔', 'success');
     setHydrated(true);
   }
 
@@ -51,23 +51,23 @@ export function Demo() {
 
   return (
     <Stack gap="md">
-      <Callout kind="info" title="Cách đọc demo">
-        Trước khi hydrate, nút bên dưới là HTML tĩnh — bấm <b>không</b> ăn. Sau khi hydrate,
-        đúng UI đó trở nên tương tác. Bật "Chế độ mismatch" để thấy lỗi khi giá trị render
-        không tất định giữa hai phía.
+      <Callout kind="info" title="How to read this demo">
+        Before hydration, the button below is static HTML — clicking does <b>nothing</b>. After
+        hydration, that same UI becomes interactive. Enable "Mismatch mode" to see the error
+        when the rendered value is non-deterministic across the two sides.
       </Callout>
 
       <DemoCard
-        title="Vòng đời SSR → Hydration"
+        title="SSR → Hydration lifecycle"
         right={
           <Badge color={hydrated ? 'teal' : 'orange'} variant="filled">
-            {hydrated ? 'Hydrated (interactive)' : 'Static HTML (chết)'}
+            {hydrated ? 'Hydrated (interactive)' : 'Static HTML (inert)'}
           </Badge>
         }
       >
         <Stack gap="md">
           <Switch
-            label="Chế độ mismatch (token render bằng giá trị ngẫu nhiên)"
+            label="Mismatch mode (render the token with a random value)"
             checked={mismatch}
             onChange={(e) => setMismatch(e.currentTarget.checked)}
             disabled={hydrated}
@@ -77,7 +77,7 @@ export function Demo() {
             {hydrated ? (
               <Stack gap={8}>
                 <Text>
-                  Render từ client — token: <b>#{serverValue}</b>
+                  Rendered by the client — token: <b>#{serverValue}</b>
                 </Text>
                 <Button
                   variant="filled"
@@ -85,7 +85,7 @@ export function Demo() {
                   onClick={() => setCount((c) => c + 1)}
                   w="fit-content"
                 >
-                  Count: {count} (đã tương tác được)
+                  Count: {count} (now interactive)
                 </Button>
               </Stack>
             ) : (

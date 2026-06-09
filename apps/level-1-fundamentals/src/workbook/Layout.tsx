@@ -57,7 +57,7 @@ export function Layout() {
           <NavLink
             component={RouterNavLink}
             to="/"
-            label="Tổng quan"
+            label="Overview"
             active={location.pathname === '/'}
             onClick={close}
           />
@@ -81,7 +81,7 @@ export function Layout() {
           ))}
 
           <Text size="xs" tt="uppercase" fw={700} c="dimmed" px="sm" mt="lg" mb={4}>
-            Roadmap (levels khác)
+            Roadmap (other levels)
           </Text>
           <Stack gap={2} px="xs" pb="md">
             {ROADMAP.filter((l) => l.status === 'planned').map((l) => (

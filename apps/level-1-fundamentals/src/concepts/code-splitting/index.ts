@@ -6,7 +6,7 @@ import { Exercise } from './Exercise';
 export const codeSplitting: ConceptModule = {
   slug: 'code-splitting',
   title: 'Code splitting strategies',
-  summary: 'Chia bundle theo route/component/vendor; lazy + Suspense + Error Boundary.',
+  summary: 'Split the bundle by route/component/vendor; lazy + Suspense + Error Boundary.',
   tags: ['Bundling', 'Performance', 'React'],
   doc,
   Demo,

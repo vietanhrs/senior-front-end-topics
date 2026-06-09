@@ -27,12 +27,12 @@ export function Demo() {
 
   return (
     <Stack gap="md">
-      <Callout kind="info" title="Bộ mô phỏng quyết định preflight">
-        Chỉnh request bên dưới và xem trình duyệt có phải gửi <code>OPTIONS</code> trước hay
-        không, kèm lý do và "wire trace" mô phỏng.
+      <Callout kind="info" title="Preflight decision simulator">
+        Tweak the request below and see whether the browser must send an <code>OPTIONS</code>
+        first, with the reasons and a simulated wire trace.
       </Callout>
 
-      <DemoCard title="Cấu hình request cross-origin">
+      <DemoCard title="Configure a cross-origin request">
         <Stack gap="md">
           <Group grow>
             <Select
@@ -51,7 +51,7 @@ export function Demo() {
 
           <div>
             <Text size="sm" fw={500} mb={4}>
-              Header tác giả tự set
+              Author-set request headers
             </Text>
             <Chip.Group multiple value={customHeaders} onChange={setCustomHeaders}>
               <Group gap="xs">
@@ -65,7 +65,7 @@ export function Demo() {
           </div>
 
           <Switch
-            label="credentials: 'include' (gửi cookie)"
+            label="credentials: 'include' (send cookies)"
             checked={credentials}
             onChange={(e) => setCredentials(e.currentTarget.checked)}
           />
@@ -78,13 +78,13 @@ export function Demo() {
         icon={verdict.needsPreflight ? <IconExclamationCircle size={18} /> : <IconCheck size={18} />}
         title={
           verdict.needsPreflight
-            ? 'CÓ preflight — trình duyệt gửi OPTIONS trước'
-            : 'Simple request — KHÔNG preflight'
+            ? 'PREFLIGHT — the browser sends OPTIONS first'
+            : 'Simple request — NO preflight'
         }
       >
         {verdict.needsPreflight ? (
           <Stack gap={4}>
-            <Text size="sm">Lý do:</Text>
+            <Text size="sm">Reasons:</Text>
             <ul className="ml-4 list-disc">
               {verdict.reasons.map((r) => (
                 <li key={r}>
@@ -94,15 +94,15 @@ export function Demo() {
             </ul>
           </Stack>
         ) : (
-          <Text size="sm">Thoả mọi điều kiện simple request → gửi thẳng kèm header Origin.</Text>
+          <Text size="sm">Satisfies all simple-request conditions → sent directly with an Origin header.</Text>
         )}
       </Alert>
 
-      <DemoCard title="Wire trace (mô phỏng)">
+      <DemoCard title="Wire trace (simulated)">
         <Stack gap="xs">
           {verdict.needsPreflight && (
             <Code block>
-              {`▶ OPTIONS /api  (preflight — trình duyệt tự gửi)
+              {`▶ OPTIONS /api  (preflight — sent by the browser)
    Origin: ${origin}
    Access-Control-Request-Method: ${method}
    Access-Control-Request-Headers: ${[contentType !== 'text/plain' ? 'content-type' : '', ...customHeaders.map((h) => h.toLowerCase())]
@@ -117,14 +117,14 @@ export function Demo() {
             </Code>
           )}
           <Code block>
-            {`▶ ${method} /api  (request THẬT)
+            {`▶ ${method} /api  (the REAL request)
    Origin: ${origin}${credentials ? '\n   Cookie: session=…' : ''}${contentType !== 'text/plain' ? `\n   Content-Type: ${contentType}` : ''}
 
 ◀ 200  Access-Control-Allow-Origin: ${credentials ? origin : '*'}${credentials ? '\n       Access-Control-Allow-Credentials: true' : ''}`}
           </Code>
           {credentials && (
             <Badge color="red" variant="light">
-              Khi credentials=include: Allow-Origin KHÔNG được là "*", phải là {origin}
+              With credentials=include: Allow-Origin must NOT be "*", it must be {origin}
             </Badge>
           )}
         </Stack>

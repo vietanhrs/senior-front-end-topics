@@ -2,8 +2,8 @@ import { Stack } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
 import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
 
-const buggy = `// Predicate này quyết định request có cần preflight không.
-// Có 3 lỗi khiến nó phân loại SAI. Hãy tìm và sửa.
+const buggy = `// This predicate decides whether a request needs a preflight.
+// It has 3 bugs that misclassify requests. Find and fix them.
 function isSimpleRequest({ method, contentType, headers }) {
   const simpleMethods = ['GET', 'POST'];            // (1)
   const safelistCT = ['application/json'];          // (2)
@@ -11,7 +11,7 @@ function isSimpleRequest({ method, contentType, headers }) {
 
   if (!simpleMethods.includes(method)) return false;
   if (!safelistCT.includes(contentType)) return false;
-  // (3) so sánh phân biệt hoa thường
+  // (3) case-sensitive comparison
   if (headers.some((h) => !safeHeaders.includes(h))) return false;
   return true;
 }`;
@@ -20,24 +20,24 @@ export function Exercise() {
   return (
     <Stack gap="md">
       <DemoCard
-        title="Bài tập: sửa predicate phân loại simple vs preflight"
-        description="Hàm dưới có 3 lỗi làm phân loại sai (đặc biệt với application/json và HEAD). Hãy tìm và sửa."
+        title="Exercise: fix the simple-vs-preflight predicate"
+        description="The function below has 3 bugs that misclassify requests (especially application/json and HEAD). Find and fix them."
       >
         <CodeHighlight code={buggy} language="js" radius="md" />
       </DemoCard>
 
-      <Callout kind="tip" title="Gợi ý">
-        (1) Còn thiếu method nào trong nhóm simple? (2) <code>application/json</code> có thực
-        sự safelisted không? (3) Tên header HTTP không phân biệt hoa/thường.
+      <Callout kind="tip" title="Hint">
+        (1) Which method is missing from the simple group? (2) Is <code>application/json</code>
+        really safelisted? (3) HTTP header names are case-insensitive.
       </Callout>
 
       <SolutionReveal
         language="js"
-        notes="Ba lỗi: thiếu HEAD; application/json KHÔNG safelisted (đảo ngược ý nghĩa danh sách); cần so sánh lowercase."
+        notes="Three bugs: HEAD is missing; application/json is NOT safelisted (the list's meaning was inverted); the comparison must be lowercased."
         code={`function isSimpleRequest({ method, contentType, headers }) {
-  const simpleMethods = ['GET', 'HEAD', 'POST'];          // (1) thêm HEAD
+  const simpleMethods = ['GET', 'HEAD', 'POST'];          // (1) add HEAD
 
-  // (2) đây là các Content-Type ĐƯỢC safelist; json KHÔNG nằm trong đó
+  // (2) these are the SAFELISTED Content-Types; json is NOT one of them
   const safelistCT = [
     'application/x-www-form-urlencoded',
     'multipart/form-data',
@@ -49,14 +49,14 @@ export function Exercise() {
   if (!simpleMethods.includes(method.toUpperCase())) return false;
   if (!safelistCT.includes(contentType)) return false;
 
-  // (3) chuẩn hoá lowercase trước khi so sánh
+  // (3) normalize to lowercase before comparing
   if (headers.some((h) => !safeHeaders.includes(h.toLowerCase()))) return false;
 
   return true;
 }
 
-// Hệ quả: fetch(PUT|DELETE), hay POST với Content-Type: application/json,
-// hay có header Authorization -> đều CẦN preflight.`}
+// Consequence: fetch(PUT|DELETE), or POST with Content-Type: application/json,
+// or an Authorization header -> all NEED a preflight.`}
       />
     </Stack>
   );

@@ -3,44 +3,44 @@ import { Badge, Group, Stack, Text } from '@mantine/core';
 import { Callout, DemoCard, SolutionReveal } from '../../workbook/ui';
 
 /**
- * BUGGY component (mô phỏng): hiển thị thời gian hiện tại NGAY trong lúc render.
- * Trong SSR thật, server và client sẽ tính ra giá trị khác nhau → hydration
- * mismatch. Nhiệm vụ: làm cho lần render đầu tất định, cập nhật sau khi mount.
+ * BUGGY component (simulated): renders the current time directly during render.
+ * In real SSR the server and client would compute different values → hydration
+ * mismatch. Task: make the first render deterministic, then update after mount.
  */
 function GreetingBuggy() {
-  // ❌ Chạy khi render: ở SSR giá trị này khác giữa server và client
+  // ❌ Runs during render: under SSR this value differs between server & client
   const now = new Date().toLocaleTimeString();
-  return <Text>Xin chào! Bây giờ là {now}.</Text>;
+  return <Text>Hello! It's {now} right now.</Text>;
 }
 
-/** Một cách giải đúng để bạn so sánh sau khi tự làm. */
+/** One correct solution, shown so you can compare after trying it yourself. */
 function GreetingFixed() {
   const [now, setNow] = useState<string | null>(null);
   useEffect(() => {
-    setNow(new Date().toLocaleTimeString()); // chỉ ở client, SAU hydration
+    setNow(new Date().toLocaleTimeString()); // client only, AFTER hydration
   }, []);
-  return <Text>Xin chào! Bây giờ là {now ?? '…'}.</Text>;
+  return <Text>Hello! It's {now ?? '…'} right now.</Text>;
 }
 
 const solution = `function Greeting() {
-  // Lần render đầu trả về giá trị KHỚP với server (placeholder).
+  // The first render returns a value that MATCHES the server (placeholder).
   const [now, setNow] = useState<string | null>(null);
 
-  // useEffect không chạy khi SSR và chạy SAU hydration ở client,
-  // nên không gây mismatch.
+  // useEffect doesn't run during SSR and runs AFTER hydration on the client,
+  // so it can't cause a mismatch.
   useEffect(() => {
     setNow(new Date().toLocaleTimeString());
   }, []);
 
-  return <Text>Xin chào! Bây giờ là {now ?? '…'}.</Text>;
+  return <Text>Hello! It's {now ?? '…'} right now.</Text>;
 }`;
 
 export function Exercise() {
   return (
     <Stack gap="md">
       <DemoCard
-        title="Bài tập: dập tắt hydration mismatch"
-        description="Component dưới render time trực tiếp khi render → không tất định. Hãy sửa để lần render đầu khớp server, rồi cập nhật sau khi mount bằng useEffect."
+        title="Exercise: kill the hydration mismatch"
+        description="The component below renders the time directly during render → non-deterministic. Fix it so the first render matches the server, then update after mount with useEffect."
       >
         <Stack gap="sm">
           <Group>
@@ -58,9 +58,9 @@ export function Exercise() {
         </Stack>
       </DemoCard>
 
-      <Callout kind="tip" title="Gợi ý">
-        Mọi giá trị browser-only hoặc thay đổi theo thời gian/locale phải được đưa vào{' '}
-        <code>useEffect</code> (chạy sau hydration), không phải tính trực tiếp khi render.
+      <Callout kind="tip" title="Hint">
+        Any browser-only value, or one that changes with time/locale, must go inside{' '}
+        <code>useEffect</code> (which runs after hydration), not be computed directly during render.
       </Callout>
 
       <SolutionReveal code={solution} />

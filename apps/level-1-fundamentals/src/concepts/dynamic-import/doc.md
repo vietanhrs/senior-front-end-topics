@@ -1,86 +1,88 @@
 # Dynamic import & chunking
 
-## `import()` — câu lệnh, không phải khai báo
+## `import()` — an expression, not a declaration
 
-`import ... from '...'` (tĩnh) được phân giải lúc **build**: bundler theo đồ thị phụ thuộc
-và gộp vào chunk. `import('...')` (động) là một **biểu thức trả về Promise**, phân giải lúc
-**runtime**:
+`import ... from '...'` (static) is resolved at **build time**: the bundler follows the
+dependency graph and packs it into a chunk. `import('...')` (dynamic) is an **expression that
+returns a Promise**, resolved at **runtime**:
 
 ```ts
 const mod = await import('./pack.js'); // Promise<Module namespace>
 mod.doSomething();
 ```
 
-Vì là biểu thức, bạn có thể gọi nó có điều kiện, trong event handler, theo biến — điều mà
-import tĩnh không làm được.
+Because it's an expression, you can call it conditionally, inside an event handler, or with a
+variable — things static imports can't do.
 
-## Bundler tạo chunk như thế nào
+## How the bundler creates chunks
 
-Khi bundler (Vite/Rollup/webpack) thấy `import('X')`, nó cắt X (và phần phụ thuộc *chỉ* X cần)
-thành một **chunk riêng**, kèm cơ chế tải runtime. Vài điểm cốt lõi:
+When the bundler (Vite/Rollup/webpack) sees `import('X')`, it splits X (and the dependencies
+*only* X needs) into a separate **chunk**, with a runtime loading mechanism. Key points:
 
-- **Module được cache theo specifier**: gọi `import('./pack')` nhiều lần chỉ **tải mạng một
-  lần**; các lần sau trả về cùng module đã nằm trong bộ nhớ (Promise resolve ngay).
-- **Phụ thuộc chung được tách (shared chunk)**: nếu hai chunk động cùng dùng `lodash`, bundler
-  thường tách `lodash` ra chunk chung để không lặp lại.
-- **Tên/đường dẫn chunk có hash nội dung** để cache-busting (`pack.a1b2c3.js`).
+- **Modules are cached by specifier**: calling `import('./pack')` multiple times hits the
+  network **only once**; subsequent calls return the already-loaded module (the Promise
+  resolves instantly).
+- **Shared dependencies are split out (shared chunk)**: if two dynamic chunks both use
+  `lodash`, the bundler typically extracts `lodash` into a shared chunk to avoid duplication.
+- **Chunk names/paths get a content hash** for cache-busting (`pack.a1b2c3.js`).
 
-## Chỉ dẫn cho bundler (magic comments)
+## Hints for the bundler (magic comments)
 
-Trình bundler hỗ trợ "magic comments" để điều khiển chunk:
+Bundlers support "magic comments" to control chunking:
 
 ```ts
 // webpack
 import(/* webpackChunkName: "editor" */ /* webpackPrefetch: true */ './Editor');
 ```
 
-Vite dùng cú pháp riêng và `rollupOptions.output.manualChunks` / `build.rollupOptions` để
-gom chunk; cũng có `import.meta.glob` để import động hàng loạt:
+Vite has its own approach and uses `rollupOptions.output.manualChunks` / `build.rollupOptions`
+to group chunks; it also has `import.meta.glob` for bulk dynamic imports:
 
 ```ts
-// Vite: gom nhiều file thành map các loader động
+// Vite: build a map of dynamic loaders from many files
 const pages = import.meta.glob('./pages/*.tsx'); // { './pages/a.tsx': () => import(...) }
 ```
 
-## Phân biệt với "Code splitting"
+## How it differs from "Code splitting"
 
-- **Code splitting** là *chiến lược* (chia ở route/component/vendor) — concept trước.
-- **Dynamic import chunking** là *cơ chế* tạo nên việc đó: cú pháp `import()`, cách bundler
-  cắt & cache chunk, cách kiểm soát tên/preload.
+- **Code splitting** is the *strategy* (split at route/component/vendor) — the previous concept.
+- **Dynamic import chunking** is the *mechanism* behind it: the `import()` syntax, how the
+  bundler cuts & caches chunks, and how to control naming/preloading.
 
-## Cạm bẫy thực chiến
+## Practical pitfalls
 
-- **Không thể tree-shake import động theo biến hoàn toàn**: `import(\`./locale/\${name}.js\`)`
-  buộc bundler đóng gói *mọi* file khớp pattern thành chunk lẻ. Cẩn thận với glob động quá rộng.
-- **Waterfall**: `await import(A)` rồi bên trong mới `await import(B)` → tuần tự. Nếu biết
-  trước, hãy `Promise.all([import(A), import(B)])` hoặc prefetch song song.
-- **Xử lý lỗi tải**: chunk có thể 404 sau deploy (file đổi hash). Bọc `try/catch` quanh
-  `await import()` (hoặc Error Boundary với `React.lazy`) và cho phép reload.
-- **Race khi gọi nhiều lần**: gọi `import()` đồng thời nhiều lần là an toàn (cùng Promise),
-  nhưng nếu bạn tự cache loader, hãy cache **Promise**, đừng để hai lần fetch song song.
+- **You can't fully tree-shake a variable-based dynamic import**:
+  `import(\`./locale/\${name}.js\`)` forces the bundler to package *every* file matching the
+  pattern as separate chunks. Be careful with overly broad dynamic globs.
+- **Waterfall**: `await import(A)` then inside it `await import(B)` → sequential. If you know
+  ahead of time, `Promise.all([import(A), import(B)])` or prefetch in parallel.
+- **Handle load failures**: a chunk can 404 after a deploy (the file's hash changed). Wrap
+  `await import()` in `try/catch` (or use an Error Boundary with `React.lazy`) and allow reload.
+- **Race on concurrent calls**: calling `import()` concurrently many times is safe (same
+  Promise), but if you cache the loader yourself, cache the **Promise**, not two parallel fetches.
 
-## Prefetch chủ động
+## Proactive prefetching
 
-Tải trước chunk khi rảnh hoặc khi người dùng có ý định (hover), để click là sẵn sàng:
+Preload a chunk when idle or when the user shows intent (hover), so a click is instant:
 
 ```ts
-// chỉ kích hoạt việc tải, không cần dùng kết quả
+// just trigger the load, no need to use the result
 const prefetch = () => { void import('./Editor'); };
 button.addEventListener('mouseenter', prefetch);
-// hoặc khi nhàn rỗi:
+// or when idle:
 requestIdleCallback(() => void import('./Editor'));
 ```
 
-## Checklist cho senior
+## Senior checklist
 
-- Hiểu `import()` là biểu thức trả Promise, phân giải runtime.
-- Biết module được cache theo specifier (gọi nhiều lần, tải một lần).
-- Biết cách tránh waterfall (`Promise.all`) và cách prefetch.
-- Cẩn trọng với glob động làm phình số chunk.
+- Understand `import()` is an expression returning a Promise, resolved at runtime.
+- Know modules are cached by specifier (call many times, load once).
+- Know how to avoid waterfalls (`Promise.all`) and how to prefetch.
+- Be cautious with dynamic globs that explode the chunk count.
 
 ## References
 
 - [MDN: Dynamic import()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import)
 - [Vite: Glob Import](https://vitejs.dev/guide/features.html#glob-import)
 - [webpack: import() & magic comments](https://webpack.js.org/api/module-methods/#magic-comments)
-- [web.dev: Preload critical chunks / prefetch](https://web.dev/articles/route-prefetching-in-nextjs)
+- [web.dev: route prefetching](https://web.dev/articles/route-prefetching-in-nextjs)

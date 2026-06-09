@@ -6,7 +6,7 @@ import { Exercise } from './Exercise';
 export const eventLoop: ConceptModule = {
   slug: 'event-loop',
   title: 'Event loop (macro vs microtasks)',
-  summary: 'Sync → xả sạch microtask → render → 1 macrotask. await là microtask.',
+  summary: 'Sync → drain microtasks → render → one macrotask. await is a microtask.',
   tags: ['Runtime', 'Async', 'Performance'],
   doc,
   Demo,

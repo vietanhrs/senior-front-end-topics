@@ -1,83 +1,85 @@
 # Virtual DOM diffing complexity
 
-## Vấn đề gốc
+## The root problem
 
-So sánh hai cây (tree) bất kỳ để tìm số phép biến đổi tối thiểu là bài toán có độ
-phức tạp **O(n³)** (n = số node). Với UI hàng nghìn node, điều này là bất khả thi mỗi
-lần render. Vì vậy React (và các framework Virtual DOM khác) **không giải bài toán tổng
-quát** — chúng dùng **heuristics** để hạ xuống **O(n)**.
+Comparing two arbitrary trees to find the minimum set of transformations is an **O(n³)**
+problem (n = number of nodes). For UIs with thousands of nodes this is infeasible on every
+render. So React (and other Virtual DOM frameworks) **don't solve the general problem** —
+they use **heuristics** to bring it down to **O(n)**.
 
-## Hai giả định (heuristics) của React
+## React's two heuristics
 
-React giảm độ phức tạp bằng hai giả định thực dụng:
+React reduces the complexity with two pragmatic assumptions:
 
-1. **Hai element khác `type` → vứt bỏ cả subtree, dựng lại từ đầu.**
-   `<div>` đổi thành `<span>`, hay `<Counter>` đổi thành `<Profile>` → React unmount toàn
-   bộ cây con cũ (mất hết state) và mount cây mới. Nó **không** cố "di chuyển" node giữa
-   các type khác nhau.
+1. **Two elements of different `type` → throw away the whole subtree and rebuild it.**
+   A `<div>` becoming a `<span>`, or `<Counter>` becoming `<Profile>` → React unmounts the
+   entire old subtree (losing all state) and mounts the new one. It does **not** try to
+   "move" nodes between different types.
 
-2. **Với danh sách con, dùng `key` để nhận diện element qua các lần render.**
-   `key` nói cho React biết "element này vẫn là element kia, chỉ đổi vị trí/props" — nhờ đó
-   React **di chuyển** DOM thay vì huỷ + tạo lại.
+2. **For lists of children, use `key` to identify elements across renders.**
+   A `key` tells React "this is still the same element, just moved/with new props", letting
+   React **move** the DOM instead of destroying + recreating it.
 
 ```
-Diff tổng quát:  O(n³)   ❌ quá đắt
-React heuristic: O(n)    ✔ nhờ 2 giả định trên
+General diff:    O(n³)   ❌ too expensive
+React heuristic: O(n)    ✔ thanks to the two assumptions above
 ```
 
-## Tại sao `key` quan trọng đến vậy
+## Why `key` matters so much
 
-Khi render danh sách, React duyệt song song con cũ và con mới theo `key`:
+When rendering a list, React walks old and new children in parallel by `key`:
 
-- `key` trùng → **giữ** instance, chỉ cập nhật props (giữ nguyên DOM, state, focus, scroll).
-- `key` mới → **tạo** instance mới.
-- `key` biến mất → **huỷ** instance cũ.
+- matching `key` → **keep** the instance, only update props (preserves DOM, state, focus, scroll).
+- new `key` → **create** a new instance.
+- disappearing `key` → **destroy** the old instance.
 
-### Dùng `index` làm key — cái bẫy kinh điển
+### Using `index` as the key — the classic trap
 
 ```tsx
 {items.map((item, i) => <Row key={i} item={item} />)} // ❌
 ```
 
-Khi bạn **chèn/xoá/sắp xếp lại** danh sách, `index` của mỗi phần tử thay đổi. React tưởng
-"phần tử ở vị trí 0 vẫn là phần tử cũ" trong khi item đã khác → **state/DOM bị gắn nhầm**:
+When you **insert/remove/reorder** the list, each element's `index` changes. React thinks
+"the element at position 0 is still the old one" while the item is actually different →
+**state/DOM gets attached to the wrong row**:
 
-- Giá trị `input` đang gõ nhảy sang dòng khác.
-- Checkbox tick nhầm item.
-- Animation/giật, focus mất.
+- The text in an `<input>` jumps to a different row.
+- A checkbox ticks the wrong item.
+- Animations glitch, focus is lost.
 
-Chỉ an toàn dùng `index` khi danh sách **tĩnh** (không reorder, không thêm/bớt ở giữa).
+`index` is only safe when the list is **static** (no reorder, no insert/remove in the middle).
 
-### Dùng key ổn định, duy nhất
+### Use a stable, unique key
 
 ```tsx
 {items.map((item) => <Row key={item.id} item={item} />)} // ✔
 ```
 
-`key` phải **ổn định** (không đổi giữa các render), **duy nhất giữa anh em** (không cần
-duy nhất toàn cục). Đừng dùng `Math.random()` làm key — mỗi render ra key mới → React huỷ
-+ tạo lại toàn bộ, giết sạch hiệu năng và state.
+A `key` must be **stable** (unchanged across renders) and **unique among siblings** (it
+doesn't need to be globally unique). Don't use `Math.random()` as a key — each render produces
+a new key → React destroys + recreates everything, killing both performance and state.
 
-## Diffing hoạt động theo từng mức (level-by-level)
+## Diffing works level-by-level
 
-React diff theo **breadth-first theo từng cấp**, không cố tìm node giống nhau ở cấp khác.
-Đó là lý do "nhấc" một node lên cấp cha khác sẽ làm nó bị remount. Cấu trúc cây ổn định
-→ diff rẻ.
+React diffs **breadth-first, one level at a time**; it does not try to find matching nodes
+across different levels. That's why "lifting" a node to a different parent makes it remount.
+A stable tree structure → cheap diffs.
 
-## Liên hệ độ phức tạp
+## Complexity at a glance
 
-| Thao tác | Không key đúng | Có key đúng |
+| Operation | Without proper keys | With proper keys |
 |---|---|---|
-| Chèn 1 item đầu list (n phần tử) | cập nhật ~n node | chèn 1 node |
-| Reorder | sai state + nhiều mutation | move, giữ state |
-| Đổi type root | rebuild subtree | rebuild subtree (không tránh được) |
+| Insert 1 item at the head (n items) | updates ~n nodes | inserts 1 node |
+| Reorder | wrong state + many mutations | move, state preserved |
+| Change root `type` | rebuild subtree | rebuild subtree (unavoidable) |
 
-## Checklist cho senior
+## Senior checklist
 
-- Nắm vì sao O(n³) → O(n): hai giả định type & key.
-- `key` ổn định + duy nhất giữa siblings; **không** dùng index khi list động; **không** dùng random.
-- Đổi `type` = mất state subtree (đôi khi cố ý dùng để reset state bằng cách đổi `key`).
-- Reconciliation chi tiết (Fiber, double buffering) sẽ học ở Level 2.
+- Explain why O(n³) → O(n): the type & key assumptions.
+- Keys: stable + unique among siblings; **never** index for dynamic lists; **never** random.
+- Changing `type` = losing subtree state (sometimes used intentionally to reset state by
+  changing `key`).
+- Reconciliation internals (Fiber, double buffering) come in Level 2.
 
 ## References
 

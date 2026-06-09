@@ -28,8 +28,7 @@ function Row({ item }: { item: Item }) {
       </Badge>
       <TextInput
         size="xs"
-        placeholder={`Ghi chú cho ${item.fruit}…`}
-        className="flex-1"
+        placeholder={`Note for ${item.fruit}…`}
         styles={{ root: { flex: 1 } }}
       />
     </Group>
@@ -45,23 +44,24 @@ export function Demo() {
 
   return (
     <Stack gap="md">
-      <Callout kind="info" title="Cách quan sát">
-        Gõ ghi chú vào vài ô input, rồi bấm <b>Reverse</b>. Với <code>key=index</code>, ghi
-        chú <b>dính theo vị trí</b> (gắn nhầm trái cây). Với <code>key=id</code>, ghi chú{' '}
-        <b>đi theo đúng item</b>. Đây chính là hệ quả của heuristic dùng key khi diffing.
+      <Callout kind="info" title="What to observe">
+        Type a note into a few inputs, then click <b>Reverse</b>. With <code>key=index</code>,
+        notes <b>stick to the position</b> (attached to the wrong fruit). With{' '}
+        <code>key=id</code>, notes <b>follow the right item</b>. This is the direct consequence
+        of the key heuristic during diffing.
       </Callout>
 
       <SegmentedControl
         value={keyMode}
         onChange={(v) => setKeyMode(v as 'index' | 'id')}
         data={[
-          { label: 'key = index (❌ bẫy)', value: 'index' },
-          { label: 'key = item.id (✔ đúng)', value: 'id' },
+          { label: 'key = index (❌ trap)', value: 'index' },
+          { label: 'key = item.id (✔ correct)', value: 'id' },
         ]}
       />
 
       <DemoCard
-        title="Danh sách có state cục bộ"
+        title="A list with local state"
         right={
           <Group gap="xs">
             <Button
@@ -90,7 +90,7 @@ export function Demo() {
           </Stack>
         </Paper>
         <Text size="xs" c="dimmed" mt="sm">
-          Thứ tự hiện tại: {items.map((i) => i.id).join(' → ')}
+          Current order: {items.map((i) => i.id).join(' → ')}
         </Text>
       </DemoCard>
     </Stack>

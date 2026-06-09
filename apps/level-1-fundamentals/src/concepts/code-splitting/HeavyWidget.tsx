@@ -12,10 +12,10 @@ export default function HeavyWidget() {
   return (
     <Paper withBorder radius="md" p="md" bg="var(--mantine-color-default-hover)">
       <Stack gap="xs">
-        <Title order={5}>📊 Heavy widget đã tải xong (chunk riêng)</Title>
+        <Title order={5}>📊 Heavy widget loaded (separate chunk)</Title>
         <Text size="sm" c="dimmed">
-          Component này chỉ được tải khi bạn yêu cầu. Trong Network tab bạn sẽ thấy một file
-          chunk <code>.js</code> mới xuất hiện ở lần đầu mở.
+          This component is loaded only when you ask for it. In the Network tab you'll see a new{' '}
+          <code>.js</code> chunk appear the first time it opens.
         </Text>
         <div className="flex h-24 items-end gap-1">
           {bars.map((h, i) => (

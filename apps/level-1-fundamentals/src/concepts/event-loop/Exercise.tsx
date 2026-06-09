@@ -9,7 +9,7 @@ setTimeout(() => console.log('2'), 0);
 
 Promise.resolve().then(() => {
   console.log('3');
-  // microtask này SINH RA một microtask khác
+  // this microtask SCHEDULES another microtask
   Promise.resolve().then(() => console.log('4'));
 });
 
@@ -35,43 +35,44 @@ export function Exercise() {
   return (
     <Stack gap="md">
       <DemoCard
-        title="Bài tập: dự đoán thứ tự in"
-        description="Viết ra thứ tự bạn nghĩ các số sẽ được in. Bấm Run để đối chiếu, rồi mở lời giải. Câu hỏi mấu chốt: microtask (4) sinh ra trong lúc xả queue sẽ chạy trước hay sau (5)? Và trước hay sau macrotask (2)?"
+        title="Exercise: predict the print order"
+        description="Write down the order you think the numbers print in. Click Run to compare, then open the solution. Key question: does microtask (4), scheduled while draining, run before or after (5)? And before or after macrotask (2)?"
       >
         <Stack gap="sm">
           <CodeHighlight code={snippet} language="js" radius="md" />
           <Button size="xs" leftSection={<IconPlayerPlay size={14} />} onClick={run} w="fit-content">
-            Run & đối chiếu
+            Run & compare
           </Button>
           <LogConsole logs={logs} height={200} />
         </Stack>
       </DemoCard>
 
-      <Callout kind="tip" title="Gợi ý">
-        Microtask queue được <b>xả sạch</b> trước khi tới macrotask — kể cả những microtask
-        được thêm vào <i>trong lúc</i> đang xả. Nhưng chúng được xếp vào <b>cuối</b> queue hiện tại.
+      <Callout kind="tip" title="Hint">
+        The microtask queue is <b>fully drained</b> before reaching a macrotask — including
+        microtasks added <i>while</i> draining. But those are pushed to the <b>end</b> of the
+        current queue.
       </Callout>
 
       <SolutionReveal
         language="text"
-        notes="Thứ tự đúng: 1 → 6 → 3 → 5 → 4 → 2"
-        code={`Pha đồng bộ:
+        notes="Correct order: 1 → 6 → 3 → 5 → 4 → 2"
+        code={`Synchronous phase:
   1  console.log('1')
-  6  console.log('6')   // setTimeout & các .then chỉ ĐĂNG KÝ, chưa chạy
+  6  console.log('6')   // setTimeout & the .then's only REGISTER, don't run yet
 
-Xả microtask queue. Lúc bắt đầu xả, queue = [A→3, B→5]:
-  3  chạy callback A. Trong lúc chạy, nó ĐĂNG KÝ thêm microtask C→4,
-     C được đẩy vào CUỐI queue: queue = [B→5, C→4]
-  5  chạy callback B (đã có sẵn từ đầu, đứng trước C)
-  4  chạy callback C (microtask mới sinh ra, vẫn được xả trong cùng vòng)
-     -> queue rỗng
+Drain the microtask queue. At the start, queue = [A→3, B→5]:
+  3  runs callback A. While running, it REGISTERS another microtask C→4,
+     which is pushed to the END of the queue: queue = [B→5, C→4]
+  5  runs callback B (already there from the start, ahead of C)
+  4  runs callback C (the newly-scheduled microtask, still drained this round)
+     -> queue empty
 
 Macrotask:
-  2  setTimeout(0) — chỉ chạy SAU khi microtask queue đã rỗng hoàn toàn
+  2  setTimeout(0) — only runs AFTER the microtask queue is completely empty
 
-=> Bài học: microtask mới luôn được xả hết trước khi tới macrotask kế tiếp.
-   Đây là cơ chế gây "microtask starvation": nếu cứ liên tục đẻ microtask,
-   (2) và cả việc render sẽ không bao giờ tới lượt.`}
+=> Lesson: newly-scheduled microtasks are always drained before the next
+   macrotask. This is the mechanism behind "microtask starvation": if you keep
+   spawning microtasks, (2) and even rendering never get their turn.`}
       />
     </Stack>
   );

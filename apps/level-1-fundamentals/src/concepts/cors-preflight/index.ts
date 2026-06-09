@@ -6,7 +6,7 @@ import { Exercise } from './Exercise';
 export const corsPreflight: ConceptModule = {
   slug: 'cors-preflight',
   title: 'CORS preflight',
-  summary: 'Khi nào trình duyệt tự gửi OPTIONS; simple vs preflighted; ràng buộc credentials.',
+  summary: 'When the browser auto-sends OPTIONS; simple vs preflighted; credentials constraints.',
   tags: ['Security', 'Network', 'HTTP'],
   doc,
   Demo,

@@ -6,7 +6,7 @@ import { Exercise } from './Exercise';
 export const workers: ConceptModule = {
   slug: 'workers',
   title: 'Web workers vs Service workers',
-  summary: 'Web Worker = tính toán off main thread; Service Worker = proxy mạng/offline/push.',
+  summary: 'Web Worker = compute off the main thread; Service Worker = network proxy/offline/push.',
   tags: ['Concurrency', 'PWA', 'Performance'],
   doc,
   Demo,

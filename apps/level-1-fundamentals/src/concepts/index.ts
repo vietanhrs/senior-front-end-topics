@@ -13,7 +13,7 @@ import { workers } from './workers';
 export const LEVEL: LevelMeta = {
   level: 1,
   title: 'Fundamentals',
-  tagline: 'Cơ bản nhưng không được mơ hồ',
+  tagline: 'Fundamentals you must not be fuzzy about',
   concepts: [
     hydration,
     vdomDiffing,

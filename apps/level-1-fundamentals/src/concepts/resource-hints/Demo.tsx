@@ -51,7 +51,7 @@ const RECIPES: { rel: string; label: string; build: () => HTMLLinkElement; snipp
   },
   {
     rel: 'prefetch',
-    label: 'prefetch (trang sau)',
+    label: 'prefetch (next page)',
     snippet: '<link rel="prefetch" as="script" href="/next-route-chunk.js">',
     build: () => {
       const l = document.createElement('link');
@@ -91,17 +91,17 @@ export function Demo() {
 
   return (
     <Stack gap="md">
-      <Callout kind="info" title="Cách quan sát">
-        Bấm để chèn <code>&lt;link&gt;</code> hint thật vào <code>&lt;head&gt;</code>. Mở
-        DevTools → Elements (xem thẻ vừa thêm) và Network (xem kết nối/tải sớm). Hint sẽ tự gỡ
-        khi bạn rời concept này.
+      <Callout kind="info" title="What to observe">
+        Click to inject a real <code>&lt;link&gt;</code> hint into <code>&lt;head&gt;</code>.
+        Open DevTools → Elements (see the new tag) and Network (see the early connection/fetch).
+        The hints are removed automatically when you leave this concept.
       </Callout>
 
       <DemoCard
-        title="Chèn resource hints vào <head>"
+        title="Inject resource hints into <head>"
         right={
           <Button size="xs" variant="default" leftSection={<IconTrash size={14} />} onClick={clearAll}>
-            Gỡ tất cả
+            Remove all
           </Button>
         }
       >
@@ -120,11 +120,11 @@ export function Demo() {
         </Group>
 
         <Text size="sm" fw={600} mt="md" mb={4}>
-          Đã chèn ({hints.length}):
+          Injected ({hints.length}):
         </Text>
         {hints.length === 0 ? (
           <Text size="sm" c="dimmed">
-            Chưa có hint nào.
+            No hints yet.
           </Text>
         ) : (
           <Stack gap={6}>
@@ -142,21 +142,21 @@ export function Demo() {
         )}
       </DemoCard>
 
-      <DemoCard title="Tra cứu: chọn hint nào?">
+      <DemoCard title="Reference: which hint to choose?">
         <Table withTableBorder withColumnBorders>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Tình huống</Table.Th>
-              <Table.Th>Hint đúng</Table.Th>
+              <Table.Th>Situation</Table.Th>
+              <Table.Th>Correct hint</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
             {[
-              ['Sẽ tải font/API từ origin bên thứ ba', 'preconnect (+ dns-prefetch fallback)'],
-              ['Font khai báo trong CSS, cần ngay', 'preload as=font crossorigin'],
-              ['Ảnh LCP phát hiện muộn (trong JS)', 'preload as=image + fetchpriority=high'],
-              ['Code của route người dùng có thể vào tiếp', 'prefetch'],
-              ['ES module JS critical', 'modulepreload'],
+              ['Will fetch a font/API from a third-party origin', 'preconnect (+ dns-prefetch fallback)'],
+              ['Font declared in CSS, needed immediately', 'preload as=font crossorigin'],
+              ['LCP image discovered late (in JS)', 'preload as=image + fetchpriority=high'],
+              ['Code for a route the user may visit next', 'prefetch'],
+              ['Critical JS ES module', 'modulepreload'],
             ].map(([s, h]) => (
               <Table.Tr key={s}>
                 <Table.Td>{s}</Table.Td>
