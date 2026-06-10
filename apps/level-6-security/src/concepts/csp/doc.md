@@ -53,15 +53,17 @@ Host allow-lists are notoriously bypassable (open redirects, JSONP endpoints, ou
 "trusted" CDN). Google's guidance is a **nonce + `strict-dynamic`** policy:
 
 ```
-script-src 'nonce-{random}' 'strict-dynamic' https: 'unsafe-eval';
+script-src 'nonce-{random}' 'strict-dynamic' https:;
 object-src 'none';
 base-uri 'none';
 ```
 
 - Every legit `<script>` gets the per-request nonce; injected scripts don't have it → blocked.
 - `strict-dynamic` lets your bundler/loader pull in further scripts without enumerating hosts.
-- `https:`/`'unsafe-eval'` are ignored by browsers that support `strict-dynamic` (they're fallbacks
-  for older browsers).
+- `https:` is ignored by browsers that support `strict-dynamic` (it's a fallback for older
+  browsers).
+- Do **not** keep `'unsafe-eval'` in a strict policy unless you have an explicit migration
+  exception: `strict-dynamic` does not disable eval.
 
 ## Rollout without breakage
 

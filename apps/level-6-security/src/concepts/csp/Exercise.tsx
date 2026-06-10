@@ -45,9 +45,9 @@ export function Exercise() {
 # Strict CSP, sent as an HTTP RESPONSE HEADER (server injects a fresh nonce per response):
 Content-Security-Policy:
   default-src 'self';
-  script-src 'nonce-{{RANDOM_PER_RESPONSE}}' 'strict-dynamic' https: 'unsafe-eval';
-      # ('https:' and 'unsafe-eval' are fallbacks IGNORED by browsers that honor strict-dynamic;
-      #  drop 'unsafe-eval' entirely once no dependency needs it)
+  script-src 'nonce-{{RANDOM_PER_RESPONSE}}' 'strict-dynamic' https:;
+      # ('https:' is a fallback IGNORED by browsers that honor strict-dynamic;
+      #  do not include 'unsafe-eval' unless you explicitly accept eval during migration)
   style-src 'self';                 # remove 'unsafe-inline'; use classes / nonced styles
   img-src 'self' https: data:;
   connect-src 'self' https://api.example.com;
