@@ -93,23 +93,19 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
             const id = String(lv.level);
             const isActive = activeLevelId === id;
             return (
-              // Clicking the group header navigates to the level overview;
-              // the group expands whenever its level is the active one.
-              <NavLink
-                key={id}
-                component={RouterNavLink}
-                to={`/${id}`}
-                label={
-                  <Text size="sm" fw={isActive ? 600 : 400}>
-                    L{lv.level} · {lv.title}
-                  </Text>
-                }
-                active={location.pathname === `/${id}`}
-                opened={isActive}
-                childrenOffset={14}
-                onClick={close}
-              >
-                {lv.concepts.map((c, i) => (
+              <Stack key={id} gap={0}>
+                <NavLink
+                  component={RouterNavLink}
+                  to={`/${id}`}
+                  label={
+                    <Text size="sm" fw={isActive ? 600 : 400}>
+                      L{lv.level} · {lv.title}
+                    </Text>
+                  }
+                  active={isActive}
+                  onClick={close}
+                />
+                {isActive && lv.concepts.map((c, i) => (
                   <NavLink
                     key={c.slug}
                     component={RouterNavLink}
@@ -126,7 +122,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                     }
                   />
                 ))}
-              </NavLink>
+              </Stack>
             );
           })}
 
