@@ -1,0 +1,21 @@
+/*
+ * CSS layer order matters when combining Mantine + Tailwind.
+ * Declare `mantine` BEFORE `tw-utils` so Tailwind utilities win specificity ties,
+ * and skip Tailwind's Preflight so it doesn't reset Mantine's styles.
+ */
+@layer mantine, tw-utils;
+
+@import '@mantine/core/styles.layer.css';
+@import '@mantine/code-highlight/styles.layer.css';
+
+@import 'tailwindcss/theme.css' layer(tw-utils);
+@import 'tailwindcss/utilities.css' layer(tw-utils);
+
+@source './**/*.{ts,tsx,html}';
+@source '../../../packages/workbook/src/**/*.{ts,tsx}';
+
+html,
+body,
+#root {
+  height: 100%;
+}
