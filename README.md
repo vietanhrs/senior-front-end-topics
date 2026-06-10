@@ -23,7 +23,9 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-3-browser-performance/ # ✅ Level 3 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-4-data-state/       # ✅ Level 4 SPA workbook (10 concepts)
+│   ├── level-4-data-state/       # ✅ Level 4 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── level-5-caching-networking/ # ✅ Level 5 SPA workbook (10 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -41,8 +43,9 @@ bun run dev           # run Level 1 (Vite dev server)
 bun run dev:l2        # run Level 2
 bun run dev:l3        # run Level 3
 bun run dev:l4        # run Level 4
+bun run dev:l5        # run Level 5
 # or directly:
-bun run --filter level-4-data-state dev
+bun run --filter level-5-caching-networking dev
 bun run --filter '*' build      # build everything
 ```
 
@@ -54,7 +57,7 @@ bun run --filter '*' build      # build everything
 | 2 | React Core & Rendering Mechanics | ✅ Done |
 | 3 | Browser Performance | ✅ Done |
 | 4 | Advanced Data & State management | ✅ Done |
-| 5 | Caching & Networking strategies | 🔜 |
+| 5 | Caching & Networking strategies | ✅ Done |
 | 6 | Security | 🔜 |
 | 7–10 | (to be added later) | 🔜 |
 
@@ -109,6 +112,19 @@ bun run --filter '*' build      # build everything
 8. **Optimistic UI rollback** — apply instantly, reconcile with the server, roll back on failure.
 9. **Deterministic rendering** — same inputs → same output; no random/now/unstable sorts in render.
 10. **Idempotent UI actions** — safe to repeat; client guards + idempotency keys.
+
+### Level 5 — Caching & Networking (10 concepts)
+
+1. **Cache invalidation strategies** — TTL, key-based/immutable, validation, event-driven.
+2. **Stale-while-revalidate** — serve cached instantly, refresh in the background (header + UI pattern).
+3. **ETag vs Cache-Control** — freshness (skip the network) vs validation (cheap 304s).
+4. **HTTP/3 and QUIC** — independent streams over UDP kill TCP head-of-line blocking; 0/1-RTT.
+5. **Backpressure in Streams API** — consumer-paced production via desiredSize/high-water mark.
+6. **AbortController** — the cancellation primitive: on-the-wire aborts, timeouts, combined signals.
+7. **Streaming fetch response handling** — chunked bodies, stateful decoding, frame buffering.
+8. **Priority hints** — `fetchpriority`: promote the LCP image, demote the noise.
+9. **SameSite cookie modes** — Strict/Lax/None on *sites* (eTLD+1); the Lax GET exception.
+10. **Speculative prerendering** — Speculation Rules; prefetch/prerender on hover; gate analytics.
 
 ## Tech stack
 
