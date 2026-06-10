@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Badge, Group, Stack, Text } from '@mantine/core';
-import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
+import { useEffect, useState } from "react";
+import { Badge, Group, Stack, Text } from "@mantine/core";
+import { Callout, DemoCard, SolutionReveal } from "@sfe/workbook";
 
 /**
  * BUGGY component (simulated): renders the current time directly during render.
@@ -9,8 +9,13 @@ import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
  */
 function GreetingBuggy() {
   // ❌ Runs during render: under SSR this value differs between server & client
-  const now = new Date().toLocaleTimeString();
-  return <Text>Hello! It's {now} right now.</Text>;
+  const [date, setDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    setDate(new Date().toLocaleTimeString());
+  }, []);
+
+  return <Text>Hello! It's {date} right now.</Text>;
 }
 
 /** One correct solution, shown so you can compare after trying it yourself. */
@@ -19,7 +24,7 @@ function GreetingFixed() {
   useEffect(() => {
     setNow(new Date().toLocaleTimeString()); // client only, AFTER hydration
   }, []);
-  return <Text>Hello! It's {now ?? '…'} right now.</Text>;
+  return <Text>Hello! It's {now ?? "…"} right now.</Text>;
 }
 
 const solution = `function Greeting() {
@@ -59,8 +64,9 @@ export function Exercise() {
       </DemoCard>
 
       <Callout kind="tip" title="Hint">
-        Any browser-only value, or one that changes with time/locale, must go inside{' '}
-        <code>useEffect</code> (which runs after hydration), not be computed directly during render.
+        Any browser-only value, or one that changes with time/locale, must go
+        inside <code>useEffect</code> (which runs after hydration), not be
+        computed directly during render.
       </Callout>
 
       <SolutionReveal code={solution} />

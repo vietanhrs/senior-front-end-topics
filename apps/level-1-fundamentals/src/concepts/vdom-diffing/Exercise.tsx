@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Button, Checkbox, Group, Stack, Text } from '@mantine/core';
-import { IconTrash } from '@tabler/icons-react';
-import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
+import { useState } from "react";
+import { Button, Checkbox, Group, Stack, Text } from "@mantine/core";
+import { IconTrash } from "@tabler/icons-react";
+import { Callout, DemoCard, SolutionReveal } from "@sfe/workbook";
 
 interface Task {
   id: number;
@@ -9,9 +9,9 @@ interface Task {
 }
 
 const SEED: Task[] = [
-  { id: 1, label: 'Read the hydration theory' },
-  { id: 2, label: 'Do the event-loop demo' },
-  { id: 3, label: 'Review CORS preflight' },
+  { id: 1, label: "Read the hydration theory" },
+  { id: 2, label: "Do the event-loop demo" },
+  { id: 3, label: "Review CORS preflight" },
 ];
 
 /**
@@ -32,9 +32,8 @@ export function Exercise() {
         description="Tick the FIRST row's checkbox (uncontrolled), then delete that row. Because it uses key=index, the tick sticks to the wrong row. Task: switch to key={task.id}."
       >
         <Stack gap="xs">
-          {/* ❌ key={index} — the source of the bug */}
-          {tasks.map((task, index) => (
-            <Group key={index} justify="space-between">
+          {tasks.map((task, _index) => (
+            <Group key={task.id} justify="space-between">
               <Checkbox label={task.label} />
               <Button
                 size="xs"
@@ -55,9 +54,9 @@ export function Exercise() {
       </DemoCard>
 
       <Callout kind="tip" title="Hint">
-        The checkbox here is <i>uncontrolled</i>, so its checked state lives in the DOM. The key
-        decides which DOM node is kept when the list changes. Index is not stable when items are
-        removed.
+        The checkbox here is <i>uncontrolled</i>, so its checked state lives in
+        the DOM. The key decides which DOM node is kept when the list changes.
+        Index is not stable when items are removed.
       </Callout>
 
       <SolutionReveal
