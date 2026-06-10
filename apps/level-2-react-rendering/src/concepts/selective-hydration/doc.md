@@ -53,6 +53,9 @@ By wrapping parts of the app in **`<Suspense>`**, React can:
 - This is a **framework-level** capability — Next.js, Remix/React Router, etc. wire up streaming
   SSR + Suspense for you. In a pure CSR Vite SPA there's no SSR to hydrate, so the demo here
   *simulates* the scheduling.
+- Treat the exact scheduling order as runtime behavior, not a contract. The stable lesson is:
+  Suspense boundaries create independent hydration units, and user interaction can prioritize a
+  pending boundary.
 
 ## Senior checklist
 

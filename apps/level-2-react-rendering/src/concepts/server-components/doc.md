@@ -85,12 +85,21 @@ They're complementary, not the same. **SSR** renders Client Components to HTML f
 server component is never hydrated (it has no client code); a client component is SSR'd then
 hydrated.
 
+## Stable concept vs framework/runtime detail
+
+The stable concept is the **server/client component boundary**: server-only code stays off the
+client bundle, and Client Components are explicit interactive islands. The exact RSC payload
+format, bundler manifest, streaming protocol, and server action transport are framework/runtime
+details. Learn the boundary rules first; inspect a specific framework's output only when you need
+to debug that framework.
+
 ## Senior checklist
 
 - Server Components run only on the server, ship no JS, can be async and touch server resources.
 - `'use client'` marks the interactivity boundary; below it lives state/effects/events.
 - Props crossing the boundary must be serializable; client can't import server components (pass as children).
 - RSC reduces bundle size & removes API plumbing; it's distinct from (and combined with) SSR.
+- The Flight payload/protocol is not a public app-level API; do not couple app logic to it.
 
 ## References
 

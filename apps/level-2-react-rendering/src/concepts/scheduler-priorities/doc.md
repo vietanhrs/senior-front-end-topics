@@ -9,8 +9,12 @@ postpone** less urgent work — the engine behind concurrent rendering and time 
 
 ## Lanes: how React represents priority
 
-Internally each update is assigned one or more **lanes** — a 31-bit bitmask where different bits
-mean different priorities. Lanes let React:
+Internally, React currently assigns updates to **lanes**. Think of lanes as priority buckets that
+let React group compatible work and choose what should render next. The lane bitmask layout is an
+implementation detail and can change across React versions, but the mental model is still useful:
+urgent work should preempt less urgent work.
+
+Lanes let React:
 
 - pick the **highest-priority** pending work to render next,
 - **batch** updates that share compatible lanes into one render,
@@ -69,7 +73,8 @@ Use `flushSync` only when you must force a synchronous, un-batched commit (rare)
 
 ## Senior checklist
 
-- Updates carry **lanes**; React renders highest priority first and interrupts lower priority.
+- Updates carry scheduler priority; React renders highest priority first and interrupts lower priority.
+- Lanes are useful for source-level reasoning, but their exact bit layout is not app-level API.
 - Urgent (input/click) > default > transition/deferred > idle.
 - Express priority via `useTransition` / `useDeferredValue`; keep urgent UI out of transitions.
 - React 18 batches by default; `flushSync` opts out (rarely needed).
