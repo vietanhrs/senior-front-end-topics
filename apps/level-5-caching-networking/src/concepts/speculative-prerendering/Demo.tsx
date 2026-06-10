@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Badge, Button, Group, Paper, SegmentedControl, Stack, Text } from '@mantine/core';
+import { useEffect, useRef, useState } from 'react';
+import { Badge, Button, Code, Group, Paper, SegmentedControl, Stack, Text } from '@mantine/core';
 import { Callout, DemoCard, LogConsole, useLogger } from '@sfe/workbook';
 
 type Strategy = 'none' | 'prefetch' | 'prerender';
@@ -17,7 +17,11 @@ export function Demo() {
   const [navigated, setNavigated] = useState<string | null>(null);
   const [navMs, setNavMs] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
+  const [rulesInstalled, setRulesInstalled] = useState(false);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const speculationScriptRef = useRef<HTMLScriptElement | null>(null);
+
+  useEffect(() => () => speculationScriptRef.current?.remove(), []);
 
   function speculate(page: string) {
     const st = stateRef.current[page] ?? 'none';
@@ -83,6 +87,27 @@ export function Demo() {
     clear();
   }
 
+  function installSpeculationRules() {
+    speculationScriptRef.current?.remove();
+    const supportsRules = typeof HTMLScriptElement !== 'undefined' && HTMLScriptElement.supports?.('speculationrules');
+    if (!supportsRules) {
+      log('This browser does not report support for <script type="speculationrules">.', 'error');
+      setRulesInstalled(false);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.type = 'speculationrules';
+    script.textContent = JSON.stringify({
+      prefetch: [{ source: 'list', urls: ['/products/a', '/products/b'], eagerness: 'moderate' }],
+      prerender: [{ source: 'list', urls: ['/products/c'], eagerness: 'conservative' }],
+    });
+    document.head.appendChild(script);
+    speculationScriptRef.current = script;
+    setRulesInstalled(true);
+    log('Installed a real Speculation Rules script in document.head.', 'success');
+  }
+
   return (
     <Stack gap="md">
       <Callout kind="info" title="Hover, wait a beat, then click">
@@ -141,6 +166,39 @@ export function Demo() {
             </Text>
           )}
         </Paper>
+      </DemoCard>
+
+      <DemoCard
+        title="Real Speculation Rules API"
+        description={
+          <>
+            The latency model above is visual. This button also injects a real{' '}
+            <Code>{'<script type="speculationrules">'}</Code> block when the browser supports it.
+          </>
+        }
+        right={
+          <Badge color={rulesInstalled ? 'teal' : 'gray'} variant="filled">
+            {rulesInstalled ? 'rules installed' : 'not installed'}
+          </Badge>
+        }
+      >
+        <Group>
+          <Button size="xs" onClick={installSpeculationRules}>
+            Install rules
+          </Button>
+          <Button
+            size="xs"
+            variant="default"
+            onClick={() => {
+              speculationScriptRef.current?.remove();
+              speculationScriptRef.current = null;
+              setRulesInstalled(false);
+              log('Removed the Speculation Rules script.', 'macro');
+            }}
+          >
+            Remove rules
+          </Button>
+        </Group>
       </DemoCard>
 
       <LogConsole logs={logs} height={180} empty="Hover a link to speculate, then click to navigate." />

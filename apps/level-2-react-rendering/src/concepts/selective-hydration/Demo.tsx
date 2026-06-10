@@ -69,6 +69,13 @@ export function Demo() {
         scheduling. Watch the console for the prioritization event.
       </Callout>
 
+      <Callout kind="warning" title="Runtime boundary">
+        Real selective hydration requires server-rendered HTML plus Suspense boundaries from
+        React's streaming SSR runtime. This Vite workbook is client-rendered, so it cannot perform
+        true boundary hydration here. Use this panel to inspect the scheduling rule, then validate
+        the real behavior in a streaming SSR app.
+      </Callout>
+
       <DemoCard
         title="Boundaries hydrating independently"
         right={

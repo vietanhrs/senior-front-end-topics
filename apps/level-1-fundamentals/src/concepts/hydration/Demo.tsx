@@ -1,60 +1,94 @@
-import { useMemo, useState } from 'react';
-import { Badge, Button, Group, Stack, Switch, Text } from '@mantine/core';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { hydrateRoot, type Root } from 'react-dom/client';
+import { Badge, Button, Group, Stack, Switch } from '@mantine/core';
 import { IconBolt, IconRefresh } from '@tabler/icons-react';
 import { Callout, DemoCard, LogConsole, useLogger } from '@sfe/workbook';
 
-/**
- * We can't run a real SSR server inside this SPA, so we *simulate* the
- * lifecycle: first we show static "server HTML" (no event handlers — clicking
- * does nothing), then "hydration" swaps in a live React subtree that attaches
- * handlers onto the same visual UI.
- */
+function HydratedCounter({ token }: { token: number }) {
+  const [count, setCount] = useState(0);
+  return (
+    <div style={{ fontFamily: 'inherit' }}>
+      <p style={{ margin: '0 0 8px' }}>
+        Rendered by the server — token: <b>#{token}</b>
+      </p>
+      <button
+        style={{
+          padding: '6px 12px',
+          borderRadius: 8,
+          border: '1px solid #ccc',
+          background: '#f1f3f5',
+        }}
+        onClick={() => setCount((c) => c + 1)}
+      >
+        Count: {count} {count === 0 ? '(not interactive yet)' : '(now interactive)'}
+      </button>
+    </div>
+  );
+}
+
 export function Demo() {
   const { logs, log, clear } = useLogger();
   const [hydrated, setHydrated] = useState(false);
-  const [count, setCount] = useState(0);
   const [mismatch, setMismatch] = useState(false);
+  const [serverHtml, setServerHtml] = useState('');
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const rootRef = useRef<Root | null>(null);
 
   // A value baked into the "server HTML". With mismatch mode on, this is a
   // non-deterministic value the client would NOT reproduce.
   const serverValue = useMemo(() => (mismatch ? Math.floor(Math.random() * 1000) : 42), [mismatch]);
 
-  const serverHtml = `
-    <div style="font-family:inherit">
-      <p style="margin:0 0 8px">Rendered by the server — token: <b>#${serverValue}</b></p>
-      <button style="padding:6px 12px;border-radius:8px;border:1px solid #ccc;background:#f1f3f5">
-        Count: 0 (not interactive yet)
-      </button>
-    </div>`;
+  useEffect(() => {
+    let cancelled = false;
+    import('react-dom/server').then(({ renderToString }) => {
+      if (!cancelled) {
+        setServerHtml(renderToString(<HydratedCounter token={serverValue} />));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [serverValue]);
+
+  useEffect(() => {
+    if (!hydrated && containerRef.current) {
+      containerRef.current.innerHTML = serverHtml;
+    }
+  }, [hydrated, serverHtml]);
+
+  useEffect(() => () => rootRef.current?.unmount(), []);
 
   function hydrate() {
+    if (!containerRef.current || rootRef.current || !serverHtml) return;
     log('Browser paints the static server HTML (FCP) ✔', 'success');
     log('Downloading & parsing the client JS bundle…', 'sync');
-    // Simulated client-side value at hydration time.
     const clientValue = mismatch ? Math.floor(Math.random() * 1000) : 42;
-    log(`React rebuilds the VDOM and matches it to existing DOM (client token #${clientValue})`, 'sync');
+    log(`Calling hydrateRoot(container, <HydratedCounter token={${clientValue}} />)`, 'sync');
     if (mismatch && clientValue !== serverValue) {
       log(
         `⚠ Hydration mismatch: server="#${serverValue}" ≠ client="#${clientValue}". React must patch the DOM.`,
         'error',
       );
     }
-    log('Attaches event listeners → UI is interactive (TTI) ✔', 'success');
+    rootRef.current = hydrateRoot(containerRef.current, <HydratedCounter token={clientValue} />);
+    log('React adopted the existing DOM and attached event listeners → UI is interactive ✔', 'success');
     setHydrated(true);
   }
 
   function reset() {
+    rootRef.current?.unmount();
+    rootRef.current = null;
     setHydrated(false);
-    setCount(0);
     clear();
   }
 
   return (
     <Stack gap="md">
       <Callout kind="info" title="How to read this demo">
-        Before hydration, the button below is static HTML — clicking does <b>nothing</b>. After
-        hydration, that same UI becomes interactive. Enable "Mismatch mode" to see the error
-        when the rendered value is non-deterministic across the two sides.
+        This demo uses React's real <code>hydrateRoot</code> API against static HTML generated in
+        the browser. Before hydration, the button is inert. After hydration, React adopts that DOM
+        and wires the click handler. A production SSR server would generate the same HTML before it
+        reaches the browser.
       </Callout>
 
       <DemoCard
@@ -74,24 +108,7 @@ export function Demo() {
           />
 
           <div className="rounded-lg border border-dashed p-4">
-            {hydrated ? (
-              <Stack gap={8}>
-                <Text>
-                  Rendered by the client — token: <b>#{serverValue}</b>
-                </Text>
-                <Button
-                  variant="filled"
-                  leftSection={<IconBolt size={16} />}
-                  onClick={() => setCount((c) => c + 1)}
-                  w="fit-content"
-                >
-                  Count: {count} (now interactive)
-                </Button>
-              </Stack>
-            ) : (
-              // The "server HTML" — note: dangerouslySetInnerHTML has NO handlers.
-              <div dangerouslySetInnerHTML={{ __html: serverHtml }} />
-            )}
+            <div ref={containerRef} />
           </div>
 
           <Group>
@@ -99,7 +116,7 @@ export function Demo() {
               color="grape"
               leftSection={<IconBolt size={16} />}
               onClick={hydrate}
-              disabled={hydrated}
+              disabled={hydrated || !serverHtml}
             >
               Hydrate
             </Button>
