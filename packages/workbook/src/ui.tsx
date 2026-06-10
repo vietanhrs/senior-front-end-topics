@@ -8,6 +8,7 @@ import {
   Group,
   Paper,
   ScrollArea,
+  SimpleGrid,
   Stack,
   Text,
   Title,
@@ -16,12 +17,89 @@ import { CodeHighlight } from '@mantine/code-highlight';
 import {
   IconAlertTriangle,
   IconBulb,
+  IconChecklist,
+  IconDeviceDesktopAnalytics,
   IconEye,
   IconEyeOff,
   IconInfoCircle,
+  IconRepeat,
+  IconScale,
+  IconTestPipe,
   IconTerminal2,
 } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
+
+export const EXERCISE_ACCEPTANCE_CRITERIA = [
+  {
+    id: 'unit-test',
+    label: 'Unit test',
+    detail: 'Cover the smallest pure behavior, including the happy path and at least one boundary condition.',
+  },
+  {
+    id: 'e2e-test',
+    label: 'E2E scenario',
+    detail: 'Describe one user-visible flow that would catch the regression in a browser-level test.',
+  },
+  {
+    id: 'performance-budget',
+    label: 'Performance budget',
+    detail: 'Set a measurable budget such as render count, network requests, blocking time, memory, or bundle impact.',
+  },
+  {
+    id: 'failure-case',
+    label: 'Failure case',
+    detail: 'Name the error mode the fix must survive: race, retry, stale data, invalid input, slow network, or cleanup leak.',
+  },
+  {
+    id: 'trade-off',
+    label: 'Trade-off explanation',
+    detail: 'Explain why this fix is preferable and what cost it introduces for maintainability or runtime behavior.',
+  },
+] as const;
+
+const criterionIcons: Record<(typeof EXERCISE_ACCEPTANCE_CRITERIA)[number]['id'], ReactNode> = {
+  'unit-test': <IconTestPipe size={18} />,
+  'e2e-test': <IconDeviceDesktopAnalytics size={18} />,
+  'performance-budget': <IconChecklist size={18} />,
+  'failure-case': <IconRepeat size={18} />,
+  'trade-off': <IconScale size={18} />,
+};
+
+export function ExerciseContract() {
+  return (
+    <Paper withBorder radius="md" p="md" bg="gray.0">
+      <Stack gap="sm">
+        <Group gap="xs">
+          <Badge color="indigo" variant="light">
+            Senior exercise contract
+          </Badge>
+          <Text size="sm" c="dimmed">
+            Treat the solution as complete only when these review points are answered.
+          </Text>
+        </Group>
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+          {EXERCISE_ACCEPTANCE_CRITERIA.map((criterion) => (
+            <Paper key={criterion.id} withBorder radius="sm" p="sm">
+              <Group gap="xs" align="flex-start" wrap="nowrap">
+                <Badge color="teal" variant="light" p={6}>
+                  {criterionIcons[criterion.id]}
+                </Badge>
+                <Stack gap={2}>
+                  <Text size="sm" fw={700}>
+                    {criterion.label}
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    {criterion.detail}
+                  </Text>
+                </Stack>
+              </Group>
+            </Paper>
+          ))}
+        </SimpleGrid>
+      </Stack>
+    </Paper>
+  );
+}
 
 /** A collapsible "show solution" block used by exercises. */
 export function SolutionReveal({

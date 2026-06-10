@@ -9,6 +9,7 @@ import {
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useWorkbook } from './context';
 import { DocView } from './DocView';
+import { ExerciseContract } from './ui';
 
 export function ConceptPage() {
   const { level, base } = useWorkbook();
@@ -64,7 +65,10 @@ export function ConceptPage() {
           </Tabs.Panel>
           {Exercise && (
             <Tabs.Panel value="exercise" pt="lg">
-              <Exercise />
+              <Stack gap="md">
+                <ExerciseContract />
+                <Exercise />
+              </Stack>
             </Tabs.Panel>
           )}
         </Tabs>
