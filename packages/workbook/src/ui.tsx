@@ -67,7 +67,7 @@ const criterionIcons: Record<(typeof EXERCISE_ACCEPTANCE_CRITERIA)[number]['id']
 
 export function ExerciseContract() {
   return (
-    <Paper withBorder radius="md" p="md" bg="gray.0">
+    <Paper withBorder radius="md" p="md">
       <Stack gap="sm">
         <Group gap="xs">
           <Badge color="indigo" variant="light">
