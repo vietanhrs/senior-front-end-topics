@@ -93,10 +93,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
             const id = String(lv.level);
             const isActive = activeLevelId === id;
             return (
-              // The level row is a plain navigating link (no Mantine nested-children,
-              // which would hijack the click as a collapse toggle). Its concepts
-              // render as indented siblings while the level is active.
-              <div key={id}>
+              <Stack key={id} gap={0}>
                 <NavLink
                   component={RouterNavLink}
                   to={`/${id}`}
@@ -105,29 +102,28 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                       L{lv.level} · {lv.title}
                     </Text>
                   }
-                  active={location.pathname === `/${id}`}
+                  active={isActive}
                   onClick={close}
                 />
-                {isActive &&
-                  lv.concepts.map((c, i) => (
-                    <NavLink
-                      key={c.slug}
-                      component={RouterNavLink}
-                      to={`/${id}/${c.slug}`}
-                      active={location.pathname === `/${id}/${c.slug}`}
-                      onClick={close}
-                      pl={28}
-                      label={
-                        <Group gap={6} wrap="nowrap">
-                          <Text size="xs" c="dimmed" w={18}>
-                            {String(i + 1).padStart(2, '0')}
-                          </Text>
-                          <Text size="sm">{c.title}</Text>
-                        </Group>
-                      }
-                    />
-                  ))}
-              </div>
+                {isActive && lv.concepts.map((c, i) => (
+                  <NavLink
+                    key={c.slug}
+                    component={RouterNavLink}
+                    to={`/${id}/${c.slug}`}
+                    active={location.pathname === `/${id}/${c.slug}`}
+                    onClick={close}
+                    pl={28}
+                    label={
+                      <Group gap={6} wrap="nowrap">
+                        <Text size="xs" c="dimmed" w={18}>
+                          {String(i + 1).padStart(2, '0')}
+                        </Text>
+                        <Text size="sm">{c.title}</Text>
+                      </Group>
+                    }
+                  />
+                ))}
+              </Stack>
             );
           })}
 

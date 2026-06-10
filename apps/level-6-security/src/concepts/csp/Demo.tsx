@@ -13,7 +13,7 @@ script-src 'self' https://cdn.example.com;
 connect-src 'self' https://api.example.com;
 object-src 'none'; base-uri 'none'`,
   strict: `default-src 'self';
-script-src 'nonce-abc123' 'strict-dynamic' https: 'unsafe-eval';
+script-src 'nonce-abc123' 'strict-dynamic' https:;
 connect-src 'self' https://api.example.com;
 object-src 'none'; base-uri 'none'; frame-ancestors 'none'`,
 };
