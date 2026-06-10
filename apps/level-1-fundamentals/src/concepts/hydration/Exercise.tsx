@@ -13,7 +13,7 @@ function GreetingBuggy() {
 
   useEffect(() => {
     setDate(new Date().toLocaleTimeString());
-  });
+  }, []);
 
   return <Text>Hello! It's {date} right now.</Text>;
 }

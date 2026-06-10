@@ -32,7 +32,6 @@ export function Exercise() {
         description="Tick the FIRST row's checkbox (uncontrolled), then delete that row. Because it uses key=index, the tick sticks to the wrong row. Task: switch to key={task.id}."
       >
         <Stack gap="xs">
-          {/* ❌ key={index} — the source of the bug */}
           {tasks.map((task, _index) => (
             <Group key={task.id} justify="space-between">
               <Checkbox label={task.label} />
