@@ -5,6 +5,8 @@ export { ROADMAP } from './curriculum';
 export {
   Callout,
   DemoCard,
+  ExerciseContract,
+  EXERCISE_ACCEPTANCE_CRITERIA,
   LogConsole,
   SolutionReveal,
   useLogger,

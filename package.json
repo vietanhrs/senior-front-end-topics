@@ -16,6 +16,7 @@
     "dev:l4": "bun run --filter 'level-4-data-state' dev",
     "dev:l5": "bun run --filter 'level-5-caching-networking' dev",
     "build": "bun run --filter '*' build",
+    "test": "bun test",
     "typecheck": "bun run --filter '*' typecheck",
     "lint": "bun run --filter '*' lint"
   },
