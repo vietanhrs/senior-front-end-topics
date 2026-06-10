@@ -93,40 +93,41 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
             const id = String(lv.level);
             const isActive = activeLevelId === id;
             return (
-              // Clicking the group header navigates to the level overview;
-              // the group expands whenever its level is the active one.
-              <NavLink
-                key={id}
-                component={RouterNavLink}
-                to={`/${id}`}
-                label={
-                  <Text size="sm" fw={isActive ? 600 : 400}>
-                    L{lv.level} · {lv.title}
-                  </Text>
-                }
-                active={location.pathname === `/${id}`}
-                opened={isActive}
-                childrenOffset={14}
-                onClick={close}
-              >
-                {lv.concepts.map((c, i) => (
-                  <NavLink
-                    key={c.slug}
-                    component={RouterNavLink}
-                    to={`/${id}/${c.slug}`}
-                    active={location.pathname === `/${id}/${c.slug}`}
-                    onClick={close}
-                    label={
-                      <Group gap={6} wrap="nowrap">
-                        <Text size="xs" c="dimmed" w={18}>
-                          {String(i + 1).padStart(2, '0')}
-                        </Text>
-                        <Text size="sm">{c.title}</Text>
-                      </Group>
-                    }
-                  />
-                ))}
-              </NavLink>
+              // The level row is a plain navigating link (no Mantine nested-children,
+              // which would hijack the click as a collapse toggle). Its concepts
+              // render as indented siblings while the level is active.
+              <div key={id}>
+                <NavLink
+                  component={RouterNavLink}
+                  to={`/${id}`}
+                  label={
+                    <Text size="sm" fw={isActive ? 600 : 400}>
+                      L{lv.level} · {lv.title}
+                    </Text>
+                  }
+                  active={location.pathname === `/${id}`}
+                  onClick={close}
+                />
+                {isActive &&
+                  lv.concepts.map((c, i) => (
+                    <NavLink
+                      key={c.slug}
+                      component={RouterNavLink}
+                      to={`/${id}/${c.slug}`}
+                      active={location.pathname === `/${id}/${c.slug}`}
+                      onClick={close}
+                      pl={28}
+                      label={
+                        <Group gap={6} wrap="nowrap">
+                          <Text size="xs" c="dimmed" w={18}>
+                            {String(i + 1).padStart(2, '0')}
+                          </Text>
+                          <Text size="sm">{c.title}</Text>
+                        </Group>
+                      }
+                    />
+                  ))}
+              </div>
             );
           })}
 
