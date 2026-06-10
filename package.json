@@ -12,6 +12,7 @@
     "dev:l1": "bun run --filter 'level-1-fundamentals' dev",
     "dev:l2": "bun run --filter 'level-2-react-rendering' dev",
     "dev:l3": "bun run --filter 'level-3-browser-performance' dev",
+    "dev:l4": "bun run --filter 'level-4-data-state' dev",
     "build": "bun run --filter '*' build",
     "typecheck": "bun run --filter '*' typecheck",
     "lint": "bun run --filter '*' lint"

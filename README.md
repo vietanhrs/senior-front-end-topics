@@ -21,7 +21,9 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/  # per concept: doc.md + Demo.tsx + Exercise.tsx + index.ts
 │   ├── level-2-react-rendering/  # ✅ Level 2 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-3-browser-performance/ # ✅ Level 3 SPA workbook (10 concepts)
+│   ├── level-3-browser-performance/ # ✅ Level 3 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── level-4-data-state/       # ✅ Level 4 SPA workbook (10 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -38,8 +40,9 @@ bun install           # install deps for the whole workspace
 bun run dev           # run Level 1 (Vite dev server)
 bun run dev:l2        # run Level 2
 bun run dev:l3        # run Level 3
+bun run dev:l4        # run Level 4
 # or directly:
-bun run --filter level-3-browser-performance dev
+bun run --filter level-4-data-state dev
 bun run --filter '*' build      # build everything
 ```
 
@@ -50,7 +53,7 @@ bun run --filter '*' build      # build everything
 | 1 | Fundamentals (clear, never fuzzy) | ✅ Done |
 | 2 | React Core & Rendering Mechanics | ✅ Done |
 | 3 | Browser Performance | ✅ Done |
-| 4 | Advanced Data & State management | 🔜 |
+| 4 | Advanced Data & State management | ✅ Done |
 | 5 | Caching & Networking strategies | 🔜 |
 | 6 | Security | 🔜 |
 | 7–10 | (to be added later) | 🔜 |
@@ -93,6 +96,19 @@ bun run --filter '*' build      # build everything
 8. **Subpixel rendering** — CSS px vs device px (DPR); snap to the device grid for crispness.
 9. **Detached DOM nodes** — removed-but-referenced nodes leak; heap snapshots & cleanup.
 10. **Garbage collection timing** — non-deterministic GC pauses; cut allocation pressure in hot paths.
+
+### Level 4 — Advanced Data & State (10 concepts)
+
+1. **Structural sharing** — immutable updates that re-create only the change path; share the rest.
+2. **Immutable data patterns** — replace, never mutate; in-place mutation = stale UI.
+3. **Referential equality** — objects/functions compare by reference; fresh identities defeat memo.
+4. **Memoization pitfalls** — unstable deps, trivial memos, children-defeated memo, effects in useMemo.
+5. **Race conditions in UI state** — out-of-order responses; cleanup flags / AbortController / tokens.
+6. **Finite state modeling** — replace boolean soup with a discriminated-union FSM.
+7. **Event sourcing in frontend** — state = fold over an event log; undo/redo & time-travel for free.
+8. **Optimistic UI rollback** — apply instantly, reconcile with the server, roll back on failure.
+9. **Deterministic rendering** — same inputs → same output; no random/now/unstable sorts in render.
+10. **Idempotent UI actions** — safe to repeat; client guards + idempotency keys.
 
 ## Tech stack
 
