@@ -46,6 +46,17 @@ export function Demo() {
 
   useEffect(() => () => workerRef.current?.terminate(), []);
 
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+    const onMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'PONG') {
+        log(`received PONG from ${event.data.source}`, 'success');
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', onMessage);
+    return () => navigator.serviceWorker.removeEventListener('message', onMessage);
+  }, [log]);
+
   function runOnMainThread() {
     setBusy('main');
     setResult('computing on the main thread…');
@@ -87,7 +98,8 @@ export function Demo() {
       setSwStatus('registered');
       log(`registered service worker with scope: ${registration.scope}`, 'success');
 
-      const worker = registration.active ?? registration.waiting ?? registration.installing;
+      await navigator.serviceWorker.ready;
+      const worker = registration.active ?? navigator.serviceWorker.controller;
       if (worker) {
         worker.postMessage({ type: 'PING' });
         log('sent PING message to the service worker', 'macro');

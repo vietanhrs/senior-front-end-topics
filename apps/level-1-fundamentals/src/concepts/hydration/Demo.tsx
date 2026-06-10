@@ -30,6 +30,7 @@ export function Demo() {
   const { logs, log, clear } = useLogger();
   const [hydrated, setHydrated] = useState(false);
   const [mismatch, setMismatch] = useState(false);
+  const [serverHtml, setServerHtml] = useState('');
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<Root | null>(null);
 
@@ -37,13 +38,17 @@ export function Demo() {
   // non-deterministic value the client would NOT reproduce.
   const serverValue = useMemo(() => (mismatch ? Math.floor(Math.random() * 1000) : 42), [mismatch]);
 
-  const serverHtml = `
-    <div style="font-family:inherit">
-      <p style="margin:0 0 8px">Rendered by the server — token: <b>#${serverValue}</b></p>
-      <button style="padding:6px 12px;border-radius:8px;border:1px solid #ccc;background:#f1f3f5">
-        Count: 0 (not interactive yet)
-      </button>
-    </div>`;
+  useEffect(() => {
+    let cancelled = false;
+    import('react-dom/server').then(({ renderToStaticMarkup }) => {
+      if (!cancelled) {
+        setServerHtml(renderToStaticMarkup(<HydratedCounter token={serverValue} />));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [serverValue]);
 
   useEffect(() => {
     if (!hydrated && containerRef.current) {
@@ -54,7 +59,7 @@ export function Demo() {
   useEffect(() => () => rootRef.current?.unmount(), []);
 
   function hydrate() {
-    if (!containerRef.current || rootRef.current) return;
+    if (!containerRef.current || rootRef.current || !serverHtml) return;
     log('Browser paints the static server HTML (FCP) ✔', 'success');
     log('Downloading & parsing the client JS bundle…', 'sync');
     const clientValue = mismatch ? Math.floor(Math.random() * 1000) : 42;
@@ -111,7 +116,7 @@ export function Demo() {
               color="grape"
               leftSection={<IconBolt size={16} />}
               onClick={hydrate}
-              disabled={hydrated}
+              disabled={hydrated || !serverHtml}
             >
               Hydrate
             </Button>
