@@ -19,7 +19,9 @@ senior-front-end-topics/
 ├── apps/
 │   ├── level-1-fundamentals/     # ✅ Level 1 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/  # per concept: doc.md + Demo.tsx + Exercise.tsx + index.ts
-│   └── level-2-react-rendering/  # ✅ Level 2 SPA workbook (10 concepts)
+│   ├── level-2-react-rendering/  # ✅ Level 2 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── level-3-browser-performance/ # ✅ Level 3 SPA workbook (10 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -35,8 +37,9 @@ Requires **Bun ≥ 1.3**.
 bun install           # install deps for the whole workspace
 bun run dev           # run Level 1 (Vite dev server)
 bun run dev:l2        # run Level 2
+bun run dev:l3        # run Level 3
 # or directly:
-bun run --filter level-2-react-rendering dev
+bun run --filter level-3-browser-performance dev
 bun run --filter '*' build      # build everything
 ```
 
@@ -46,7 +49,7 @@ bun run --filter '*' build      # build everything
 |---|---|---|
 | 1 | Fundamentals (clear, never fuzzy) | ✅ Done |
 | 2 | React Core & Rendering Mechanics | ✅ Done |
-| 3 | Browser Performance | 🔜 |
+| 3 | Browser Performance | ✅ Done |
 | 4 | Advanced Data & State management | 🔜 |
 | 5 | Caching & Networking strategies | 🔜 |
 | 6 | Security | 🔜 |
@@ -77,6 +80,19 @@ bun run --filter '*' build      # build everything
 8. **Server components** — server-only, zero-JS components; the `'use client'` boundary.
 9. **Tearing in concurrent UI** — inconsistent external-store reads; `useSyncExternalStore`.
 10. **Stale closure problems** — callbacks capturing old renders; updaters/deps/refs.
+
+### Level 3 — Browser Performance (10 concepts)
+
+1. **Layout thrashing** — interleaved read/write forces repeated reflows; batch reads then writes.
+2. **Paint vs Layout vs Composite** — the pixel pipeline & which CSS props re-enter it where.
+3. **Browser compositing layers** — GPU layer textures; promotion triggers & memory cost.
+4. **GPU acceleration in CSS** — transform/opacity on the compositor; survives main-thread jank.
+5. **CSS containment** — `contain` + `content-visibility` to scope/skip layout & paint.
+6. **Render blocking resources** — identify & unblock paint-blocking CSS/JS.
+7. **Render waterfall** — critical-path latency = the request chain; attack depth & late discovery.
+8. **Subpixel rendering** — CSS px vs device px (DPR); snap to the device grid for crispness.
+9. **Detached DOM nodes** — removed-but-referenced nodes leak; heap snapshots & cleanup.
+10. **Garbage collection timing** — non-deterministic GC pauses; cut allocation pressure in hot paths.
 
 ## Tech stack
 
