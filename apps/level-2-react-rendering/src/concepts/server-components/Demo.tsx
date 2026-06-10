@@ -59,6 +59,12 @@ export function Demo() {
         Server Component (default) or a Client Component, and why.
       </Callout>
 
+      <Callout kind="warning" title="Runtime boundary">
+        React Server Components are compiled and streamed by a framework/server runtime. This SPA
+        cannot execute the RSC compiler or Flight stream, so the interactive part below focuses on
+        boundary decisions and shows the payload shape you should expect from a real RSC app.
+      </Callout>
+
       <DemoCard title="What does this component need?">
         <Checkbox.Group value={selected} onChange={setSelected}>
           <Stack gap="xs">
@@ -108,6 +114,30 @@ export function LikeButton({ postId }) {
   return <button onClick={() => setLiked(v => !v)}>{liked ? '♥' : '♡'}</button>;
 }`}
         </Code>
+      </DemoCard>
+
+      <DemoCard title="What the browser receives">
+        <Stack gap="xs">
+          <Text size="sm" c="dimmed">
+            A real RSC response is not HTML for the server subtree and not a JavaScript bundle for
+            that subtree. It is a Flight payload that tells the client renderer how to merge server
+            output with client component references.
+          </Text>
+          <Code block>
+            {`// Simplified Flight-like shape, not a public wire-format contract
+[
+  ["$", "article", null, {
+    "children": [
+      ["$", "h1", null, { "children": "Server-rendered title" }],
+      ["$", "@client/LikeButton", null, { "postId": "42" }]
+    ]
+  }]
+]
+
+// Browser still downloads JS only for referenced Client Components.
+// Server-only code, secrets, DB calls, and heavy markdown parsing stay off the client bundle.`}
+          </Code>
+        </Stack>
       </DemoCard>
     </Stack>
   );

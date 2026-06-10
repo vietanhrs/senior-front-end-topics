@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Badge, Button, Group, SegmentedControl, Stack, Table, Text } from '@mantine/core';
+import { Badge, Button, Code, Group, SegmentedControl, Stack, Table, Text } from '@mantine/core';
 import { Callout, DemoCard, LogConsole, useLogger } from '@sfe/workbook';
 
 type Strategy = 'ttl' | 'keyed' | 'clear-all';
@@ -35,6 +35,7 @@ export function Demo() {
   const serverRef = useRef(makeServer());
   const [strategy, setStrategy] = useState<Strategy>('ttl');
   const [cache, setCache] = useState<Map<string, Entry>>(new Map());
+  const [storageStatus, setStorageStatus] = useState<string>('not touched');
   const [, force] = useState(0);
 
   function read(key: string) {
@@ -68,6 +69,31 @@ export function Demo() {
       log(`→ TTL strategy does nothing now; "todos" stays stale up to ${TTL_MS / 1000}s`, 'error');
     }
     force((x) => x + 1);
+  }
+
+  async function writeRealCache() {
+    if (!('caches' in window)) {
+      setStorageStatus('Cache Storage unsupported');
+      log('Cache Storage API is not available in this browser/context.', 'error');
+      return;
+    }
+
+    const cacheStorage = await caches.open('sfe-cache-demo-v1');
+    const response = new Response(JSON.stringify({ todos: serverRef.current.versions.todos }), {
+      headers: { 'content-type': 'application/json' },
+    });
+    await cacheStorage.put('/demo-api/todos', response);
+    const match = await cacheStorage.match('/demo-api/todos');
+    setStorageStatus(match ? `stored real Response (${match.headers.get('content-type')})` : 'missing');
+    log('CacheStorage.put("/demo-api/todos", Response) wrote a real browser cache entry.', 'success');
+  }
+
+  async function invalidateRealCache() {
+    if (!('caches' in window)) return;
+    const cacheStorage = await caches.open('sfe-cache-demo-v1');
+    const deleted = await cacheStorage.delete('/demo-api/todos');
+    setStorageStatus(deleted ? 'deleted /demo-api/todos' : 'entry was already missing');
+    log(`CacheStorage.delete("/demo-api/todos") → ${deleted}`, deleted ? 'success' : 'macro');
   }
 
   const rows = ['todos', 'user'].map((key) => {
@@ -151,6 +177,26 @@ export function Demo() {
             })}
           </Table.Tbody>
         </Table>
+      </DemoCard>
+
+      <DemoCard
+        title="Real Cache Storage API"
+        description={
+          <>
+            The table above is an in-memory model. These buttons also write and invalidate a real{' '}
+            <Code>Response</Code> in the browser's Cache Storage.
+          </>
+        }
+        right={<Badge variant="light">{storageStatus}</Badge>}
+      >
+        <Group>
+          <Button size="xs" onClick={writeRealCache}>
+            Write browser cache entry
+          </Button>
+          <Button size="xs" color="orange" variant="light" onClick={invalidateRealCache}>
+            Delete browser cache entry
+          </Button>
+        </Group>
       </DemoCard>
 
       <LogConsole logs={logs} height={180} empty="Read keys, mutate, read again — compare strategies." />

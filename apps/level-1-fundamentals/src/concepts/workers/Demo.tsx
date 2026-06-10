@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Badge, Button, Group, Stack, Text, TextInput } from '@mantine/core';
-import { IconCpu, IconHandStop } from '@tabler/icons-react';
-import { Callout, DemoCard } from '@sfe/workbook';
+import { IconCpu, IconHandStop, IconRefresh, IconServerBolt } from '@tabler/icons-react';
+import { Callout, DemoCard, LogConsole, useLogger } from '@sfe/workbook';
 
 const LIMIT = 2_000_000;
 
@@ -38,8 +38,10 @@ function useHeartbeat() {
 
 export function Demo() {
   const tick = useHeartbeat();
+  const { logs, log, clear } = useLogger();
   const [result, setResult] = useState<string>('—');
   const [busy, setBusy] = useState<'none' | 'main' | 'worker'>('none');
+  const [swStatus, setSwStatus] = useState<'idle' | 'registered' | 'unsupported' | 'error'>('idle');
   const workerRef = useRef<Worker | null>(null);
 
   useEffect(() => () => workerRef.current?.terminate(), []);
@@ -68,6 +70,42 @@ export function Demo() {
       workerRef.current = null;
     };
     worker.postMessage({ limit: LIMIT });
+  }
+
+  async function registerServiceWorker() {
+    clear();
+    if (!('serviceWorker' in navigator)) {
+      setSwStatus('unsupported');
+      log('navigator.serviceWorker is not available in this browser/context.', 'error');
+      return;
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.register('/senior-demo-sw.js', {
+        scope: '/',
+      });
+      setSwStatus('registered');
+      log(`registered service worker with scope: ${registration.scope}`, 'success');
+
+      const worker = registration.active ?? registration.waiting ?? registration.installing;
+      if (worker) {
+        worker.postMessage({ type: 'PING' });
+        log('sent PING message to the service worker', 'macro');
+      } else {
+        log('registration created; worker is still installing', 'macro');
+      }
+    } catch (error) {
+      setSwStatus('error');
+      log(`service worker registration failed: ${error instanceof Error ? error.message : String(error)}`, 'error');
+    }
+  }
+
+  async function unregisterServiceWorkers() {
+    if (!('serviceWorker' in navigator)) return;
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map((registration) => registration.unregister()));
+    setSwStatus('idle');
+    log(`unregistered ${registrations.length} service worker registration(s)`, 'success');
   }
 
   return (
@@ -116,6 +154,28 @@ export function Demo() {
           <Text size="sm">
             Result: <b>{result}</b>
           </Text>
+        </Stack>
+      </DemoCard>
+
+      <DemoCard
+        title="Service Worker registration"
+        description="This uses navigator.serviceWorker.register against a real worker file served by Vite. It does not intercept fetches; it only demonstrates lifecycle registration and messaging safely."
+        right={
+          <Badge color={swStatus === 'registered' ? 'teal' : swStatus === 'error' ? 'red' : 'gray'} variant="filled">
+            {swStatus}
+          </Badge>
+        }
+      >
+        <Stack gap="md">
+          <Group>
+            <Button leftSection={<IconServerBolt size={16} />} onClick={registerServiceWorker}>
+              Register Service Worker
+            </Button>
+            <Button variant="default" leftSection={<IconRefresh size={16} />} onClick={unregisterServiceWorkers}>
+              Unregister
+            </Button>
+          </Group>
+          <LogConsole logs={logs} height={150} empty="Register the service worker to inspect the lifecycle." />
         </Stack>
       </DemoCard>
     </Stack>
