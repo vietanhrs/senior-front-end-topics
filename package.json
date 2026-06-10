@@ -15,6 +15,7 @@
     "dev:l3": "bun run --filter 'level-3-browser-performance' dev",
     "dev:l4": "bun run --filter 'level-4-data-state' dev",
     "dev:l5": "bun run --filter 'level-5-caching-networking' dev",
+    "dev:l6": "bun run --filter 'level-6-security' dev",
     "build": "bun run --filter '*' build",
     "test": "bun test",
     "typecheck": "bun run --filter '*' typecheck",

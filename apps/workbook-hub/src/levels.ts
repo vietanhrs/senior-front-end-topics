@@ -8,5 +8,6 @@ import { LEVEL as level2 } from '../../level-2-react-rendering/src/concepts';
 import { LEVEL as level3 } from '../../level-3-browser-performance/src/concepts';
 import { LEVEL as level4 } from '../../level-4-data-state/src/concepts';
 import { LEVEL as level5 } from '../../level-5-caching-networking/src/concepts';
+import { LEVEL as level6 } from '../../level-6-security/src/concepts';
 
-export const LEVELS: LevelMeta[] = [level1, level2, level3, level4, level5];
+export const LEVELS: LevelMeta[] = [level1, level2, level3, level4, level5, level6];
