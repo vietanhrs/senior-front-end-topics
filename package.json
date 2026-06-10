@@ -8,7 +8,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "bun run --filter 'level-1-fundamentals' dev",
+    "dev": "bun run --filter 'workbook-hub' dev",
+    "dev:hub": "bun run --filter 'workbook-hub' dev",
     "dev:l1": "bun run --filter 'level-1-fundamentals' dev",
     "dev:l2": "bun run --filter 'level-2-react-rendering' dev",
     "dev:l3": "bun run --filter 'level-3-browser-performance' dev",

@@ -17,6 +17,8 @@ senior-front-end-topics/
 │   └── workbook/                 # shared engine: WorkbookApp, layout, doc renderer, UI, roadmap
 │       └── src/                  # consumed by every level via the @sfe/workbook alias
 ├── apps/
+│   ├── workbook-hub/             # ⭐ ALL levels in one app (navigate between levels)
+│   │   └── src/levels.ts         # aggregates every level's LEVEL registry
 │   ├── level-1-fundamentals/     # ✅ Level 1 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/  # per concept: doc.md + Demo.tsx + Exercise.tsx + index.ts
 │   ├── level-2-react-rendering/  # ✅ Level 2 SPA workbook (10 concepts)
@@ -29,9 +31,11 @@ senior-front-end-topics/
 │       └── src/concepts/<slug>/
 ```
 
-The reusable workbook engine lives in `packages/workbook` (`@sfe/workbook`). Each level app only
-provides its own `concepts/` + `LevelMeta` and renders `<WorkbookApp level={LEVEL} />`. New levels
-are new workspace apps following the same template.
+The reusable workbook engine lives in `packages/workbook` (`@sfe/workbook`). Each level app
+provides its own `concepts/` + `LevelMeta` and renders `<WorkbookApp level={LEVEL} />`; the
+**hub** passes all of them at once (`<WorkbookApp levels={LEVELS} />`) and gets cross-level
+navigation, a level switcher sidebar, and routes like `/#/3/layout-thrashing`. New levels are new
+workspace apps following the same template — plus one import line in the hub's `levels.ts`.
 
 ## Running it
 
@@ -39,7 +43,8 @@ Requires **Bun ≥ 1.3**.
 
 ```bash
 bun install           # install deps for the whole workspace
-bun run dev           # run Level 1 (Vite dev server)
+bun run dev           # ⭐ run the HUB (all levels in one app)
+bun run dev:l1        # run Level 1 standalone
 bun run dev:l2        # run Level 2
 bun run dev:l3        # run Level 3
 bun run dev:l4        # run Level 4

@@ -7,16 +7,16 @@ import {
   IconPencil,
 } from '@tabler/icons-react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useLevel } from './context';
+import { useWorkbook } from './context';
 import { DocView } from './DocView';
 
 export function ConceptPage() {
-  const level = useLevel();
+  const { level, base } = useWorkbook();
   const { slug } = useParams();
   const navigate = useNavigate();
 
   const index = level.concepts.findIndex((c) => c.slug === slug);
-  if (index === -1) return <Navigate to="/" replace />;
+  if (index === -1) return <Navigate to={base || '/'} replace />;
 
   const concept = level.concepts[index];
   const prev = index > 0 ? level.concepts[index - 1] : null;
@@ -74,7 +74,7 @@ export function ConceptPage() {
             variant="default"
             leftSection={<IconArrowLeft size={16} />}
             disabled={!prev}
-            onClick={() => prev && navigate(`/${prev.slug}`)}
+            onClick={() => prev && navigate(`${base}/${prev.slug}`)}
           >
             {prev ? prev.title : 'Start'}
           </Button>
@@ -82,7 +82,7 @@ export function ConceptPage() {
             variant="default"
             rightSection={<IconArrowRight size={16} />}
             disabled={!next}
-            onClick={() => next && navigate(`/${next.slug}`)}
+            onClick={() => next && navigate(`${base}/${next.slug}`)}
           >
             {next ? next.title : 'End of level'}
           </Button>

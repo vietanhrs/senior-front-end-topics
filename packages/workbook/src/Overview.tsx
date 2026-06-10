@@ -1,10 +1,10 @@
 import { Card, Container, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
-import { useLevel } from './context';
+import { useWorkbook } from './context';
 
 export function Overview() {
-  const level = useLevel();
+  const { level, base } = useWorkbook();
   const navigate = useNavigate();
   return (
     <Container size="lg" pb={80}>
@@ -31,7 +31,7 @@ export function Overview() {
             radius="md"
             padding="lg"
             className="transition-shadow hover:shadow-md cursor-pointer"
-            onClick={() => navigate(`/${c.slug}`)}
+            onClick={() => navigate(`${base}/${c.slug}`)}
           >
             <Group justify="space-between" align="flex-start">
               <Text size="xs" fw={700} c="indigo">

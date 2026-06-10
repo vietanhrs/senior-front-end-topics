@@ -1,0 +1,12 @@
+// The hub aggregates every level's registry from the sibling workspace apps.
+// Each LEVEL is plain data (LevelMeta) + React components, all built on the
+// same @sfe/workbook engine and identical tooling, so importing across app
+// boundaries inside the monorepo is safe.
+import type { LevelMeta } from '@sfe/workbook';
+import { LEVEL as level1 } from '../../level-1-fundamentals/src/concepts';
+import { LEVEL as level2 } from '../../level-2-react-rendering/src/concepts';
+import { LEVEL as level3 } from '../../level-3-browser-performance/src/concepts';
+import { LEVEL as level4 } from '../../level-4-data-state/src/concepts';
+import { LEVEL as level5 } from '../../level-5-caching-networking/src/concepts';
+
+export const LEVELS: LevelMeta[] = [level1, level2, level3, level4, level5];
