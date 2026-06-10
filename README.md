@@ -27,7 +27,9 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-4-data-state/       # ✅ Level 4 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-5-caching-networking/ # ✅ Level 5 SPA workbook (10 concepts)
+│   ├── level-5-caching-networking/ # ✅ Level 5 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── level-6-security/         # ✅ Level 6 SPA workbook (10 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -49,8 +51,9 @@ bun run dev:l2        # run Level 2
 bun run dev:l3        # run Level 3
 bun run dev:l4        # run Level 4
 bun run dev:l5        # run Level 5
+bun run dev:l6        # run Level 6
 # or directly:
-bun run --filter level-5-caching-networking dev
+bun run --filter level-6-security dev
 bun run --filter '*' build      # build everything
 ```
 
@@ -63,7 +66,7 @@ bun run --filter '*' build      # build everything
 | 3 | Browser Performance | ✅ Done |
 | 4 | Advanced Data & State management | ✅ Done |
 | 5 | Caching & Networking strategies | ✅ Done |
-| 6 | Security | 🔜 |
+| 6 | Security | ✅ Done |
 | 7–10 | (to be added later) | 🔜 |
 
 ### Level 1 — Fundamentals (10 concepts)
@@ -130,6 +133,19 @@ bun run --filter '*' build      # build everything
 8. **Priority hints** — `fetchpriority`: promote the LCP image, demote the noise.
 9. **SameSite cookie modes** — Strict/Lax/None on *sites* (eTLD+1); the Lax GET exception.
 10. **Speculative prerendering** — Speculation Rules; prefetch/prerender on hover; gate analytics.
+
+### Level 6 — Security (10 concepts)
+
+1. **CSP (Content Security Policy)** — content-source allow-list; strict nonce + strict-dynamic.
+2. **Trusted Types** — DOM XSS sinks reject raw strings; sanitize in one auditable policy.
+3. **DOM clobbering** — script-less `id`/`name` injection overwrites JS globals.
+4. **Prototype pollution** — `__proto__` keys in a merge mutate every object.
+5. **Same-origin policy nuances** — origin = (scheme, host, port); reads blocked, sends allowed.
+6. **Service Worker lifecycle traps** — "stuck in waiting", skipWaiting/claim, cache versioning.
+7. **SharedArrayBuffer** — true shared memory; gated by cross-origin isolation; needs Atomics.
+8. **Transferable objects** — zero-copy ArrayBuffer handoff; the sender buffer detaches.
+9. **CORS preflight internals** — inside the OPTIONS exchange; credentials rules; Max-Age.
+10. **Offline conflict resolution** — LWW vs CRDT merge; version vectors detect concurrency.
 
 ## Tech stack
 
