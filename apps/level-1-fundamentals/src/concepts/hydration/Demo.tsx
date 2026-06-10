@@ -40,9 +40,9 @@ export function Demo() {
 
   useEffect(() => {
     let cancelled = false;
-    import('react-dom/server').then(({ renderToStaticMarkup }) => {
+    import('react-dom/server').then(({ renderToString }) => {
       if (!cancelled) {
-        setServerHtml(renderToStaticMarkup(<HydratedCounter token={serverValue} />));
+        setServerHtml(renderToString(<HydratedCounter token={serverValue} />));
       }
     });
     return () => {
