@@ -17,15 +17,6 @@ bun run --filter level-1-fundamentals build    # type-check + production build
 src/
 ├── main.tsx               # MantineProvider + mount; gathers all CSS imports
 ├── index.css              # CSS layer order: @layer mantine, tw-utils (Tailwind doesn't reset Mantine)
-├── App.tsx                # createHashRouter
-├── workbook/              # reusable "engine" for later levels
-│   ├── types.ts           # ConceptModule, LevelMeta
-│   ├── curriculum.ts      # full roadmap (shown in the sidebar)
-│   ├── Layout.tsx         # AppShell + nav
-│   ├── Overview.tsx       # overview page
-│   ├── ConceptPage.tsx    # Theory / Demo / Exercise tabs + prev/next navigation
-│   ├── DocView.tsx        # markdown renderer (react-markdown + Mantine CodeHighlight)
-│   └── ui.tsx             # DemoCard, Callout, LogConsole+useLogger, SolutionReveal
 └── concepts/
     ├── index.ts           # LEVEL registry (assembles the 10 concepts)
     └── <slug>/
@@ -33,6 +24,16 @@ src/
         ├── Demo.tsx       # interactive demo
         ├── Exercise.tsx   # exercise + solution
         └── index.ts       # exports a ConceptModule
+
+packages/workbook/src/
+├── WorkbookApp.tsx        # hash-router app shell shared by every level
+├── Layout.tsx             # AppShell + nav
+├── Overview.tsx           # overview page
+├── ConceptPage.tsx        # Theory / Demo / Exercise tabs + prev/next navigation
+├── DocView.tsx            # markdown renderer (react-markdown + Mantine CodeHighlight)
+├── curriculum.ts          # full roadmap (shown in the sidebar)
+├── types.ts               # ConceptModule, LevelMeta
+└── ui.tsx                 # DemoCard, Callout, LogConsole+useLogger, SolutionReveal
 ```
 
 ## Adding a new concept
@@ -42,6 +43,9 @@ src/
 3. Add it to the `concepts` array in `src/concepts/index.ts`.
 
 Layout, routing, tabs, and the doc renderer apply automatically — nothing else to touch.
+
+The workbook engine lives in the shared `@sfe/workbook` package so all level apps and the hub use
+the same navigation, rendering, and UI primitives.
 
 ## Notable technical details
 

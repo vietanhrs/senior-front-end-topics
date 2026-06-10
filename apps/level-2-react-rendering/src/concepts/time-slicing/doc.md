@@ -24,16 +24,17 @@ Synchronous (blocking):
   ▲ click ignored, animation stalls
 
 Time-sliced (concurrent):
-  │■■■■│ │■■■■│ │■■■■│ │■■■■│ ...     ← ~5ms slices, browser breathes between
+  │■■■■│ │■■■■│ │■■■■│ │■■■■│ ...     ← short slices, browser breathes between
         ▲ paint  ▲ handle input   ▲ animation frame runs
 ```
 
 ## How React decides to yield
 
 React renders work units (fibers) in a loop and periodically checks a "should I yield?" signal
-(roughly every 5ms). If the time budget for the frame is used up — or a higher-priority update
-arrives — React **pauses**, lets the browser do its thing, and **resumes** (or restarts) later.
-Under the hood it yields via a `MessageChannel`-based scheduler (a macrotask), not by blocking.
+after a small time budget. If the budget is used up — or a higher-priority update arrives —
+React **pauses**, lets the browser do its thing, and **resumes** (or restarts) later. Current
+React implementations use a scheduler built on browser task primitives, but the exact budget and
+mechanism are implementation details, not public API contracts.
 
 > Key limitation: only the **render phase** is sliceable. The **commit phase** (applying DOM
 > mutations) is synchronous and atomic. So slicing helps when the *render* is expensive (lots of
@@ -55,7 +56,7 @@ synchronously so they feel instant. That's intentional.
 
 ## Senior checklist
 
-- Time slicing = render an update in ~5ms chunks across frames, yielding to the browser between.
+- Time slicing = render an update in short chunks across frames, yielding to the browser between.
 - Enabled by Fiber's interruptibility; you opt in via transitions / deferred values.
 - Only the render phase is sliceable; commit is atomic — huge DOM still needs virtualization.
 - It makes work **non-blocking**, not faster — combine with memoization/virtualization for big lists.

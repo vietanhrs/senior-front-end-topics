@@ -20,8 +20,9 @@ LCP element, or that the analytics call is junk-priority.
 ## `fetchpriority`: telling the browser what matters
 
 **Priority hints** let you adjust priority *within* those heuristics: `fetchpriority="high" |
-"low" | "auto"` on `<img>`, `<link>`, `<script>`, `<iframe>` — and `priority: 'high' | 'low' |
-'auto'` on `fetch()`:
+"low" | "auto"` on priority-aware elements such as `<img>`, `<link>`, and `<script>`. Some
+browsers also expose `priority: 'high' | 'low' | 'auto'` on `fetch()` / `RequestInit`, but treat
+that as progressive enhancement because support is newer and not universal:
 
 ```html
 <!-- LCP hero: images default to Low until layout — start it High immediately -->
@@ -43,6 +44,10 @@ fetch('/analytics', { priority: 'low' });
 
 It's a **hint, not a command** — the browser may ignore it; unsupported browsers just skip the
 attribute (safe progressive enhancement).
+
+Avoid teaching this as a universal attribute for every fetch-producing element. Check current
+browser support before using it on less common elements, and always verify the actual request
+priority in DevTools.
 
 ## The flagship use case: LCP images
 
@@ -72,7 +77,8 @@ for what matters.
 
 ## Senior checklist
 
-- Browsers schedule by heuristic priority; `fetchpriority` adjusts it for elements & `fetch()`.
+- Browsers schedule by heuristic priority; `fetchpriority` adjusts supported elements and some
+  `fetch()` calls.
 - #1 win: `fetchpriority="high"` on the LCP image (skips the Low-until-layout phase).
 - Demote competing noise (`low` on analytics, below-fold media) — as valuable as promoting.
 - It's a hint; verify in the Network panel's Priority column. Don't mark everything high.
