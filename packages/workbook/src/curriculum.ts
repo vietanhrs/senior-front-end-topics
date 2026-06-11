@@ -102,4 +102,20 @@ export const ROADMAP: RoadmapLevel[] = [
       'Offline conflict resolution',
     ],
   },
+  {
+    level: 7,
+    title: 'Web Platform Internals',
+    concepts: [
+      'Island architecture',
+      'Partial hydration',
+      'Streaming SSR',
+      'Shadow DOM',
+      'Custom elements lifecycle',
+      'Web components interoperability',
+      'IntersectionObserver internals',
+      'ResizeObserver loop limits',
+      'MutationObserver cost',
+      'OffscreenCanvas',
+    ],
+  },
 ];

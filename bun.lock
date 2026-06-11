@@ -155,6 +155,31 @@
         "vite": "^6.0.0",
       },
     },
+    "apps/level-7-web-platform-internals": {
+      "name": "level-7-web-platform-internals",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mantine/code-highlight": "^8.0.0",
+        "@mantine/core": "^8.0.0",
+        "@mantine/hooks": "^8.0.0",
+        "@sfe/workbook": "workspace:*",
+        "@tabler/icons-react": "^3.0.0",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-markdown": "^9.0.0",
+        "react-router-dom": "^7.0.0",
+        "remark-gfm": "^4.0.0",
+      },
+      "devDependencies": {
+        "@tailwindcss/vite": "^4.0.0",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@vitejs/plugin-react": "^4.3.0",
+        "tailwindcss": "^4.0.0",
+        "typescript": "^5.6.0",
+        "vite": "^6.0.0",
+      },
+    },
     "apps/workbook-hub": {
       "name": "workbook-hub",
       "version": "0.1.0",
@@ -539,6 +564,8 @@
     "level-5-caching-networking": ["level-5-caching-networking@workspace:apps/level-5-caching-networking"],
 
     "level-6-security": ["level-6-security@workspace:apps/level-6-security"],
+
+    "level-7-web-platform-internals": ["level-7-web-platform-internals@workspace:apps/level-7-web-platform-internals"],
 
     "lightningcss": ["lightningcss@1.32.0", "", { "dependencies": { "detect-libc": "^2.0.3" }, "optionalDependencies": { "lightningcss-android-arm64": "1.32.0", "lightningcss-darwin-arm64": "1.32.0", "lightningcss-darwin-x64": "1.32.0", "lightningcss-freebsd-x64": "1.32.0", "lightningcss-linux-arm-gnueabihf": "1.32.0", "lightningcss-linux-arm64-gnu": "1.32.0", "lightningcss-linux-arm64-musl": "1.32.0", "lightningcss-linux-x64-gnu": "1.32.0", "lightningcss-linux-x64-musl": "1.32.0", "lightningcss-win32-arm64-msvc": "1.32.0", "lightningcss-win32-x64-msvc": "1.32.0" } }, "sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ=="],
 
