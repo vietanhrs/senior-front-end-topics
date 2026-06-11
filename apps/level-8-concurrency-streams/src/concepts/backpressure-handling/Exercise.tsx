@@ -28,73 +28,93 @@ export function Exercise() {
     <Stack gap="md">
       <DemoCard
         title="Exercise: apply backpressure to the firehose"
-        description="Messages arrive faster than process() handles them, and queue grows without limit. Bound the buffer and push back on the producer — and prefer the Streams API so backpressure propagates for free."
+        description="Messages arrive faster than process() handles them, and queue grows without limit. The catch: a raw browser WebSocket has NO transport backpressure — there is no socket.pause(). So you must either use WebSocketStream or push back at the application level."
       >
         <CodeHighlight code={buggy} language="js" radius="md" />
       </DemoCard>
 
+      <Callout kind="warning" title="Gotcha: you can't pause a browser WebSocket">
+        Browser <code>WebSocket</code> has no <code>pause()</code>/<code>resume()</code> (that's a
+        Node stream API). <code>onmessage</code> fires for every frame as fast as they arrive, so
+        wrapping it in a <code>ReadableStream</code> does <b>not</b> create backpressure —{' '}
+        <code>enqueue</code> keeps running past <code>desiredSize ≤ 0</code> and the internal queue
+        still grows unbounded.
+      </Callout>
+
       <Callout kind="tip" title="Hint">
-        Two routes: (1) wrap the source in a <code>ReadableStream</code> with a{' '}
-        <code>highWaterMark</code> and <code>pipeTo</code> a <code>WritableStream</code> that does the
-        work — backpressure is automatic and you <code>await writer.write()</code>; or (2) keep the
-        manual queue but make it <b>bounded</b> — pause the socket (or drop, with a counter) when it's
-        full, resume when it drains.
+        Real options: (1) <code>WebSocketStream</code> (Chromium) exposes a <code>readable</code> whose
+        read rate governs flow — <code>pipeTo</code> a slow sink and backpressure reaches TCP; (2) for
+        a plain <code>WebSocket</code>, do <b>application-level</b> flow control — a bounded buffer that{' '}
+        <b>drops/coalesces</b> when full (lossy), or sends the server a "slow down"/credit message, or{' '}
+        <code>close()</code> + reconnect as a last resort.
       </Callout>
 
       <SolutionReveal
         language="js"
-        code={`// Preferred: let the Streams API handle backpressure end-to-end.
-function pipe(socket, process) {
-  const stream = new ReadableStream(
-    {
-      start(controller) {
-        socket.onmessage = (e) => {
-          controller.enqueue(e.data);
-          // Push source: respect demand. When the queue is full, pause the socket.
-          if ((controller.desiredSize ?? 0) <= 0) socket.pause?.();
-        };
-      },
-      pull() { socket.resume?.(); },     // consumer wants more → let it flow again
-      cancel() { socket.close(); },
-    },
-    new CountQueuingStrategy({ highWaterMark: 16 }),
-  );
+        code={`// A raw browser WebSocket has NO transport backpressure: onmessage fires for
+// every frame as fast as the server sends, and there is no socket.pause(). So
+// wrapping it in a ReadableStream does NOT help — enqueue runs past desiredSize<=0
+// and the queue grows unbounded. Two correct approaches:
 
-  const sink = new WritableStream(
-    { write(chunk) { return process(chunk); } }, // returning the promise IS backpressure
-    new CountQueuingStrategy({ highWaterMark: 1 }),
+// 1) PREFERRED (Chromium): WebSocketStream gives a real readable stream whose
+//    read rate governs flow — a slow sink makes the connection apply flow control
+//    to the server (genuine transport backpressure).
+async function pipeWebSocketStream(url, process, { signal } = {}) {
+  const wss = new WebSocketStream(url, { signal });
+  const { readable } = await wss.opened;          // ReadableStream of messages
+  await readable.pipeTo(
+    new WritableStream(
+      { write(chunk) { return process(chunk); } }, // returning the promise = backpressure
+      new CountQueuingStrategy({ highWaterMark: 16 }),
+    ),
+    { signal },
   );
-
-  return stream.pipeTo(sink); // desiredSize/await propagate through the whole pipe
+  // When the sink is slow, the stream stops reading → TCP backpressure to the server.
 }
 
-// Manual fallback when you can't use Streams: a BOUNDED queue.
-function pipeBounded(socket, process, limit = 1000) {
+// 2) PLAIN WebSocket fallback: you cannot stop onmessage, so make backpressure
+//    EXPLICIT at the application level. Bound the buffer and pick a policy when full.
+function pipeAppFlowControl(socket, process, { limit = 1000 } = {}) {
   const queue = [];
-  let dropped = 0;
   let draining = false;
+  let dropped = 0;
+  let asked = false; // have we asked the server to slow down?
+
   socket.onmessage = (e) => {
     if (queue.length >= limit) {
-      socket.pause?.();              // or: dropped++ for lossy backpressure
-      if (!socket.pause) { dropped++; return; }
+      // Option A — lossy: drop, or COALESCE (keep only the latest snapshot).
+      dropped++;
+      // queue[queue.length - 1] = e.data;   // coalesce instead of dropping
+      // Option B — app-level flow control: tell the SERVER to back off.
+      if (!asked) { asked = true; socket.send(JSON.stringify({ type: 'slow-down' })); }
+      // Option C — last resort: close + reconnect with a resume cursor.
+      // socket.close(1013 /* try again later */);
+      return;
     }
     queue.push(e.data);
     drain();
   };
+
   async function drain() {
     if (draining) return;
     draining = true;
     while (queue.length) {
       await process(queue.shift());
-      if (queue.length < limit / 2) socket.resume?.(); // hysteresis: resume when drained
+      if (asked && queue.length < limit / 2) {     // hysteresis: resume when drained
+        asked = false;
+        socket.send(JSON.stringify({ type: 'resume' }));
+      }
     }
     draining = false;
   }
 }
 
-// Why it's better: the buffer is bounded, so memory is bounded. The producer is
-// paused (or sheds load deliberately) instead of buffering infinitely, and the
-// Streams version propagates that signal through every stage automatically.`}
+// Why this is correct: the raw WebSocket can't be paused, so the only ways to
+// bound memory are real transport backpressure via WebSocketStream, or explicit
+// application-level control — drop/coalesce (lossy), a server slow-down protocol,
+// or close+reconnect. (The Streams API DOES give automatic backpressure when the
+// source genuinely supports it — e.g. fetch's response.body, a WebSocketStream,
+// or your own pull()-based source — just not a bare WebSocket.)`}
       />
     </Stack>
   );

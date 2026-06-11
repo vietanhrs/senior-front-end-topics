@@ -53,6 +53,14 @@ The same principle shows up everywhere concurrency does:
 - **Debounce / throttle / `requestAnimationFrame` coalescing** = lossy backpressure for UI events.
 - **TCP flow control & HTTP/2 flow-control windows** are backpressure at the transport layer.
 
+> **Watch out — not every "source" can be paused.** A backpressure signal only works if the producer
+> can actually act on it. A raw browser **`WebSocket` has no `pause()`/`resume()`**: `onmessage` fires
+> for every frame regardless, so wrapping it in a `ReadableStream` does **not** create backpressure
+> (`enqueue` keeps running past `desiredSize ≤ 0`). Use **`WebSocketStream`** (whose `readable` read
+> rate governs flow → real transport backpressure) or **application-level** flow control (bounded
+> buffer + drop/coalesce, a server slow-down/credit protocol, or close+reconnect). `fetch`'s
+> `response.body` and your own `pull()` sources *do* honor backpressure — a bare `WebSocket` doesn't.
+
 ## Senior checklist
 
 - Backpressure = consumer-to-producer "slow down" signal; the alternative is unbounded buffering or
