@@ -46,7 +46,11 @@ export function Exercise() {
     await pushToServer(note);
     await db.put('notes', { ...note, syncedAt: Date.now() });
   } catch {
-    await db.add('outbox', { type: 'saveNote', payload: note }); // durable queue
+    // durable queue. Store an EXPLICIT key (the client id) in the value so we can
+    // delete the exact entry after a successful replay. db.add with an
+    // auto-generated key would leave item.id undefined at flush time → the record
+    // is never deleted and replays forever.
+    await db.put('outbox', { id: note.id, type: 'saveNote', payload: note }); // keyPath: 'id'
     if ('sync' in (await navigator.serviceWorker?.ready ?? {})) {
       const reg = await navigator.serviceWorker.ready;
       await reg.sync.register('flush-outbox');   // SW flushes even if the tab closes
@@ -69,7 +73,7 @@ async function flushOutbox() {
   for (const item of await db.getAll('outbox')) {
     try {
       await pushToServer(item.payload);
-      await db.delete('outbox', item.id);
+      await db.delete('outbox', item.id);    // item.id is the key we stored above
       await db.put('notes', { ...item.payload, syncedAt: Date.now() });
     } catch { /* leave it queued; retry next sync */ }
   }
@@ -79,7 +83,9 @@ addEventListener('online', flushOutbox);
 // Why it's better: the note is saved locally and shown instantly regardless of
 // connectivity; offline writes are queued and replayed on reconnect (or by the SW
 // via Background Sync after the tab closes); and the idempotency key + upsert mean
-// retries/duplicate replays never create duplicate rows.`}
+// retries/duplicate replays never create duplicate rows. Storing the client id as
+// the outbox key (not an auto-increment) is what lets flush delete the exact
+// replayed entry — otherwise item.id is undefined and the queue never drains.`}
       />
     </Stack>
   );
