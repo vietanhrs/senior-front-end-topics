@@ -150,4 +150,20 @@ export const ROADMAP: RoadmapLevel[] = [
       'Pointer events model',
     ],
   },
+  {
+    level: 10,
+    title: 'Modern Frontend System Architecture',
+    concepts: [
+      'Edge rendering',
+      'Micro-frontend orchestration',
+      'Module Federation',
+      'WebAssembly integration',
+      'IndexedDB scaling strategy',
+      'Server Components architecture',
+      'Offline-first design',
+      'Conflict resolution models',
+      'Distributed UI consistency',
+      'Frontend system design trade-offs',
+    ],
+  },
 ];
