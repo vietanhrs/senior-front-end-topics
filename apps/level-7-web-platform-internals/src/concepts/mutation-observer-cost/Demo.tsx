@@ -14,6 +14,13 @@ export function Demo() {
   const [callbacks, setCallbacks] = useState(0);
   const [records, setRecords] = useState(0);
 
+  const observerInit: MutationObserverInit = {
+    childList: true,
+    subtree,
+    attributes: true,
+    ...(filterAttrs ? { attributeFilter: ['data-keep'] } : {}),
+  };
+
   // (Re)create the observer whenever the options change.
   useEffect(() => {
     const target = targetRef.current;
@@ -32,12 +39,7 @@ export function Demo() {
       );
     });
 
-    mo.observe(target, {
-      childList: true,
-      subtree,
-      attributes: true,
-      ...(filterAttrs ? { attributeFilter: ['data-keep'] } : {}),
-    });
+    mo.observe(target, observerInit);
     moRef.current = mo;
     log(
       `observing { childList, attributes, subtree:${subtree}${filterAttrs ? ", attributeFilter:['data-keep']" : ''} }`,
@@ -59,9 +61,9 @@ export function Demo() {
     // filter on, the noise writes generate no records at all.
     for (let i = 0; i < count; i++) {
       const node = document.createElement('span');
+      target.appendChild(node);
       node.setAttribute('data-keep', String(i));
       node.setAttribute('data-noise', String(i)); // dropped when attributeFilter is on
-      target.appendChild(node);
     }
     const t1 = performance.now();
     log(`performed ~${count * 3} DOM ops synchronously in ${(t1 - t0).toFixed(1)}ms`, 'micro');
@@ -69,7 +71,9 @@ export function Demo() {
 
     // Clear the test nodes next frame so the demo stays light.
     requestAnimationFrame(() => {
+      moRef.current?.disconnect();
       target.replaceChildren();
+      moRef.current?.observe(target, observerInit);
     });
   };
 
@@ -79,7 +83,7 @@ export function Demo() {
         Run a burst of thousands of DOM mutations. However many ops you do, the observer fires{' '}
         <b>one</b> microtask-timed callback carrying the whole record list — that loop is the real
         cost. Toggle <code>subtree</code> and <code>attributeFilter</code> and watch the record
-        count change: filtering out the <code>data-noise</code> writes roughly halves the records.
+        count change: filtering out the <code>data-noise</code> writes drops those attribute records.
       </Callout>
 
       <Group grow align="flex-end">
