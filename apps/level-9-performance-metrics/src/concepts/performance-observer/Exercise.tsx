@@ -48,7 +48,7 @@ export function Exercise() {
       for (const entry of list.getEntries()) handle(entry);
     });
     po.observe({ type, buffered: true });        // single type → buffered works
-    observers.push(po);
+    observers.push({ po, handle });              // keep the handler so flush can reuse it
   }
 
   watch('largest-contentful-paint', (e) => queue('LCP', e.startTime));
@@ -58,10 +58,13 @@ export function Exercise() {
 
   // Flush reliably when the page is backgrounded/closed (more reliable than
   // 'unload'/'beforeunload', which don't fire on mobile). Drain pending entries
-  // synchronously with takeRecords() so nothing in the buffer is lost.
+  // synchronously with takeRecords() — running them through the SAME handler so
+  // they're queued before the beacon, not silently dropped.
   const flush = () => {
     if (document.visibilityState !== 'hidden') return;
-    for (const po of observers) po.takeRecords().forEach(/* queue */);
+    for (const { po, handle } of observers) {
+      for (const entry of po.takeRecords()) handle(entry); // queue pending entries
+    }
     navigator.sendBeacon('/metrics', JSON.stringify(drainQueue()));
   };
   addEventListener('visibilitychange', flush);
