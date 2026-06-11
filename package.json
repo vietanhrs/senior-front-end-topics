@@ -17,6 +17,7 @@
     "dev:l5": "bun run --filter 'level-5-caching-networking' dev",
     "dev:l6": "bun run --filter 'level-6-security' dev",
     "dev:l7": "bun run --filter 'level-7-web-platform-internals' dev",
+    "dev:l8": "bun run --filter 'level-8-concurrency-streams' dev",
     "build": "bun run --filter '*' build",
     "test": "bun test",
     "typecheck": "bun run --filter '*' typecheck",

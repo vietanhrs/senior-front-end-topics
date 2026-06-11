@@ -31,7 +31,9 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-6-security/         # ✅ Level 6 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-7-web-platform-internals/ # ✅ Level 7 SPA workbook (10 concepts)
+│   ├── level-7-web-platform-internals/ # ✅ Level 7 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── level-8-concurrency-streams/ # ✅ Level 8 SPA workbook (10 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -55,8 +57,9 @@ bun run dev:l4        # run Level 4
 bun run dev:l5        # run Level 5
 bun run dev:l6        # run Level 6
 bun run dev:l7        # run Level 7
+bun run dev:l8        # run Level 8
 # or directly:
-bun run --filter level-7-web-platform-internals dev
+bun run --filter level-8-concurrency-streams dev
 bun run --filter '*' build      # build everything
 ```
 
@@ -71,7 +74,8 @@ bun run --filter '*' build      # build everything
 | 5 | Caching & Networking strategies | ✅ Done |
 | 6 | Security | ✅ Done |
 | 7 | Web Platform Internals | ✅ Done |
-| 8–10 | (to be added later) | 🔜 |
+| 8 | Concurrency & Streams | ✅ Done |
+| 9–10 | (to be added later) | 🔜 |
 
 ### Level 1 — Fundamentals (10 concepts)
 
@@ -163,6 +167,19 @@ bun run --filter '*' build      # build everything
 8. **ResizeObserver loop limits** — the "undelivered notifications" error; rAF-deferred fix.
 9. **MutationObserver cost** — batched DOM-change records; subtree/filter scope; self-trigger loops.
 10. **OffscreenCanvas** — transfer the canvas to a worker; run the whole rAF render loop off-thread.
+
+### Level 8 — Concurrency & Streams (10 concepts)
+
+1. **Task starvation** — a self-replenishing microtask chain starves timers, input, and paint.
+2. **Priority inversion in async code** — high work blocked on a lock held by low work; inheritance fix.
+3. **Scheduler internals** — min-heap by expiration, 5ms time slices, MessageChannel yielding.
+4. **Concurrent rendering tearing** — external store mutating mid-render; `useSyncExternalStore`.
+5. **Backpressure handling** — pull-based streams, `desiredSize`, bounded queues vs unbounded buffering.
+6. **Streaming SSR pipelines** — `renderToReadableStream` → transform → compress; shell-first, backpressure.
+7. **WebRTC basics** — signaling, offer/answer SDP, ICE/STUN/TURN, a real loopback DataChannel.
+8. **CRDT basics for collaboration** — commutative/associative/idempotent merges; G-Counter vs LWW.
+9. **Shared memory models** — SC-DRF, atomics as barriers, store-release/load-acquire, wait/notify.
+10. **Deterministic UI under async** — beat the stale-response race: latest-not-last, abort, idempotency.
 
 ## Tech stack
 
