@@ -9,13 +9,14 @@ const components: Components = {
   // so CodeHighlight (a block element) isn't nested illegally inside <pre>.
   pre: ({ children }) => <>{children}</>,
   code({ className, children, ...props }) {
-    const match = /language-(\w+)/.exec(className ?? '');
+    const match = /language-([^ ]+)/.exec(className ?? '');
     const text = String(children).replace(/\n$/, '');
-    if (match) {
+    const isBlock = Boolean(match) || String(children).includes('\n');
+    if (isBlock) {
       return (
         <CodeHighlight
           code={text}
-          language={match[1]}
+          language={match?.[1] ?? 'text'}
           my="md"
           radius="md"
           withCopyButton
