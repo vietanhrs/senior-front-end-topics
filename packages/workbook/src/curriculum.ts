@@ -118,4 +118,20 @@ export const ROADMAP: RoadmapLevel[] = [
       'OffscreenCanvas',
     ],
   },
+  {
+    level: 8,
+    title: 'Concurrency & Streams',
+    concepts: [
+      'Task starvation',
+      'Priority inversion in async code',
+      'Scheduler internals',
+      'Concurrent rendering tearing',
+      'Backpressure handling',
+      'Streaming SSR pipelines',
+      'WebRTC basics',
+      'CRDT basics for collaboration',
+      'Shared memory models',
+      'Deterministic UI under async',
+    ],
+  },
 ];
