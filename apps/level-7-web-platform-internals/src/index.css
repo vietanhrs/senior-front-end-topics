@@ -11,16 +11,8 @@
 @import 'tailwindcss/theme.css' layer(tw-utils);
 @import 'tailwindcss/utilities.css' layer(tw-utils);
 
-/* The hub renders every level's demos, so Tailwind must scan all of them. */
 @source './**/*.{ts,tsx,html}';
 @source '../../../packages/workbook/src/**/*.{ts,tsx}';
-@source '../../level-1-fundamentals/src/**/*.{ts,tsx}';
-@source '../../level-2-react-rendering/src/**/*.{ts,tsx}';
-@source '../../level-3-browser-performance/src/**/*.{ts,tsx}';
-@source '../../level-4-data-state/src/**/*.{ts,tsx}';
-@source '../../level-5-caching-networking/src/**/*.{ts,tsx}';
-@source '../../level-6-security/src/**/*.{ts,tsx}';
-@source '../../level-7-web-platform-internals/src/**/*.{ts,tsx}';
 
 html,
 body,

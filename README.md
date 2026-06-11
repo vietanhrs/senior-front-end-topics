@@ -29,7 +29,9 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-5-caching-networking/ # ✅ Level 5 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-6-security/         # ✅ Level 6 SPA workbook (10 concepts)
+│   ├── level-6-security/         # ✅ Level 6 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── level-7-web-platform-internals/ # ✅ Level 7 SPA workbook (10 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -52,8 +54,9 @@ bun run dev:l3        # run Level 3
 bun run dev:l4        # run Level 4
 bun run dev:l5        # run Level 5
 bun run dev:l6        # run Level 6
+bun run dev:l7        # run Level 7
 # or directly:
-bun run --filter level-6-security dev
+bun run --filter level-7-web-platform-internals dev
 bun run --filter '*' build      # build everything
 ```
 
@@ -67,7 +70,8 @@ bun run --filter '*' build      # build everything
 | 4 | Advanced Data & State management | ✅ Done |
 | 5 | Caching & Networking strategies | ✅ Done |
 | 6 | Security | ✅ Done |
-| 7–10 | (to be added later) | 🔜 |
+| 7 | Web Platform Internals | ✅ Done |
+| 8–10 | (to be added later) | 🔜 |
 
 ### Level 1 — Fundamentals (10 concepts)
 
@@ -146,6 +150,19 @@ bun run --filter '*' build      # build everything
 8. **Transferable objects** — zero-copy ArrayBuffer handoff; the sender buffer detaches.
 9. **CORS preflight internals** — inside the OPTIONS exchange; credentials rules; Max-Age.
 10. **Offline conflict resolution** — LWW vs CRDT merge; version vectors detect concurrency.
+
+### Level 7 — Web Platform Internals (10 concepts)
+
+1. **Island architecture** — ship static HTML; hydrate only interactive islands as separate roots.
+2. **Partial hydration** — hydrate per-trigger (eager/idle/visible/interaction), not the whole page.
+3. **Streaming SSR** — flush a shell early, stream out-of-order Suspense chunks as data resolves.
+4. **Shadow DOM** — encapsulated DOM + scoped styles; slots project light DOM; `::part` styling.
+5. **Custom elements lifecycle** — `connected`/`attributeChanged`/`adopted`/`disconnected` callbacks.
+6. **Web components interoperability** — properties vs attributes, `CustomEvent`, framework binding.
+7. **IntersectionObserver internals** — async, batched visibility; thresholds, rootMargin, geometry.
+8. **ResizeObserver loop limits** — the "undelivered notifications" error; rAF-deferred fix.
+9. **MutationObserver cost** — batched DOM-change records; subtree/filter scope; self-trigger loops.
+10. **OffscreenCanvas** — transfer the canvas to a worker; run the whole rAF render loop off-thread.
 
 ## Tech stack
 

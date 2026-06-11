@@ -112,6 +112,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                     to={`/${id}/${c.slug}`}
                     active={location.pathname === `/${id}/${c.slug}`}
                     onClick={close}
+                    pl={28}
                     label={
                       <Group gap={6} wrap="nowrap">
                         <Text size="xs" c="dimmed" w={18}>
