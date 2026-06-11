@@ -33,7 +33,9 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-7-web-platform-internals/ # ✅ Level 7 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-8-concurrency-streams/ # ✅ Level 8 SPA workbook (10 concepts)
+│   ├── level-8-concurrency-streams/ # ✅ Level 8 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── level-9-performance-metrics/ # ✅ Level 9 SPA workbook (10 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -58,8 +60,9 @@ bun run dev:l5        # run Level 5
 bun run dev:l6        # run Level 6
 bun run dev:l7        # run Level 7
 bun run dev:l8        # run Level 8
+bun run dev:l9        # run Level 9
 # or directly:
-bun run --filter level-8-concurrency-streams dev
+bun run --filter level-9-performance-metrics dev
 bun run --filter '*' build      # build everything
 ```
 
@@ -75,7 +78,8 @@ bun run --filter '*' build      # build everything
 | 6 | Security | ✅ Done |
 | 7 | Web Platform Internals | ✅ Done |
 | 8 | Concurrency & Streams | ✅ Done |
-| 9–10 | (to be added later) | 🔜 |
+| 9 | Performance Metrics in Practice | ✅ Done |
+| 10 | (to be added later) | 🔜 |
 
 ### Level 1 — Fundamentals (10 concepts)
 
@@ -180,6 +184,19 @@ bun run --filter '*' build      # build everything
 8. **CRDT basics for collaboration** — commutative/associative/idempotent merges; G-Counter vs LWW.
 9. **Shared memory models** — SC-DRF, atomics as barriers, store-release/load-acquire, wait/notify.
 10. **Deterministic UI under async** — beat the stale-response race: latest-not-last, abort, idempotency.
+
+### Level 9 — Performance Metrics in Practice (10 concepts)
+
+1. **First Input Delay (FID)** — input-delay-only of the first interaction; why a busy thread inflates it.
+2. **Interaction to Next Paint (INP)** — full interaction latency (delay + processing + presentation).
+3. **Cumulative Layout Shift (CLS)** — impact × distance in session windows; the `hadRecentInput` rule.
+4. **Largest Contentful Paint (LCP)** — largest viewport element; evolving candidates; the four sub-parts.
+5. **PerformanceObserver API** — one async, buffered API behind every metric; entry types, `takeRecords`.
+6. **Long Tasks API** — tasks > 50ms block the thread; Total Blocking Time; LoAF attribution.
+7. **Browser memory leak detection** — detached DOM, listeners, caches; snapshots, Performance Monitor, WeakMap.
+8. **Accessibility tree** — role + name + state for assistive tech; accname priority; pruning.
+9. **ARIA live regions internals** — polite vs assertive, status/alert, atomic/relevant, register-first.
+10. **Pointer events model** — unified mouse/touch/pen; pointer capture, coalesced events, `touch-action`.
 
 ## Tech stack
 

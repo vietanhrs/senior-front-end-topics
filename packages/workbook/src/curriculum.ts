@@ -134,4 +134,20 @@ export const ROADMAP: RoadmapLevel[] = [
       'Deterministic UI under async',
     ],
   },
+  {
+    level: 9,
+    title: 'Performance Metrics in Practice',
+    concepts: [
+      'First Input Delay (FID)',
+      'Interaction to Next Paint (INP)',
+      'Cumulative Layout Shift (CLS)',
+      'Largest Contentful Paint (LCP)',
+      'PerformanceObserver API',
+      'Long Tasks API',
+      'Browser memory leak detection',
+      'Accessibility tree',
+      'ARIA live regions internals',
+      'Pointer events model',
+    ],
+  },
 ];

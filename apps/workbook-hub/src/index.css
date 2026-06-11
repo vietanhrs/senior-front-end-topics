@@ -22,6 +22,7 @@
 @source '../../level-6-security/src/**/*.{ts,tsx}';
 @source '../../level-7-web-platform-internals/src/**/*.{ts,tsx}';
 @source '../../level-8-concurrency-streams/src/**/*.{ts,tsx}';
+@source '../../level-9-performance-metrics/src/**/*.{ts,tsx}';
 
 html,
 body,
