@@ -18,6 +18,7 @@
     "dev:l6": "bun run --filter 'level-6-security' dev",
     "dev:l7": "bun run --filter 'level-7-web-platform-internals' dev",
     "dev:l8": "bun run --filter 'level-8-concurrency-streams' dev",
+    "dev:l9": "bun run --filter 'level-9-performance-metrics' dev",
     "build": "bun run --filter '*' build",
     "test": "bun test",
     "typecheck": "bun run --filter '*' typecheck",
