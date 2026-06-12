@@ -37,7 +37,9 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-9-performance-metrics/ # ✅ Level 9 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-10-frontend-architecture/ # ✅ Level 10 SPA workbook (10 concepts)
+│   ├── level-10-frontend-architecture/ # ✅ Level 10 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── appendix-react-patterns/    # ✅ Appendix SPA workbook (14 React design patterns)
 │       └── src/concepts/<slug>/
 ```
 
@@ -64,6 +66,7 @@ bun run dev:l7        # run Level 7
 bun run dev:l8        # run Level 8
 bun run dev:l9        # run Level 9
 bun run dev:l10       # run Level 10
+bun run dev:appendix  # run the React Design Patterns appendix
 # or directly:
 bun run --filter level-10-frontend-architecture dev
 bun run --filter '*' build      # build everything
@@ -83,6 +86,7 @@ bun run --filter '*' build      # build everything
 | 8 | Concurrency & Streams | ✅ Done |
 | 9 | Performance Metrics in Practice | ✅ Done |
 | 10 | Modern Frontend System Architecture | ✅ Done |
+| Appendix | React Design Patterns (14 patterns) | ✅ Done |
 
 ### Level 1 — Fundamentals (10 concepts)
 
@@ -213,6 +217,23 @@ bun run --filter '*' build      # build everything
 8. **Conflict resolution models** — detect (version vectors) vs resolve (LWW/merge/CRDT/manual).
 9. **Distributed UI consistency** — tabs/devices as replicas; consistency models; BroadcastChannel + Web Locks.
 10. **Frontend system design trade-offs** — drive architecture from constraints; name what you trade away.
+
+### Appendix — React Design Patterns (14 patterns)
+
+1. **Container / Presentational** — pure prop-driven view vs data/logic (today: a custom hook).
+2. **Custom Hooks** — extract reusable stateful logic; shared logic, independent per-call state.
+3. **Compound Components** — pieces sharing implicit context state, composed as children (Tabs.*).
+4. **Render Props** — a function-as-prop that delegates rendering; when hooks supersede it.
+5. **Higher-Order Components (HOC)** — component→component wrappers; hygiene & why hooks won.
+6. **Provider Pattern** — Context + typed hook; memoized values, split contexts for re-renders.
+7. **Controlled vs Uncontrolled** — who owns the value; never switch modes; support both.
+8. **State Reducer Pattern** — inversion of control over every state transition.
+9. **Props Getters** — getters returning handler+ARIA bundles, composing consumer handlers.
+10. **Composition over Configuration** — children + slots + specialization-by-wrapping.
+11. **Ref Forwarding & Imperative Handle** — pass refs through; expose a minimal imperative API.
+12. **Error Boundaries** — catch render errors, scoped fallbacks + reset; async needs try/catch.
+13. **Lazy Loading & Suspense** — on-demand chunks (and data/streaming); error boundary + preload.
+14. **Portals** — render to body to escape overflow/z-index; events bubble through the React tree.
 
 ## Tech stack
 

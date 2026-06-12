@@ -24,6 +24,7 @@
 @source '../../level-8-concurrency-streams/src/**/*.{ts,tsx}';
 @source '../../level-9-performance-metrics/src/**/*.{ts,tsx}';
 @source '../../level-10-frontend-architecture/src/**/*.{ts,tsx}';
+@source '../../appendix-react-patterns/src/**/*.{ts,tsx}';
 
 html,
 body,
