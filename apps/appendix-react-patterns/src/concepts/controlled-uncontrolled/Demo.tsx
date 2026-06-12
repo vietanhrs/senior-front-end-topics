@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Badge, Button, Group, Stack, Text } from '@mantine/core';
 import { Callout, DemoCard } from '@sfe/workbook';
 
@@ -15,9 +15,21 @@ function Rating({
   onChange?: (v: number) => void;
   max?: number;
 }) {
-  const isControlled = value !== undefined;
+  // Decide controlledness ONCE, on the first render, and keep it stable for the
+  // component's life — so it can never flip uncontrolled⇄controlled mid-life.
+  const isControlled = useRef(value !== undefined).current;
   const [internal, setInternal] = useState(defaultValue);
-  const current = isControlled ? value : internal;
+
+  // Dev-only guard: warn if a consumer violates the rule by toggling `value`.
+  useEffect(() => {
+    if (isControlled !== (value !== undefined)) {
+      console.error(
+        `Rating: switching between controlled (value defined) and uncontrolled (value undefined) is not supported. It started ${isControlled ? 'controlled' : 'uncontrolled'}.`,
+      );
+    }
+  }, [isControlled, value]);
+
+  const current = isControlled ? value ?? internal : internal;
   const set = (v: number) => {
     if (!isControlled) setInternal(v);
     onChange?.(v);
