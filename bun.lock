@@ -30,6 +30,31 @@
         "vite": "^6.0.0",
       },
     },
+    "apps/level-10-frontend-architecture": {
+      "name": "level-10-frontend-architecture",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mantine/code-highlight": "^8.0.0",
+        "@mantine/core": "^8.0.0",
+        "@mantine/hooks": "^8.0.0",
+        "@sfe/workbook": "workspace:*",
+        "@tabler/icons-react": "^3.0.0",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-markdown": "^9.0.0",
+        "react-router-dom": "^7.0.0",
+        "remark-gfm": "^4.0.0",
+      },
+      "devDependencies": {
+        "@tailwindcss/vite": "^4.0.0",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@vitejs/plugin-react": "^4.3.0",
+        "tailwindcss": "^4.0.0",
+        "typescript": "^5.6.0",
+        "vite": "^6.0.0",
+      },
+    },
     "apps/level-2-react-rendering": {
       "name": "level-2-react-rendering",
       "version": "0.1.0",
@@ -604,6 +629,8 @@
     "json5": ["json5@2.2.3", "", { "bin": { "json5": "lib/cli.js" } }, "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="],
 
     "level-1-fundamentals": ["level-1-fundamentals@workspace:apps/level-1-fundamentals"],
+
+    "level-10-frontend-architecture": ["level-10-frontend-architecture@workspace:apps/level-10-frontend-architecture"],
 
     "level-2-react-rendering": ["level-2-react-rendering@workspace:apps/level-2-react-rendering"],
 

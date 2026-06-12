@@ -35,7 +35,9 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-8-concurrency-streams/ # ✅ Level 8 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-9-performance-metrics/ # ✅ Level 9 SPA workbook (10 concepts)
+│   ├── level-9-performance-metrics/ # ✅ Level 9 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── level-10-frontend-architecture/ # ✅ Level 10 SPA workbook (10 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -61,8 +63,9 @@ bun run dev:l6        # run Level 6
 bun run dev:l7        # run Level 7
 bun run dev:l8        # run Level 8
 bun run dev:l9        # run Level 9
+bun run dev:l10       # run Level 10
 # or directly:
-bun run --filter level-9-performance-metrics dev
+bun run --filter level-10-frontend-architecture dev
 bun run --filter '*' build      # build everything
 ```
 
@@ -79,7 +82,7 @@ bun run --filter '*' build      # build everything
 | 7 | Web Platform Internals | ✅ Done |
 | 8 | Concurrency & Streams | ✅ Done |
 | 9 | Performance Metrics in Practice | ✅ Done |
-| 10 | (to be added later) | 🔜 |
+| 10 | Modern Frontend System Architecture | ✅ Done |
 
 ### Level 1 — Fundamentals (10 concepts)
 
@@ -197,6 +200,19 @@ bun run --filter '*' build      # build everything
 8. **Accessibility tree** — role + name + state for assistive tech; accname priority; pruning.
 9. **ARIA live regions internals** — polite vs assertive, status/alert, atomic/relevant, register-first.
 10. **Pointer events model** — unified mouse/touch/pen; pointer capture, coalesced events, `touch-action`.
+
+### Level 10 — Modern Frontend System Architecture (10 concepts)
+
+1. **Edge rendering** — SSR/middleware on isolates at POPs near users; the data-gravity trap.
+2. **Micro-frontend orchestration** — independently deployed apps composed by a shell; failure isolation.
+3. **Module Federation** — runtime code sharing; host/remote/shared scope; React-as-singleton.
+4. **WebAssembly integration** — near-native co-processor; linear-memory marshalling; the boundary cost.
+5. **IndexedDB scaling strategy** — index your queries, batch writes in one tx, cursors, tx lifecycle.
+6. **Server Components architecture** — render-only-on-server, zero-JS; the `'use client'` boundary.
+7. **Offline-first design** — local store as source of truth; SW + IndexedDB + outbox + idempotent replay.
+8. **Conflict resolution models** — detect (version vectors) vs resolve (LWW/merge/CRDT/manual).
+9. **Distributed UI consistency** — tabs/devices as replicas; consistency models; BroadcastChannel + Web Locks.
+10. **Frontend system design trade-offs** — drive architecture from constraints; name what you trade away.
 
 ## Tech stack
 
