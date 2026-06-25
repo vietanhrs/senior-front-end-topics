@@ -28,7 +28,7 @@ to lanes.
 
 | Tier | Triggered by | Behavior |
 |---|---|---|
-| **Discrete / urgent** | click, keypress, input, submit | rendered synchronously-ish, never sliced; must feel instant |
+| **Discrete / urgent** | click, keypress, input, submit | highest priority; must feel instant |
 | **Continuous** | scroll, mousemove, drag | high, but coalesced |
 | **Default** | normal `setState`, network callbacks, timeouts | standard priority |
 | **Transition** | `startTransition` / `useTransition` | low, interruptible, time-sliced |
@@ -36,8 +36,10 @@ to lanes.
 | **Idle** | offscreen / lowest | only when nothing else is pending |
 
 The key rule: **urgent updates preempt transitions.** If React is mid-way through a transition
-render and you press a key, React abandons (or pauses) that render, processes the urgent update
-so the input stays responsive, then resumes/restarts the transition.
+render and you press a key, React can abandon or pause that render, process the urgent update
+so the input stays responsive, then resume or restart the transition. Exact flush timing is an
+implementation detail; use `flushSync` only when your code genuinely requires the DOM to be
+updated before the next line.
 
 ## Expressing priority in your code
 
@@ -45,8 +47,8 @@ so the input stays responsive, then resumes/restarts the transition.
 // Urgent (default): the input must update on every keystroke
 setQuery(value);
 
-// Low priority: this expensive update may be interrupted by urgent ones
-startTransition(() => setResults(filter(all, value)));
+// Low priority: this cheap state update drives expensive render work later
+startTransition(() => setResultsQuery(value));
 
 // Low priority value that lags behind without you owning the setter
 const deferred = useDeferredValue(query);

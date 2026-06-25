@@ -2,19 +2,18 @@ import { Stack } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
 import { Callout, DemoCard, SolutionReveal } from '@sfe/workbook';
 
-const buggy = `// Clicking "Apply" recomputes and renders a large, expensive visualization.
+const buggy = `// Clicking "Apply" renders a large, expensive visualization from rawData + filters.
 // The whole page freezes for ~300ms during the render. Make that render
 // non-blocking (time-sliced) and show a pending indicator — without making
-// the visualization itself cheaper.
+// the visualization component itself cheaper.
 function Dashboard({ rawData }) {
   const [filters, setFilters] = useState(defaultFilters);
-  const [view, setView] = useState(() => buildExpensiveView(rawData, defaultFilters));
 
   function apply(next) {
-    setFilters(next);
-    setView(buildExpensiveView(rawData, next)); // expensive -> blocks the thread
+    setFilters(next); // drives expensive render below
   }
 
+  const view = buildExpensiveView(rawData, filters);
   return <ExpensiveChart view={view} />;
 }`;
 
@@ -29,21 +28,26 @@ export function Exercise() {
       </DemoCard>
 
       <Callout kind="tip" title="Hint">
-        Wrap the non-urgent state update in <code>startTransition</code> from{' '}
-        <code>useTransition</code>. Remember: this slices the <i>render</i> phase. If the chart
-        commits tens of thousands of DOM nodes, you still need virtualization.
+        Wrap the cheap state update that drives the expensive render in{' '}
+        <code>startTransition</code> from <code>useTransition</code>. Remember: this slices the
+        <i> render</i> phase. If the chart commits tens of thousands of DOM nodes, you still need
+        virtualization.
       </Callout>
 
       <SolutionReveal
         code={`function Dashboard({ rawData }) {
   const [filters, setFilters] = useState(defaultFilters);
-  const [view, setView] = useState(() => buildExpensiveView(rawData, defaultFilters));
+  const [chartFilters, setChartFilters] = useState(defaultFilters);
   const [isPending, startTransition] = useTransition();
+  const view = useMemo(
+    () => buildExpensiveView(rawData, chartFilters),
+    [rawData, chartFilters],
+  );
 
   function apply(next) {
     setFilters(next);                 // urgent: update the controls immediately
     startTransition(() => {           // non-urgent: render can be sliced & interrupted
-      setView(buildExpensiveView(rawData, next));
+      setChartFilters(next);          // cheap state update that drives expensive render
     });
   }
 
@@ -59,6 +63,8 @@ export function Exercise() {
 }
 
 // Fixes: input/animations stay responsive (render no longer one long task).
+// Does NOT fix: a 300ms synchronous buildExpensiveView call inside the event
+// handler before setState — React cannot yield inside arbitrary JS.
 // Does NOT fix: a giant COMMIT (inserting huge DOM) — commit is atomic.
 // For that, virtualize the chart so only visible nodes are committed.`}
       />

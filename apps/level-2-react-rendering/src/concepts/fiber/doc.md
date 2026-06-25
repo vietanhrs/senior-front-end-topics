@@ -30,8 +30,16 @@ Parent ───────────── Child1 ──sibling──▶ Chi
 React traverses this structure iteratively (not via recursion), so it can stop after any fiber,
 check "do I still have time / has something more urgent come in?", and yield to the browser.
 
-Each fiber also stores: its `type`, `pendingProps`/`memoizedProps`, `memoizedState` (the hooks
-linked list), the effect flags, and `alternate` (its counterpart in the other tree, see below).
+Each fiber also stores: its `tag` (FunctionComponent, HostComponent, Suspense, etc.), `type`,
+`pendingProps`/`memoizedProps`, `memoizedState` (the hooks linked list), `updateQueue`,
+`lanes`/`childLanes`, the effect flags (`flags`, `subtreeFlags`, `deletions`), `stateNode`
+(DOM node for host components), and `alternate` (its counterpart in the other tree, see below).
+
+Elements and fibers are different things:
+
+- **React elements** are immutable descriptions returned by JSX.
+- **Fibers** are mutable work records that let React preserve state, schedule updates, and commit
+  host changes over time.
 
 ## Two phases: render (interruptible) vs commit (atomic)
 
@@ -58,6 +66,17 @@ render finishes, React **swaps** the WIP tree to become `current` in a single co
 render is aborted (e.g. a higher-priority update arrives), the half-built WIP tree is simply
 discarded — `current` is untouched, so the screen never shows a partial render.
 
+## `beginWork` vs `completeWork`
+
+The render phase has two directions:
+
+- `beginWork` goes **down** the tree: call function components, read children, decide whether to
+  bail out, and produce child fibers.
+- `completeWork` comes **back up**: prepare host instances/updates, collect flags, and bubble
+  subtree work to the parent.
+
+This is why render can calculate a full mutation plan without mutating the DOM yet.
+
 ## Lanes: the priority model
 
 Updates are tagged with **lanes** (a bitmask) representing priority — e.g. discrete user input
@@ -68,7 +87,9 @@ compatible updates, and to interrupt low-priority work for high-priority work. (
 ## Senior checklist
 
 - Fiber = interruptible, linked-list reimplementation of reconciliation (the basis of concurrency).
+- Elements are immutable render output; fibers are mutable work/state records.
 - Render phase is pure & interruptible; commit phase is atomic & where effects/DOM happen.
+- Know `tag`, `stateNode`, `memoizedState`, `updateQueue`, `lanes`, `flags`, and `alternate`.
 - Never put side effects in render — it can run many times or be discarded.
 - Double buffering (`current` vs WIP, swapped at commit) is why aborted renders don't tear the screen.
 

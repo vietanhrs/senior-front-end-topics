@@ -1,4 +1,7 @@
 import type { LevelMeta } from '@sfe/workbook';
+import { reactElements } from './react-elements';
+import { renderPipeline } from './render-pipeline';
+import { reactDomHostRenderer } from './react-dom-host-renderer';
 import { reconciliation } from './reconciliation';
 import { fiber } from './fiber';
 import { concurrentRendering } from './concurrent-rendering';
@@ -13,8 +16,11 @@ import { staleClosures } from './stale-closures';
 export const LEVEL: LevelMeta = {
   level: 2,
   title: 'React Core & Rendering Mechanics',
-  tagline: 'How React actually renders — Fiber, concurrency, and the traps',
+  tagline: 'From JSX objects to Fiber, ReactDOM commits, concurrency, and rendering traps',
   concepts: [
+    reactElements,
+    renderPipeline,
+    reactDomHostRenderer,
     reconciliation,
     fiber,
     concurrentRendering,

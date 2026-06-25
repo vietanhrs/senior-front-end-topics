@@ -31,10 +31,16 @@ const [isPending, startTransition] = useTransition();
 function onChange(e) {
   setQuery(e.target.value);              // urgent: update the input immediately
   startTransition(() => {
-    setResults(filter(allItems, e.target.value)); // non-urgent: can be interrupted
+    setResultsQuery(e.target.value);      // non-urgent render can be interrupted
   });
 }
 ```
+
+Important nuance: the function passed to `startTransition` runs synchronously right now. React
+only marks state updates scheduled inside it as transition updates. If you run a 200ms CPU loop
+before calling `setState`, that loop still blocks the event handler. Put expensive work in the
+render path driven by transitioned state, use `useDeferredValue`, or move truly heavy CPU work to
+a worker/chunked task.
 
 ### `useDeferredValue`
 Lets a value "lag behind" — React renders with the previous value first, then re-renders with
@@ -60,6 +66,8 @@ const results = useMemo(() => filter(allItems, deferredQuery), [deferredQuery]);
 - Requires `createRoot` (the concurrent root). `ReactDOM.render` (legacy) opts out of all of this.
 - Transitions are for **non-urgent** updates (navigations, filtering, expensive recomputes), not
   for things that must feel instant (text input value, toggles).
+- `startTransition` does not make arbitrary synchronous JavaScript non-blocking; it marks the
+  resulting React update as low-priority.
 - The render work inside a transition must still be **pure and idempotent** — it can run multiple
   times (interrupted/restarted), so no side effects in render.
 - Concurrency exposes **tearing** if you read from an external mutable store without
