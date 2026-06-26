@@ -39,8 +39,9 @@ export function Exercise() {
         code={`A → default setState (urgent). The input value MUST update on every keystroke.
      Never wrap a controlled input's value in a transition.
 
-B → useTransition: setQuery urgent, startTransition(() => setResults(...)).
-     The expensive table render is low priority & interruptible.
+B → useTransition or useDeferredValue. Keep setQuery urgent, then transition
+     the cheap state that drives the expensive table render. Do not run the
+     expensive CPU work directly inside startTransition's callback.
 
 C → useTransition. Keep rendering the old tab; show isPending while the new
      heavy panel is prepared, then swap. Avoids a jarring blank/spinner.

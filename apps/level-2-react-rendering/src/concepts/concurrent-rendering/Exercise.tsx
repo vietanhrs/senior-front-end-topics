@@ -54,16 +54,21 @@ export function Exercise() {
   );
 }
 
-// Option B — useTransition (when you own the setter, e.g. separate results state):
+// Option B — useTransition (when you own the state that drives the slow tree):
 function Search({ allItems }) {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState(allItems);
+  const [resultsQuery, setResultsQuery] = useState('');
   const [isPending, startTransition] = useTransition();
+  const results = useMemo(
+    () => allItems.filter((i) => i.includes(resultsQuery)),
+    [allItems, resultsQuery],
+  );
 
   function onChange(e) {
-    setQuery(e.target.value);                              // urgent
+    const nextQuery = e.target.value;
+    setQuery(nextQuery);                                   // urgent
     startTransition(() => {                                // interruptible
-      setResults(allItems.filter((i) => i.includes(e.target.value)));
+      setResultsQuery(nextQuery);                          // cheap state update
     });
   }
 
@@ -74,7 +79,10 @@ function Search({ allItems }) {
       <Results items={results} />
     </>
   );
-}`}
+}
+
+// The expensive filter/render is now part of the transition render path.
+// Do not put a big synchronous CPU loop directly inside startTransition's callback.`}
       />
     </Stack>
   );

@@ -1,6 +1,6 @@
 # Level 2 — React Core & Rendering Mechanics
 
-Interactive SPA workbook for 10 concepts about how React actually renders. Built on the shared
+Interactive SPA workbook for 13 concepts about how React actually renders. Built on the shared
 `@sfe/workbook` engine. Stack: Bun · React 19 · TypeScript · Vite · Tailwind v4 · Mantine v8.
 
 ## Running
@@ -22,7 +22,7 @@ src/
 ├── main.tsx               # MantineProvider + <WorkbookApp level={LEVEL} />
 ├── index.css              # Mantine/Tailwind layers + @source for the shared engine
 └── concepts/
-    ├── index.ts           # LEVEL registry (assembles the 10 concepts)
+    ├── index.ts           # LEVEL registry (assembles the 13 concepts)
     └── <slug>/
         ├── doc.md         # theory (imported via ?raw)
         ├── Demo.tsx       # interactive demo
@@ -32,6 +32,7 @@ src/
 
 ## Concepts
 
+React elements & JSX output · Render pipeline & Fiber work loop · ReactDOM host renderer ·
 Reconciliation · Fiber architecture · Concurrent rendering · Time slicing · Scheduler priorities ·
 Suspense boundaries · Selective hydration · Server components · Tearing · Stale closures.
 

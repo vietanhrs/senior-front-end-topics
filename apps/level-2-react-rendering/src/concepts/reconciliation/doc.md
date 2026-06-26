@@ -13,9 +13,10 @@ effects, focus, and DOM** survive.
 
 ## The mental model: position + type identify an instance
 
-React identifies a component instance by its **position in the render tree** plus its
-**element type** (and `key`, among siblings). On each render React walks the tree and, at each
-position, compares the new element's type with the previous one:
+React identifies a component instance by matching the **new React element** against the
+**previous Fiber** at the same place in the tree. The main identity inputs are position,
+element `type`, and `key` among siblings. On each render React walks the tree and, at each
+position, compares the new element with the previous fiber:
 
 - **Same type at the same position** → React **keeps** the existing instance: it preserves
   state and the DOM node, and just updates props. (Re-render, no remount.)
@@ -74,6 +75,16 @@ Among siblings, `key` overrides position. A stable, unique key lets React match 
 reorders/insertions and preserve their state; `index` keys (or `Math.random()`) break this for
 dynamic lists. (See Level 1 — Virtual DOM diffing.)
 
+## Element identity vs fiber identity
+
+JSX creates a fresh element object every render. React does **not** preserve state because the
+element object is referentially equal; it usually is not. React preserves state when it can match
+that new element to an existing fiber by `type`, `key`, and position.
+
+When the match succeeds, React reuses the old fiber's state and host node, updates pending props,
+and records any host changes for commit. When it fails, React schedules the old fiber for deletion
+and creates a new fiber, which means new state and new DOM for that subtree.
+
 ## Render phase vs commit
 
 Reconciliation happens in the **render phase** (pure, interruptible under concurrent React —
@@ -82,7 +93,7 @@ be side-effect-free: it may run multiple times or be discarded before commit.
 
 ## Senior checklist
 
-- State is tied to **(position + type + key)**, not to where you "think" the component is.
+- State is tied to the matched **fiber** at `(position + type + key)`, not to the JSX object.
 - Different type at a position = unmount + mount (lost state, fired cleanup).
 - Never define components inside render; it forces remounts.
 - Use `key` to deliberately reset state when identity changes.

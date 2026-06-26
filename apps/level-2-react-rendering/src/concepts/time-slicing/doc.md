@@ -51,13 +51,19 @@ startTransition(() => setBigState(next)); // this render can be time-sliced & in
 const deferred = useDeferredValue(value);  // renders driven by `deferred` are low priority
 ```
 
-Urgent updates (default `setState` from a click/keystroke) are **not** sliced — they render
-synchronously so they feel instant. That's intentional.
+The synchronous callback passed to `startTransition` is not sliced. The render caused by the
+state update is what can be scheduled as interruptible work. If the bottleneck is a CPU-heavy
+calculation before `setState`, React cannot yield in the middle of that function; split it,
+cache it, or move it to a worker.
+
+Urgent updates (default `setState` from a click/keystroke) are treated as high priority so they
+feel instant. Avoid depending on exact sync timing unless you explicitly use `flushSync`.
 
 ## Senior checklist
 
 - Time slicing = render an update in short chunks across frames, yielding to the browser between.
 - Enabled by Fiber's interruptibility; you opt in via transitions / deferred values.
+- It slices React render work, not arbitrary synchronous code inside your event handler.
 - Only the render phase is sliceable; commit is atomic — huge DOM still needs virtualization.
 - It makes work **non-blocking**, not faster — combine with memoization/virtualization for big lists.
 
