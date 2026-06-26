@@ -67,8 +67,53 @@ console.log('5: script end');             // sync
 
 ## Where does `requestAnimationFrame` fit?
 
-`rAF` callbacks run **right before paint**, after that frame's microtasks. Use it for
-paint/animation-related work. It's neither the regular micro nor macro queue.
+`requestAnimationFrame` (`rAF`) is the browser's "prepare the next frame" hook. It is not a
+regular microtask or macrotask. A useful frame-level model is:
+
+```
+one task runs
+  -> microtask checkpoint drains completely
+  -> rAF callbacks for the upcoming frame
+  -> style recalculation
+  -> layout
+  -> paint
+  -> composite
+  -> next task
+```
+
+The exact browser pipeline has more scheduling nuance, but this model is the one you need in
+interviews:
+
+- **Microtasks run before `rAF`.** If a Promise chain or `queueMicrotask` loop keeps refilling the
+  microtask queue, the next `rAF` callback and the next paint are delayed.
+- **`rAF` runs before paint.** It is the right place to read the previous layout, compute animation
+  state, and write visual updates for the upcoming frame.
+- **`rAF` is frame-paced.** On a 60 Hz display you usually get about one callback every 16.7 ms
+  while the tab is visible. On high-refresh screens it can run more often; in background tabs it is
+  throttled or paused.
+- **A heavy `rAF` still blocks paint.** If the callback does 30 ms of JS, the frame misses its
+  deadline. `rAF` gives you timing, not a separate thread.
+
+Common pattern:
+
+```js
+let latestPointer;
+
+window.addEventListener('pointermove', (event) => {
+  latestPointer = { x: event.clientX, y: event.clientY };
+});
+
+function frame() {
+  // Runs before paint. Keep it short.
+  cursor.style.transform = `translate(${latestPointer.x}px, ${latestPointer.y}px)`;
+  requestAnimationFrame(frame);
+}
+
+requestAnimationFrame(frame);
+```
+
+Use `rAF` for visual work that should align with frames. Use a macrotask / `scheduler.yield()` /
+Worker to split heavy non-visual work so the browser still gets chances to run `rAF` and paint.
 
 ## Microtask vs macrotask — quick reference
 
@@ -80,7 +125,7 @@ paint/animation-related work. It's neither the regular micro nor macro queue.
 | `setTimeout`, `setInterval` | macrotask |
 | `MessageChannel`, `postMessage` | macrotask |
 | DOM events, `setImmediate` (Node) | macrotask |
-| `requestAnimationFrame` | before paint (separate) |
+| `requestAnimationFrame` | before style/layout/paint for the next frame (separate) |
 
 ## Practical patterns
 
@@ -90,13 +135,16 @@ paint/animation-related work. It's neither the regular micro nor macro queue.
   current synchronous code but before yielding to the browser" (e.g. how React batches updates).
 - **Avoid starvation**: don't recurse via microtasks for long-running work; use a macrotask
   to allow rendering.
+- **Use `requestAnimationFrame` for frame-aligned DOM writes**: measure/mutate visual state before
+  the next paint, and keep the callback inside the frame budget.
 
 ## Senior checklist
 
 - State the correct order: sync → microtasks (fully drained) → render → one macrotask.
 - Know `await` schedules a microtask, and the ordering consequences.
 - Know starvation and how to yield via a macrotask.
-- Distinguish `rAF` from micro/macro.
+- Distinguish `rAF` from micro/macro: it runs before the next paint, is frame-paced, and can still
+  jank if the callback is heavy.
 
 ## References
 
@@ -104,3 +152,4 @@ paint/animation-related work. It's neither the regular micro nor macro queue.
 - [MDN: The event loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop)
 - [HTML spec: Event loops](https://html.spec.whatwg.org/multipage/webappapis.html#event-loops)
 - [MDN: queueMicrotask](https://developer.mozilla.org/en-US/docs/Web/API/queueMicrotask)
+- [MDN: requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)

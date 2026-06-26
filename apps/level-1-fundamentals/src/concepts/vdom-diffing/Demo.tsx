@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Badge, Button, Group, Paper, SegmentedControl, Stack, Text, TextInput } from '@mantine/core';
+import { Badge, Button, Group, Paper, SegmentedControl, Stack, Table, Text, TextInput } from '@mantine/core';
 import { IconArrowsShuffle, IconRefresh } from '@tabler/icons-react';
 import { Callout, DemoCard } from '@sfe/workbook';
 
@@ -92,6 +92,34 @@ export function Demo() {
         <Text size="xs" c="dimmed" mt="sm">
           Current order: {items.map((i) => i.id).join(' → ')}
         </Text>
+      </DemoCard>
+
+      <DemoCard title="When the heuristic is cheap vs expensive">
+        <Table withTableBorder withColumnBorders>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Change shape</Table.Th>
+              <Table.Th>React can match identity?</Table.Th>
+              <Table.Th>Result</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {[
+              ['Same type/key, changed prop', 'Yes', 'Reuses fiber/DOM; updates the prop only.'],
+              ['Append keyed item', 'Yes', 'Scans siblings once; creates one new child.'],
+              ['Reorder with stable keys', 'Yes', 'Preserves state; may move DOM nodes.'],
+              ['Insert with index keys', 'No, identity shifts by position', 'O(n) scan, but state/DOM attach to the wrong item.'],
+              ['Random keys', 'No, every child looks new', 'Remounts the list every render.'],
+              ['Root type changes', 'No', 'Tears down and rebuilds the whole subtree.'],
+            ].map(([shape, identity, result]) => (
+              <Table.Tr key={shape}>
+                <Table.Td>{shape}</Table.Td>
+                <Table.Td>{identity}</Table.Td>
+                <Table.Td>{result}</Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
       </DemoCard>
     </Stack>
   );
