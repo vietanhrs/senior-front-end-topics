@@ -10,6 +10,7 @@ const workbookSrc = new URL('../../packages/workbook/src', import.meta.url).path
 // src/concepts — fine inside the monorepo: Vite's fs.allow covers the
 // workspace root, and all apps share identical tooling).
 export default defineConfig({
+  base: '/senior-front-end-topics/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

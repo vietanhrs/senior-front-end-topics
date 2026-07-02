@@ -8,6 +8,8 @@ Tailwind + Mantine), where each *concept* has 3 parts:
 - **Demo** — an **interactive example you can observe in the browser** (open DevTools to see).
 - **Exercise** — code to complete/fix/improve, with a revealable solution to compare against.
 
+Hosted workbook: https://vietanhrs.github.io/senior-front-end-topics/
+
 ## Repository structure (Bun workspaces monorepo)
 
 ```
