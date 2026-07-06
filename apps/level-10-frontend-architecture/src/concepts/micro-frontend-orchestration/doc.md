@@ -39,7 +39,9 @@ elegance. If you have one small team, you probably don't need MFEs.
     benefit.
 - **Shared dependencies** — naively each MFE ships its own React → multiple framework copies, huge
   payloads, and broken hooks if two React instances mix. **Module Federation shared singletons** /
-  import maps dedupe them (next concept).
+  import maps dedupe them (next concept). In a multi-team setup, this also needs a compatibility
+  policy: versioned remote manifests, owned singleton dependencies, contract tests, and runtime
+  fallback so one team's dependency update does not break the whole shell.
 - **Consistency** — independent teams drift visually and behaviorally; a shared **design system** +
   contracts keep it coherent.
 - **Performance** — lazy-load MFEs, avoid duplicate vendors, prefetch likely routes; watch the
@@ -53,6 +55,8 @@ elegance. If you have one small team, you probably don't need MFEs.
   or you get a **distributed monolith**.
 - **Isolate**: scoped CSS + an **error boundary per MFE** so one failure degrades gracefully; dedupe
   shared deps (singletons) to avoid multiple frameworks.
+- Treat shared dependency upgrades as platform changes: version manifests, test contracts, and avoid
+  loading implicit `latest` remotes in production.
 - Hold the line on a **shared design system** and contracts for visual/behavioral consistency.
 
 ## References
