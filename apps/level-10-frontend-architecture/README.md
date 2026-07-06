@@ -43,7 +43,9 @@ models/simulations where the real thing needs a server or build pipeline:
 - **Micro-frontend orchestration** composes an app shell of staggered-loading remotes; toggle one to
   fail and see error-boundary isolation keep the shell + siblings alive.
 - **Module Federation** is a live shared-scope negotiator — set each app's React version + singleton
-  options and watch it resolve to one instance, multiple copies (broken hooks), or a version error.
+  options and watch it resolve to one instance, multiple copies (broken hooks), or a version error;
+  the notes also cover versioned manifests, contract tests, owned shared dependencies, and fallback
+  strategies for multi-team compatibility.
 - **WebAssembly integration** instantiates a **real**, hand-assembled `.wasm` module and calls its
   export, then benchmarks 5M calls to demonstrate the JS↔WASM boundary cost.
 - **IndexedDB scaling** runs against a **real** IndexedDB: bulk-in-one-transaction vs one-per-record,

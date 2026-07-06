@@ -205,7 +205,8 @@ bun run --filter '*' build      # build everything
 
 1. **Edge rendering** — SSR/middleware on isolates at POPs near users; the data-gravity trap.
 2. **Micro-frontend orchestration** — independently deployed apps composed by a shell; failure isolation.
-3. **Module Federation** — runtime code sharing; host/remote/shared scope; React-as-singleton.
+3. **Module Federation** — runtime code sharing; shared scope negotiation; React-as-singleton;
+   dependency compatibility across teams.
 4. **WebAssembly integration** — near-native co-processor; linear-memory marshalling; the boundary cost.
 5. **IndexedDB scaling strategy** — index your queries, batch writes in one tx, cursors, tx lifecycle.
 6. **Server Components architecture** — render-only-on-server, zero-JS; the `'use client'` boundary.
