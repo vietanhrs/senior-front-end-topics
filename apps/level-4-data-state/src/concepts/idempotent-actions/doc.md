@@ -78,6 +78,10 @@ Prefer operations whose repetition is naturally safe:
 - Use an **idempotency key per logical operation** (stable across retries) so the server dedupes.
 - Design for it: set absolute values / upsert by client id / use PUT/DELETE where possible.
 
+## Angular equivalent
+
+Angular can double-trigger actions through repeated clicks, retries, route reuse, async emissions, or lifecycle re-entry. Use disabled/pending state, idempotency keys, exhaustMap for ignore-while-running flows, or server-side idempotency just as you would in React.
+
 ## References
 
 - [Stripe: Idempotent requests](https://stripe.com/docs/api/idempotent_requests)

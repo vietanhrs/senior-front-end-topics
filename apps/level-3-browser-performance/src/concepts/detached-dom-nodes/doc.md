@@ -74,6 +74,10 @@ because closures retain their whole lexical environment.
 - Diagnose via Heap snapshot → "Detached" + Retainers path; the 3-snapshot technique confirms leaks.
 - Fix: null refs, cleanup listeners/observers/timers, use WeakMap/WeakRef, delegate events.
 
+## Angular equivalent
+
+Angular leak equivalents are directives/components that keep native element references, manual DOM listeners, Overlay/CDK portals, or third-party widgets alive after destroy. Prefer template bindings, Renderer2 listener cleanup, DestroyRef.onDestroy, and takeUntilDestroyed.
+
 ## References
 
 - [Chrome DevTools: Fix memory problems (detached nodes)](https://developer.chrome.com/docs/devtools/memory-problems/)

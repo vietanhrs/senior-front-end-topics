@@ -101,6 +101,10 @@ to debug that framework.
 - RSC reduces bundle size & removes API plumbing; it's distinct from (and combined with) SSR.
 - The Flight payload/protocol is not a public app-level API; do not couple app logic to it.
 
+## Angular equivalent
+
+Angular SSR is not React Server Components. Angular renders normal Angular components to HTML on the server and hydrates them on the client; it does not have an RSC payload or 'use client' component boundary. Use server routes, transfer cache/state, platform guards, and backend APIs for the equivalent architectural concerns.
+
 ## References
 
 - [React: Server Components](https://react.dev/reference/rsc/server-components)

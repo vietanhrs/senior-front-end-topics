@@ -80,6 +80,10 @@ requestIdleCallback(() => void import('./Editor'));
 - Know how to avoid waterfalls (`Promise.all`) and how to prefetch.
 - Be cautious with dynamic globs that explode the chunk count.
 
+## Angular equivalent
+
+Angular uses the same JavaScript import() primitive under the hood for lazy routes and deferrable views. The Angular-specific API is usually loadComponent, loadChildren, or @defer; error UX belongs in route error handling or @error blocks rather than a React Error Boundary.
+
 ## References
 
 - [MDN: Dynamic import()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import)

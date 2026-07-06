@@ -80,6 +80,10 @@ source of truth. Storing derived data in state invites it going stale.
 - `React.memo` + `children`/spread usually doesn't bail — memoize the source, not the wrapper.
 - `useMemo` is a perf hint, not a correctness/identity guarantee; no side effects inside it.
 
+## Angular equivalent
+
+Angular memoization usually means computed signals, pure pipes, selector memoization, or precomputed view models. Avoid expensive template methods/getters; Angular may call them during checks. Like React, memoization only helps when dependencies are stable and the saved work is bigger than the cache cost.
+
 ## References
 
 - [React: useMemo — caveats & when to use](https://react.dev/reference/react/useMemo#caveats)

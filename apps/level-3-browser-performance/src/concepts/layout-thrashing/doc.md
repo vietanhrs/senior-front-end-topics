@@ -80,6 +80,10 @@ Reading any of these on a dirty tree forces a synchronous reflow:
 - Know the list of layout-forcing properties cold (`offset*`, `getBoundingClientRect`, `scroll*`…).
 - Prefer observers and transform/opacity animations to sidestep layout entirely.
 
+## Angular equivalent
+
+Angular's version often happens in ngAfterViewInit, ngAfterViewChecked, host listeners, or directives that measure and mutate across checks. Use the same read-then-write batching rule, prefer CSS containment where possible, and schedule DOM work after render with Angular render callbacks instead of putting layout reads in template getters.
+
 ## References
 
 - [Google: Avoid forced synchronous layouts](https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing)

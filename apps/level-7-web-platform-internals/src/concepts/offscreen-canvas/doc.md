@@ -86,6 +86,10 @@ handing an `ImageBitmap` (also transferable) to the main thread to `drawImage` o
 - Alternatively `new OffscreenCanvas()` + `transferToImageBitmap()` / `convertToBlob()` to render
   images off-thread. Feature-detect and fall back.
 
+## Angular equivalent
+
+Angular competes for the same main thread through change detection, template work, layout, and event handlers. Moving canvas rendering to a Worker with OffscreenCanvas protects Angular checks from animation cost just as it protects React renders.
+
 ## References
 
 - [MDN: OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)

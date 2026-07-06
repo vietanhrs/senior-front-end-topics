@@ -121,6 +121,10 @@ keys/types/positions make React remount or touch too much.
   changing `key`).
 - Reconciliation internals (Fiber, double buffering) come in Level 2.
 
+## Angular equivalent
+
+Angular does not normally build a Virtual DOM tree and diff it like React. Angular compiles templates into instructions and refreshes binding slots in existing views. The closest identity lesson is React key -> Angular @for (...; track item.id) / trackBy: stable identity preserves DOM, directive instances, component state, and embedded views across reorder/insert/delete operations.
+
 ## References
 
 - [React: Preserving and Resetting State](https://react.dev/learn/preserving-and-resetting-state)

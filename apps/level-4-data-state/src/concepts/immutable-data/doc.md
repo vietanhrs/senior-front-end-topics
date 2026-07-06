@@ -72,6 +72,10 @@ type State = {
 - Use Immer for deep updates, deep-freeze in dev, `readonly`/`as const` in TS to enforce it.
 - Shallow copies still share nested objects — copy the full path to the change.
 
+## Angular equivalent
+
+Angular also benefits from immutable updates, especially with OnPush and signals. Mutating an input object in place can prevent an OnPush child from being checked, and mutating a signal's nested object without set/update can leave consumers stale. Replace the changed path and keep references meaningful.
+
 ## References
 
 - [React: Updating objects in state](https://react.dev/learn/updating-objects-in-state)

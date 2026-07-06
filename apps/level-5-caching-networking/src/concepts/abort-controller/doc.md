@@ -100,6 +100,10 @@ useEffect(() => {
 - Handle `AbortError` separately; new controller per attempt; thread `signal` through your own APIs.
 - In React: abort in the effect cleanup — it's the cancellation half of the race-condition fix.
 
+## Angular equivalent
+
+Angular HttpClient requests are often cancelled by unsubscribing, which operators like switchMap do for stale requests. AbortController still matters for native fetch, workers, and libraries that accept signals; lifecycle cleanup maps to takeUntilDestroyed.
+
 ## References
 
 - [MDN: AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)

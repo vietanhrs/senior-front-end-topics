@@ -76,6 +76,10 @@ concurrency. That's exactly the gap `useSyncExternalStore` closes. Modern state 
 - Read external stores via `useSyncExternalStore` (stable, cached `getSnapshot`).
 - Don't hand-roll `useState` + `useEffect` subscriptions for shared mutable stores.
 
+## Angular equivalent
+
+Angular's equivalent external-state concern usually appears around RxJS/store integration. Prefer async pipe, toSignal, shared streams, and lifecycle-aware subscriptions so all template consumers see coherent emissions. There is no direct useSyncExternalStore API because Angular's view/update model is different.
+
 ## References
 
 - [React: useSyncExternalStore](https://react.dev/reference/react/useSyncExternalStore)

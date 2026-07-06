@@ -39,6 +39,26 @@ export const ROADMAP: RoadmapLevel[] = [
     ],
   },
   {
+    level: 2.1,
+    levelLabel: '2*',
+    title: 'Angular for React Developers',
+    concepts: [
+      'Angular templates vs JSX',
+      'Ivy view model',
+      'DOM renderer and platform abstraction',
+      'View identity, @for track, and differ',
+      'Change detection strategy',
+      'Signals and fine-grained reactivity',
+      'Zone.js, zoneless, and dirty marking',
+      'Scheduling work without Fiber lanes',
+      'Deferrable views and loading boundaries',
+      'Hydration, event replay, and incremental hydration',
+      'Angular SSR vs Server Components',
+      'RxJS and external state consistency',
+      'Stale captures and lifecycle cleanup',
+    ],
+  },
+  {
     level: 3,
     title: 'Browser Performance',
     concepts: [

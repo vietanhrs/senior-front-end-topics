@@ -62,6 +62,10 @@ designed together.
   whole-page buffering); use a `signal` to abort slow renders.
 - `onAllReady` for crawlers/SSG; selective hydration lets early boundaries become interactive first.
 
+## Angular equivalent
+
+Angular SSR pipelines share the same platform concerns: backpressure, compression, early bytes, transfer cache, and hydration determinism, but not React Suspense's inline replacement runtime. Angular-specific planning adds provideClientHydration, event replay, and @defer/incremental hydration boundaries.
+
 ## References
 
 - [React: renderToReadableStream](https://react.dev/reference/react-dom/server/renderToReadableStream)

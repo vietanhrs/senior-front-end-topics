@@ -79,6 +79,10 @@ const [optimistic, addOptimistic] = useOptimistic(items, (state, next) => applyT
 - Handle concurrent updates with targeted/functional reverts; guard against stale refetches.
 - Use `useOptimistic` (R19) or React Query's onMutate/onError/onSettled; reserve for low-stakes actions.
 
+## Angular equivalent
+
+Angular has no built-in useOptimistic; model optimistic state in a service/store/signal and reconcile it in the mutation lifecycle. With RxJS, snapshot previous state before applying the optimistic value, rollback on error, and invalidate/refetch or merge server truth on settle.
+
 ## References
 
 - [React: useOptimistic](https://react.dev/reference/react/useOptimistic)

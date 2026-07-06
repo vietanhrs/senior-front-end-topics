@@ -85,6 +85,10 @@ budget is spent — keeping input latency low.
   input responsive.
 - This is the machinery under React concurrent features and `scheduler.postTask`/`scheduler.yield`.
 
+## Angular equivalent
+
+Angular scheduling is mostly the browser event loop plus framework dirty marking. Zone.js can trigger a broad tick after async work; zoneless Angular relies more on signals, async pipe, and explicit marks. Do not assume a React-like cooperative Fiber scheduler.
+
 ## References
 
 - [React scheduler source (`Scheduler.js`)](https://github.com/facebook/react/blob/main/packages/scheduler/src/forks/Scheduler.js)

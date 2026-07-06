@@ -91,6 +91,10 @@ waste — and hostile on metered data. Heuristics:
 - Gate analytics & side effects on `document.prerendering` / `Sec-Purpose` header.
 - Budget it: high-probability links only, respect data saver, revalidate stale personalized content.
 
+## Angular equivalent
+
+Angular's SPA equivalent is route preloading, @defer (...; prefetch ...), data prefetch in services/resolvers, and cautious analytics gating. As in React, prefetch only when intent is strong enough and the extra bytes will not hurt current-page LCP/INP.
+
 ## References
 
 - [Chrome: Speculation Rules API (prerender pages)](https://developer.chrome.com/docs/web-platform/prerender-pages)

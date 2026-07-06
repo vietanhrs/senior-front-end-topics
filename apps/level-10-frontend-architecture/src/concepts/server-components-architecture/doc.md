@@ -59,6 +59,10 @@ So SSR makes client components *appear* fast; RSC removes non-interactive compon
   server one but can take it as **children** (donut pattern).
 - The win is **bundle + colocated data + streaming**; reach for it on content-heavy, data-driven UIs.
 
+## Angular equivalent
+
+Angular has SSR and hydration, but no direct React Server Components equivalent. Angular server rendering executes normal Angular components to HTML, uses transfer cache/state to avoid duplicate fetches, and hydrates on the client; server-only logic belongs in backend/server routes, not a client/server component split.
+
 ## References
 
 - [React: Server Components](https://react.dev/reference/rsc/server-components)

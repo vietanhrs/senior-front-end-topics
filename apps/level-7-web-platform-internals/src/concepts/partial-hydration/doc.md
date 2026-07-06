@@ -68,6 +68,10 @@ hydration also shrinks the **initial** JS, not just defers execution.
 - Mind the inert-until-hydrated gap (replay the first interaction), avoid hydration layout shift.
 - Keep deferred regions independent; SSR markup must match to avoid mismatch/CLS.
 
+## Angular equivalent
+
+Angular's modern equivalent is incremental hydration with @defer boundaries: hydrate some blocks later based on triggers. Astro's client:only="react" maps conceptually to choosing a client-only island framework; in Angular, @defer plus hydration controls the boundary inside an Angular app.
+
 ## References
 
 - [Astro: client directives (`client:visible`, `client:idle`, …)](https://docs.astro.build/en/reference/directives-reference/#client-directives)

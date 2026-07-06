@@ -80,6 +80,10 @@ You can't avoid randomness/time forever — you move it **out of render**:
 - Derive keys/ids from data; generate them once at creation, never during render.
 - Push unavoidable randomness/time into events/effects, or seed it; format with fixed locale/tz.
 
+## Angular equivalent
+
+Angular templates must also be deterministic for stable change detection and hydration. Avoid Date.now(), Math.random(), unstable sorts, or browser-only branches in template expressions; compute deterministic view state in signals, resolvers, or services.
+
 ## References
 
 - [React: Keeping components pure](https://react.dev/learn/keeping-components-pure)

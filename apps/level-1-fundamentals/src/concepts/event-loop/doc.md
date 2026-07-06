@@ -146,6 +146,10 @@ Worker to split heavy non-visual work so the browser still gets chances to run `
 - Distinguish `rAF` from micro/macro: it runs before the next paint, is frame-paced, and can still
   jank if the callback is heavy.
 
+## Angular equivalent
+
+Angular's classic Zone.js mode hooks into the event loop by patching async APIs and triggering change detection after async tasks. In zoneless Angular, the equivalent update signal comes from explicit reactivity: signals, async pipe emissions, toSignal, events, or manual dirty marking. The browser event-loop rules are identical; only the framework's scheduling trigger differs.
+
 ## References
 
 - [Jake Archibald: Tasks, microtasks, queues and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)

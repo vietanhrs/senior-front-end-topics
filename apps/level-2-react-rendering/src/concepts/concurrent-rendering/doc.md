@@ -82,6 +82,10 @@ const results = useMemo(() => filter(allItems, deferredQuery), [deferredQuery]);
 - Keep urgent updates (input) out of the transition; only the expensive part goes in.
 - Render must stay pure/idempotent; external stores need `useSyncExternalStore`.
 
+## Angular equivalent
+
+Angular does not have React concurrent rendering or startTransition. The Angular equivalent strategy is to make expensive work explicit: debounce and cancel streams with RxJS, use @defer for lazy regions, virtualize large lists, move CPU work to Web Workers, and scope checks with OnPush/signals.
+
 ## References
 
 - [React: useTransition](https://react.dev/reference/react/useTransition)

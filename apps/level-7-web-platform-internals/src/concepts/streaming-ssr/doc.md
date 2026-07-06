@@ -60,6 +60,10 @@ interaction.)
 - Status/headers commit at first flush — handle errors per boundary; keep SEO/head in the shell.
 - Beware response-buffering proxies/compression; size fallbacks to avoid layout shift.
 
+## Angular equivalent
+
+Angular SSR can stream/render progressively depending on the server setup, but it does not use React Suspense swap scripts. The equivalent Angular concerns are early shell HTML, transfer cache, deterministic hydration, @defer, and incremental hydration/event replay.
+
 ## References
 
 - [React: renderToPipeableStream](https://react.dev/reference/react-dom/server/renderToPipeableStream)

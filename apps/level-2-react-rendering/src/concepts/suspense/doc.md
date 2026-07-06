@@ -87,6 +87,10 @@ browser swaps it in. This also enables **selective hydration** (next concept).
 - Use transitions to avoid flashing fallbacks when content is already visible.
 - Avoid request waterfalls; start independent fetches in parallel.
 
+## Angular equivalent
+
+Angular's closest built-in loading boundary is @defer, not a promise-throwing Suspense model. @defer lazy-loads a template block with explicit triggers and @placeholder / @loading / @error states. Data loading is usually modeled with RxJS, resolver/store state, or signals.
+
 ## References
 
 - [React: Suspense](https://react.dev/reference/react/Suspense)

@@ -76,6 +76,10 @@ function Stars({ value, max, onRate }) {
 - React 19 sets properties when the element defines them; pre-19 needs refs/wrappers (`@lit/react`).
 - Handle SSR/upgrade timing (`whenDefined`, `:defined`) and add JSX typings; avoid attribute↔property loops.
 
+## Angular equivalent
+
+Angular generally binds custom element properties and listens to DOM/custom events more naturally from templates: `<x-widget [config]="config" (valueChange)="onValue($event)" />`. For Angular consumers, remember that CustomEvent payloads arrive on `$event.detail`, and schema/type support may need `CUSTOM_ELEMENTS_SCHEMA` or wrapper directives/components.
+
 ## References
 
 - [Custom Elements Everywhere (framework interop scores)](https://custom-elements-everywhere.com/)

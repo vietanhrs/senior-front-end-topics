@@ -338,6 +338,10 @@ Recommended operating model:
 - Pair **contract tests**, **error boundaries**, and **runtime compatibility guards** with a plan for
   `remoteEntry` drift.
 
+## Angular equivalent
+
+For Angular Module Federation, the singleton list usually includes @angular/core, @angular/common, @angular/router, @angular/forms when shared, RxJS, Zone.js if present, and the design-system runtime. The reason mirrors React: two framework runtimes mean broken DI/router assumptions and duplicated global behavior.
+
 ## References
 
 - [Module Federation docs](https://module-federation.io/)

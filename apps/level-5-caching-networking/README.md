@@ -53,3 +53,7 @@ with real APIs where possible**:
   cross-origin and Public-Suffix-List edge cases.
 - **Speculative prerendering** speculates on hover (`eagerness: moderate`) and measures
   click-to-content for none/prefetch/prerender.
+
+## Angular equivalent
+
+React Query/SWR examples in this level map to Angular via RxJS services, async pipe, toSignal, route resolvers, service-worker caches, or Angular-oriented query libraries. Cache keys and invalidation rules are the portable part.

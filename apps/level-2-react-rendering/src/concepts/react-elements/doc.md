@@ -137,6 +137,10 @@ That distinction is crucial:
 - Function components return elements; host elements become DOM work only through the renderer.
 - Elements are immutable render output; Fibers are mutable units of work that preserve state.
 
+## Angular equivalent
+
+The Angular equivalent is not another element object. Angular templates are compiler input that becomes Ivy create/update instructions. Inputs map to `input()` / `@Input`, callback props map to `output()` / `@Output`, and children map to `<ng-content>`. See Level 2* "Angular templates vs JSX" for the full bridge.
+
 ## References
 
 - [React: createElement](https://react.dev/reference/react/createElement)

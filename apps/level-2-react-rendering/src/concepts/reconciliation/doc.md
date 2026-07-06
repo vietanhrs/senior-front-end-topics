@@ -98,6 +98,10 @@ be side-effect-free: it may run multiple times or be discarded before commit.
 - Never define components inside render; it forces remounts.
 - Use `key` to deliberately reset state when identity changes.
 
+## Angular equivalent
+
+Angular does not reconcile a freshly-created element tree. It refreshes views and uses iterable differs for dynamic containers. The React key lesson maps directly to Angular @for (...; track item.id) / trackBy: stable identity preserves an embedded view and the component/directive instances inside it.
+
 ## References
 
 - [React: Preserving and Resetting State](https://react.dev/learn/preserving-and-resetting-state)

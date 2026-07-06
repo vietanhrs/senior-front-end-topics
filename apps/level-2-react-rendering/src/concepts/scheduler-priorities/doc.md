@@ -81,6 +81,10 @@ Use `flushSync` only when you must force a synchronous, un-batched commit (rare)
 - Express priority via `useTransition` / `useDeferredValue`; keep urgent UI out of transitions.
 - React 18 batches by default; `flushSync` opts out (rarely needed).
 
+## Angular equivalent
+
+Angular does not expose React-style lanes. Priority decisions are usually expressed through data/event scheduling: urgent template state stays cheap, non-urgent streams are debounced/throttled/cancelled with RxJS, and heavy UI is deferred or virtualized. In zoneless apps, explicit signal updates and dirty marking replace broad async ticks.
+
 ## References
 
 - [React: useTransition](https://react.dev/reference/react/useTransition)

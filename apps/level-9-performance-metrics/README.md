@@ -58,3 +58,7 @@ feature-detection fallbacks:
   announces them), with a model of polite vs assertive ordering and the flooding pitfall.
 - **Pointer events** is a real drawing surface using `setPointerCapture`, `getCoalescedEvents`,
   pressure, and `touch-action: none` — one handler set for mouse/touch/pen.
+
+## Angular equivalent
+
+React examples in this level map to Angular by replacing React render/effect cost with Angular change detection, template binding cost, RxJS emissions, and directive/component lifecycle work. The Web Vitals attribution method stays the same.

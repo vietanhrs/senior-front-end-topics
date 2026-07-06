@@ -58,3 +58,7 @@ be flaky:
   publication bug (relaxed reordering → stale reads) vs atomic store-release/load-acquire.
 - **Deterministic UI** races out-of-order search responses: naive last-response-wins shows stale
   results; a request-id guard applies only the latest.
+
+## Angular equivalent
+
+React concurrency examples in this level map to Angular through explicit stream scheduling, signals, OnPush, @defer, Web Workers, and zoneless dirty marking. Angular does not expose Fiber lanes, so the scheduling choices live in app architecture.

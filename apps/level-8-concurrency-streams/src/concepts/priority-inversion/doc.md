@@ -63,6 +63,10 @@ needs the same not-yet-released resource is now blocked behind whatever the loop
 - React's lane **expiration** is aging-as-inversion-mitigation; recognize the same pattern in your
   own queues.
 
+## Angular equivalent
+
+Angular has no lane expiration equivalent. Priority inversion usually appears as urgent UI waiting behind slow streams, locks, or CPU work. Fix it by separating urgent signals from slow work, canceling stale streams with switchMap, moving CPU work to Workers, or yielding between chunks.
+
 ## References
 
 - [Wikipedia: Priority inversion](https://en.wikipedia.org/wiki/Priority_inversion)

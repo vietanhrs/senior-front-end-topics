@@ -63,6 +63,10 @@ owning the page.
 - Islands are isolated: coordinate via events/stores/URL, not a shared component tree.
 - Watch runtime duplication & serializable props; not the right model for fully-interactive apps.
 
+## Angular equivalent
+
+Angular islands can be modeled as independently bootstrapped Angular apps, Angular Elements/custom elements, or server-rendered regions hydrated/deferred separately. They also cannot share a normal Angular component tree/injector automatically; use events, URL state, BroadcastChannel, or an external store just as React islands cannot share context by default.
+
 ## References
 
 - [Patterns.dev: Islands architecture](https://www.patterns.dev/vanilla/islands-architecture/)

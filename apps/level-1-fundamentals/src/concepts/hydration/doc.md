@@ -88,6 +88,10 @@ You can also use `suppressHydrationWarning` for nodes that genuinely can't avoid
 - Avoid every non-deterministic value in the first render.
 - Know when to defer browser-only logic to `useEffect`.
 
+## Angular equivalent
+
+Angular's equivalent is provideClientHydration() in an SSR app. Like React's hydrateRoot, Angular expects the server HTML and first client render to match. Angular-specific additions include HTTP transfer cache, withEventReplay() for early interactions, and withIncrementalHydration() when hydration is tied to @defer boundaries.
+
 ## References
 
 - [React: `hydrateRoot`](https://react.dev/reference/react-dom/client/hydrateRoot)

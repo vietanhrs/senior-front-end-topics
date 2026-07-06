@@ -60,6 +60,10 @@ chain empties. The same work split across **macrotasks** (`setTimeout`) or yield
   continuations.
 - Any priority scheduler needs aging/expiration or the lowest lane starves forever.
 
+## Angular equivalent
+
+Angular can starve just like React if microtasks or high-priority stream emissions continually enqueue more work. Break chains with macrotask/rAF boundaries, throttle/debounce noisy Observables, and avoid triggering global change detection for background work.
+
 ## References
 
 - [HTML spec: event loop processing model (microtask checkpoint)](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-processing-model)

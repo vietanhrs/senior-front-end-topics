@@ -68,6 +68,10 @@ the user revisits.
 - `measureUserAgentSpecificMemory()` (needs COOP/COEP) for programmatic checks; `FinalizationRegistry`
   for diagnostics only.
 
+## Angular equivalent
+
+Angular leak equivalents are manual subscriptions without takeUntilDestroyed, directives keeping DOM references, CDK overlays/portals not disposed, long-lived services retaining component callbacks, and third-party widgets not destroyed in lifecycle cleanup.
+
 ## References
 
 - [web.dev: Fix memory problems (DevTools)](https://developer.chrome.com/docs/devtools/memory-problems)

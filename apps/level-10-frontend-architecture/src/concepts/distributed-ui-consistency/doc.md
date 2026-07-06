@@ -59,6 +59,10 @@ choice.
 - **Version every update** and drop non-newer ones (monotonicity); reconcile optimistic state with
   the authority and resolve real conflicts explicitly.
 
+## Angular equivalent
+
+In Angular, replace "React state" with signals, RxJS stores, service state, router state, and component inputs. Cross-tab/device consistency still uses BroadcastChannel, Web Locks, IndexedDB, service workers, and server conflict rules; only the local state adapter changes.
+
 ## References
 
 - [MDN: BroadcastChannel API](https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API)

@@ -59,6 +59,10 @@ elegance. If you have one small team, you probably don't need MFEs.
   loading implicit `latest` remotes in production.
 - Hold the line on a **shared design system** and contracts for visual/behavioral consistency.
 
+## Angular equivalent
+
+Angular MFEs have the same shared-runtime hazard: multiple incompatible copies of @angular/core, @angular/router, Zone.js, RxJS, or a design-system runtime can break DI, routing, event handling, or bundle budgets. Treat Angular framework packages as shared singletons when composing Angular remotes.
+
 ## References
 
 - [martinfowler.com: Micro Frontends](https://martinfowler.com/articles/micro-frontends.html)

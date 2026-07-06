@@ -16,6 +16,7 @@
 @source '../../../packages/workbook/src/**/*.{ts,tsx}';
 @source '../../level-1-fundamentals/src/**/*.{ts,tsx}';
 @source '../../level-2-react-rendering/src/**/*.{ts,tsx}';
+@source '../../level-2-angular-for-react-devs/src/**/*.{ts,tsx}';
 @source '../../level-3-browser-performance/src/**/*.{ts,tsx}';
 @source '../../level-4-data-state/src/**/*.{ts,tsx}';
 @source '../../level-5-caching-networking/src/**/*.{ts,tsx}';

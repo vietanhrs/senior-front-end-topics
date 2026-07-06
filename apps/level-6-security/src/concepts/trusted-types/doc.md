@@ -78,6 +78,10 @@ el.innerHTML = policy.createHTML(userInput);   // ✅ accepts the TrustedHTML ob
 - Concentrate sanitization in 1–2 policies (e.g. DOMPurify); roll out Report-Only → enforce.
 - Chromium-only for now; feature-detect, keep the `default` policy strict, don't write pass-through policies.
 
+## Angular equivalent
+
+Angular integrates with DOM sanitization and can work with Trusted Types policies, but DomSanitizer.bypassSecurityTrustHtml is an escape hatch, not a sanitizer. Treat it like dangerouslySetInnerHTML: only feed it content that has already been proven safe by a trusted sanitizer/policy.
+
 ## References
 
 - [web.dev: Trusted Types — prevent DOM XSS](https://web.dev/articles/trusted-types)

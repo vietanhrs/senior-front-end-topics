@@ -73,6 +73,10 @@ moderately long content (articles, comment threads). They can be combined.
 - It complements (doesn't replace) virtualization; virtualization removes DOM, containment skips render.
 - Beware: creates stacking/containing contexts; always set an intrinsic size.
 
+## Angular equivalent
+
+Angular apps usually pair containment with CDK virtual scroll, @defer, and OnPush/signals. The React-window/virtuoso lesson maps to cdk-virtual-scroll-viewport: remove off-screen DOM first, then use CSS containment to limit the remaining layout/paint blast radius.
+
 ## References
 
 - [MDN: contain](https://developer.mozilla.org/en-US/docs/Web/CSS/contain)

@@ -45,3 +45,7 @@ Several demos are **measurable in the browser** and are most dramatic with DevTo
 - **Detached DOM nodes** is best confirmed with **Memory → heap snapshot → filter "Detached"** and
   the Retainers path. (`performance.memory` is shown when available, i.e. Chrome.)
 - **Render-blocking resources** introspects this page's own `<link>`/`<script>` tags live.
+
+## Angular equivalent
+
+React-specific examples in this level generally map to Angular through AfterViewInit/render callbacks, directives, OnPush/signals, and CDK virtualization. The browser performance primitive is the same; the framework lifecycle hook differs.

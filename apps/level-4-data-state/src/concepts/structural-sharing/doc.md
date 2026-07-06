@@ -89,6 +89,10 @@ const next = produce(state, (draft) => {
 - Spread only the ancestors of the change; never mutate shared subtrees; use Immer for deep updates.
 - Don't deep-clone "for safety" — it defeats sharing and memoization.
 
+## Angular equivalent
+
+Angular OnPush, signals, and selector-style stores benefit from the same structural sharing rule: replace only the changed path, preserve the rest. It lets reference checks and computed dependencies stay meaningful without deep cloning the whole graph.
+
 ## References
 
 - [Immer: How Immer works (structural sharing)](https://immerjs.github.io/immer/)

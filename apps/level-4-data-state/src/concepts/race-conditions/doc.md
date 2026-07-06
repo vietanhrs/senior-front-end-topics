@@ -89,6 +89,10 @@ retries, and `useSyncExternalStore`-based consistency.)
 - Or tag requests with a sequence id and apply only the latest; or use React Query/SWR.
 - Decide the resolution policy (latest-wins/merge) deliberately; cover timers & sockets too.
 
+## Angular equivalent
+
+Angular's idiomatic stale-response fix is often RxJS switchMap, which cancels/ignores the previous inner request when a new input arrives. takeUntilDestroyed, AbortController, request sequence tokens, and store-level status models cover the same cases as React effect cleanup flags.
+
 ## References
 
 - [React: Fetching data with effects (race conditions)](https://react.dev/reference/react/useEffect#fetching-data-with-effects)

@@ -60,3 +60,7 @@ models/simulations where the real thing needs a server or build pipeline:
   with versioned, monotonic updates and a simulated partition to show convergence.
 - **Frontend system design trade-offs** is a decision tool: pick constraints, get a right-sized
   rendering strategy + topology and the trade-offs/tensions it implies.
+
+## Angular equivalent
+
+When architecture docs mention React singleton/runtime concerns, Angular has the same class of issue for @angular/core, @angular/common, @angular/router, Zone.js, RxJS, and design-system runtimes. Singletons and version alignment are still platform contracts.

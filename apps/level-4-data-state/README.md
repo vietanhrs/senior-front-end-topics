@@ -45,3 +45,7 @@ Most demos are **interactive and observable**:
 - **Optimistic UI** applies updates instantly with a forced-failure switch to watch rollbacks.
 - **Deterministic rendering** shuffles tied rows under a random tiebreaker vs a stable `id` one.
 - **Idempotent actions** double-charges in naive mode and dedupes via an idempotency key.
+
+## Angular equivalent
+
+React state examples in this level map to Angular through signals, computed values, OnPush inputs, RxJS stores, and lifecycle-safe subscriptions. The data invariants are framework-independent; the update notification mechanism differs.

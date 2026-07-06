@@ -64,6 +64,10 @@ quickly.
   DOM/layout/paint cost.
 - Show feedback before heavy work; yield/transition the expensive part so the next paint lands fast.
 
+## Angular equivalent
+
+For Angular, "processing" includes event handlers, signal updates, Observable emissions, change detection, template bindings, and DOM writes. Fixes map to OnPush/signals, smaller component boundaries, debounced streams, virtualization, @defer, and moving CPU work off the main thread.
+
 ## References
 
 - [web.dev: Interaction to Next Paint (INP)](https://web.dev/articles/inp)

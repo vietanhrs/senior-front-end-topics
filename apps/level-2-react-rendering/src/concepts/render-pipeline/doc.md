@@ -96,6 +96,10 @@ When render finishes, commit swaps the finished tree into place atomically.
 - Render can be interrupted and must be pure; commit is synchronous and mutates the host tree.
 - Layout effects run after DOM mutation; passive effects run later after paint.
 
+## Angular equivalent
+
+Angular's equivalent pipeline is template compilation plus change detection. Ivy stores static metadata in TView, live binding/component state in LView, then refreshes bindings and writes DOM through generated instructions. There is no normal React-style render/complete/commit Fiber pipeline.
+
 ## References
 
 - [React: Render and Commit](https://react.dev/learn/render-and-commit)

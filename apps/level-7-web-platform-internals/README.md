@@ -58,3 +58,7 @@ The demos use the **real** platform APIs wherever possible, not mockups:
 - **OffscreenCanvas** transfers a canvas to a worker (`transferControlToOffscreen`) and runs the
   whole `requestAnimationFrame` loop off-thread — block the main thread and only the main-thread
   canvas freezes.
+
+## Angular equivalent
+
+React examples in this level map to Angular through independent bootstrap roots, custom elements support, @defer/hydration, and directives. The platform primitive is shared; framework interop syntax differs.

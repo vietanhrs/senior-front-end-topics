@@ -64,6 +64,10 @@ By wrapping parts of the app in **`<Suspense>`**, React can:
 - Needs streaming SSR + Suspense + code-splitting along boundaries.
 - More boundaries around interactive regions = better TTI and click responsiveness.
 
+## Angular equivalent
+
+Angular's equivalent feature set is provideClientHydration(withEventReplay(), withIncrementalHydration()). Event replay protects early clicks before listeners attach; incremental hydration is tied to deferrable views rather than Suspense boundaries.
+
 ## References
 
 - [React 18 Working Group: New Suspense SSR & selective hydration](https://github.com/reactwg/react-18/discussions/37)

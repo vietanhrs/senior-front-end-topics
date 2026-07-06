@@ -51,3 +51,7 @@ Security demos run **safely** — real exploits are contained, simulated, or sel
 - **Transferable objects** uses a real worker to contrast structured-clone copy vs zero-copy
   transfer, showing the sender buffer detaching (`byteLength → 0`).
 - **Offline conflict resolution** diverges two replicas and merges them via LWW vs CRDT semantics.
+
+## Angular equivalent
+
+React security examples map to Angular's template escaping, sanitization, Trusted Types support, HttpClient/XSRF helpers, and the same browser security headers. The dangerous Angular escape hatches are sanitizer bypass APIs and raw DOM writes.

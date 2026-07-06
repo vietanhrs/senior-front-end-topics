@@ -88,6 +88,10 @@ self-generated mutations as above.
 - Mutating observed DOM in the callback loops — `disconnect()`/`takeRecords()`/re-`observe()` or guard
   with a flag. Always `disconnect()` on cleanup.
 
+## Angular equivalent
+
+In Angular, do not use MutationObserver to watch your own component state; use signals, inputs, outputs, or RxJS. Use MutationObserver only for DOM you do not own, such as third-party widgets, and disconnect it with DestroyRef cleanup.
+
 ## References
 
 - [MDN: MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)

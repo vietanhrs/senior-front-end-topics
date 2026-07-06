@@ -16,9 +16,11 @@ import { IconLock, IconStairs } from '@tabler/icons-react';
 import { NavLink as RouterNavLink, Outlet, useLocation } from 'react-router-dom';
 import { useLevel } from './context';
 import { ROADMAP } from './curriculum';
+import { getLevelLabel } from './types';
 
 export function Layout() {
   const level = useLevel();
+  const currentLevelLabel = getLevelLabel(level);
   const [opened, { toggle, close }] = useDisclosure(false);
   const location = useLocation();
 
@@ -37,7 +39,7 @@ export function Layout() {
             </ThemeIcon>
             <div>
               <Title order={5} lh={1}>
-                Level {level.level} · {level.title}
+                Level {currentLevelLabel} · {level.title}
               </Title>
               <Text size="xs" c="dimmed">
                 {level.tagline}
@@ -85,9 +87,9 @@ export function Layout() {
             Roadmap (other levels)
           </Text>
           <Stack gap={2} px="xs" pb="md">
-            {ROADMAP.filter((l) => l.level !== level.level).map((l) => (
+            {ROADMAP.filter((l) => getLevelLabel(l) !== currentLevelLabel).map((l) => (
               <Tooltip
-                key={l.level}
+                key={getLevelLabel(l)}
                 multiline
                 w={260}
                 label={l.concepts.join(' · ')}
@@ -99,7 +101,7 @@ export function Layout() {
                     <IconLock size={12} />
                   </ThemeIcon>
                   <Text size="xs" c="dimmed">
-                    L{l.level} · {l.title}
+                    L{getLevelLabel(l)} · {l.title}
                   </Text>
                 </Group>
               </Tooltip>

@@ -90,6 +90,10 @@ until a later update. Treat hydration warnings as bugs.
 - Refs attach in commit; layout reads belong after DOM mutation.
 - Hydration reuses existing DOM when it matches, and mismatch recovery is limited.
 
+## Angular equivalent
+
+Angular's closest equivalent is the browser platform renderer plus directive/template bindings. Most DOM work is generated from templates; imperative DOM work usually belongs in a directive using Renderer2, ElementRef, and lifecycle cleanup. See Level 2* "DOM renderer and platform abstraction".
+
 ## References
 
 - [ReactDOM client APIs](https://react.dev/reference/react-dom/client)

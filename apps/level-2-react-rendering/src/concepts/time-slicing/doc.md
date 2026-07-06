@@ -67,6 +67,10 @@ feel instant. Avoid depending on exact sync timing unless you explicitly use `fl
 - Only the render phase is sliceable; commit is atomic — huge DOM still needs virtualization.
 - It makes work **non-blocking**, not faster — combine with memoization/virtualization for big lists.
 
+## Angular equivalent
+
+Angular will not automatically time-slice template work the way React concurrent rendering can slice Fiber work. If an Angular interaction blocks, split the CPU work yourself, use a Worker, reduce emissions with RxJS, virtualize DOM, or defer below-the-fold UI with @defer.
+
 ## References
 
 - [React 18: time slicing / concurrent features](https://react.dev/blog/2022/03/29/react-v18)

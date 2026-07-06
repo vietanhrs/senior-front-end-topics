@@ -47,3 +47,7 @@ Suspense boundaries · Selective hydration · Server components · Tearing · St
   patterns in the theory + solution.
 - **Tearing** uses a deterministic simulation of a mid-render store mutation, plus a live
   `useSyncExternalStore` example.
+
+## Angular equivalent
+
+Level 2* mirrors this level for Angular. Use it as the companion map: JSX -> templates, Fiber -> Ivy views, ReactDOM -> Angular renderer/platform, keys -> @for track, concurrency APIs -> explicit RxJS/work scheduling, Suspense -> @defer, selective hydration -> Angular hydration/event replay/incremental hydration, and stale closures -> signal/lifecycle cleanup traps.

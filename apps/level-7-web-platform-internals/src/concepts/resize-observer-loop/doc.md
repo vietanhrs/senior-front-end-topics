@@ -72,6 +72,10 @@ const ro = new ResizeObserver((entries) => {
 - Prefer CSS container queries/intrinsic sizing when they can replace measure-then-resize JS.
 - Read geometry from `contentBoxSize`/`borderBoxSize`/`devicePixelContentBoxSize`; pick the right `box`. Always `disconnect()`.
 
+## Angular equivalent
+
+Angular directives using ResizeObserver should update signals/state in a scheduled way, often via requestAnimationFrame or render callbacks, and disconnect with DestroyRef. Avoid writing layout-affecting state synchronously inside the observer callback.
+
 ## References
 
 - [MDN: ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)

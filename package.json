@@ -12,6 +12,7 @@
     "dev:hub": "bun run --filter 'workbook-hub' dev",
     "dev:l1": "bun run --filter 'level-1-fundamentals' dev",
     "dev:l2": "bun run --filter 'level-2-react-rendering' dev",
+    "dev:l2-star": "bun run --filter 'level-2-angular-for-react-devs' dev",
     "dev:l3": "bun run --filter 'level-3-browser-performance' dev",
     "dev:l4": "bun run --filter 'level-4-data-state' dev",
     "dev:l5": "bun run --filter 'level-5-caching-networking' dev",

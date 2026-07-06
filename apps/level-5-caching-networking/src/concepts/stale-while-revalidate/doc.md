@@ -80,6 +80,10 @@ updates trickle in behind.
 - Client-side: this is React Query/SWR's core model (`staleTime`, focus/reconnect revalidation, dedupe).
 - Use a background-update indicator; don't SWR correctness-critical reads.
 
+## Angular equivalent
+
+In Angular, SWR is commonly a service-level stream: emit cached signal/Observable state immediately, start a background refresh, then push the newer value through async pipe or toSignal. The React Query/SWR names change; the stale/fresh/revalidate contract stays the same.
+
 ## References
 
 - [RFC 5861: stale-while-revalidate & stale-if-error](https://datatracker.ietf.org/doc/html/rfc5861)

@@ -93,6 +93,10 @@ compatible updates, and to interrupt low-priority work for high-priority work. (
 - Never put side effects in render — it can run many times or be discarded.
 - Double buffering (`current` vs WIP, swapped at commit) is why aborted renders don't tear the screen.
 
+## Angular equivalent
+
+Angular has no Fiber equivalent with lanes and interruptible work units. The useful internal map is Fiber -> Ivy view data: TView for static template metadata and LView for live state/binding slots. Scheduling is handled through change detection, signals, Zone.js/zoneless dirty marking, and app-level work splitting.
+
 ## References
 
 - [React: Render and Commit](https://react.dev/learn/render-and-commit)

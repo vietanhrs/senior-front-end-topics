@@ -88,6 +88,10 @@ useEffect(() => {
 - Don't ignore `exhaustive-deps`; it surfaces exactly these bugs.
 - Watch external subscriptions, timers, debounced callbacks, and post-`await` code.
 
+## Angular equivalent
+
+Angular avoids hook dependency arrays, but JavaScript closures still go stale. Watch callbacks/subscriptions created in ngOnInit that capture an initial input; read signal inputs at use time, use computed for pure derivation, and clean up with DestroyRef / takeUntilDestroyed / effect cleanup.
+
 ## References
 
 - [React: Removing Effect dependencies](https://react.dev/learn/removing-effect-dependencies)

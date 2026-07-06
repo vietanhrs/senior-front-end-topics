@@ -69,6 +69,10 @@ How it prevents tearing:
 - `getSnapshot` must be cheap and referentially stable (cache the snapshot; don't allocate per call)
   or you get infinite re-renders.
 
+## Angular equivalent
+
+Angular does not have React concurrent render tearing, but it can still show inconsistent external state if multiple manual subscriptions update fields independently. Prefer one shared stream, combineLatest into a view model, async pipe, or toSignal for a coherent snapshot.
+
 ## References
 
 - [React: useSyncExternalStore](https://react.dev/reference/react/useSyncExternalStore)

@@ -69,6 +69,10 @@ matters a lot when frameworks drive the element (next concept).
 - `observedAttributes` gates attribute callbacks; define-after-parse **upgrades** existing elements; `:defined`/`whenDefined` handle the pre-upgrade state.
 - Pass rich data as properties (not attributes); use `ElementInternals` for forms/ARIA/custom states.
 
+## Angular equivalent
+
+Angular components have their own lifecycle hooks, but Angular Elements/custom elements still follow browser custom-element callbacks underneath. When wrapping an Angular component as a custom element, map component inputs/outputs carefully to attributes/properties and CustomEvents.
+
 ## References
 
 - [MDN: Using custom elements (lifecycle callbacks)](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)

@@ -73,6 +73,10 @@ consistent.
   the UI from.
 - Use transitions/deferred values to keep determinism without sacrificing input responsiveness.
 
+## Angular equivalent
+
+Angular's latest-not-last answer is usually switchMap, request tokens, or AbortController in a service/store. Template state should come from a single Observable/signal source so a slow older response cannot overwrite a newer user intent.
+
 ## References
 
 - [React: synchronizing with effects — race conditions](https://react.dev/learn/synchronizing-with-effects#fetching-data)

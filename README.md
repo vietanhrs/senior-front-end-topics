@@ -2,7 +2,8 @@
 
 Documentation & exercises for practicing **in-depth front-end knowledge** at a senior level.
 Each *level* is its own **interactive SPA workbook** (Bun + React + TypeScript + Vite +
-Tailwind + Mantine), where each *concept* has 3 parts:
+Tailwind + Mantine), where each *concept* has 3 parts. Some levels teach React directly, and
+Level 2* teaches Angular equivalents for engineers who already know React well:
 
 - **Theory** — in-depth markdown to understand the concept + references to online sources.
 - **Demo** — an **interactive example you can observe in the browser** (open DevTools to see).
@@ -23,7 +24,9 @@ senior-front-end-topics/
 │   │   └── src/levels.ts         # aggregates every level's LEVEL registry
 │   ├── level-1-fundamentals/     # ✅ Level 1 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/  # per concept: doc.md + Demo.tsx + Exercise.tsx + index.ts
-│   ├── level-2-react-rendering/  # ✅ Level 2 SPA workbook (10 concepts)
+│   ├── level-2-react-rendering/  # ✅ Level 2 SPA workbook (13 concepts)
+│   │   └── src/concepts/<slug>/
+│   ├── level-2-angular-for-react-devs/ # ✅ Level 2* SPA workbook (13 concepts)
 │   │   └── src/concepts/<slug>/
 │   ├── level-3-browser-performance/ # ✅ Level 3 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
@@ -58,6 +61,7 @@ bun install           # install deps for the whole workspace
 bun run dev           # ⭐ run the HUB (all levels in one app)
 bun run dev:l1        # run Level 1 standalone
 bun run dev:l2        # run Level 2
+bun run dev:l2-star   # run Level 2* (Angular for React Developers)
 bun run dev:l3        # run Level 3
 bun run dev:l4        # run Level 4
 bun run dev:l5        # run Level 5
@@ -71,12 +75,13 @@ bun run --filter level-10-frontend-architecture dev
 bun run --filter '*' build      # build everything
 ```
 
-## Roadmap (10 levels — added incrementally)
+## Roadmap (10 core levels + Level 2*)
 
 | Level | Topic | Status |
 |---|---|---|
 | 1 | Fundamentals (clear, never fuzzy) | ✅ Done |
 | 2 | React Core & Rendering Mechanics | ✅ Done |
+| 2* | Angular for React Developers | ✅ Done |
 | 3 | Browser Performance | ✅ Done |
 | 4 | Advanced Data & State management | ✅ Done |
 | 5 | Caching & Networking strategies | ✅ Done |
@@ -99,18 +104,37 @@ bun run --filter '*' build      # build everything
 9. **CSRF vs XSS mitigation** — the distinction & how to defend.
 10. **Web workers vs Service workers** — off-main-thread vs network proxy/offline.
 
-### Level 2 — React Core & Rendering Mechanics (10 concepts)
+### Level 2 — React Core & Rendering Mechanics (13 concepts)
 
-1. **Reconciliation algorithm** — state lives at (position + type + key); preserve vs remount.
-2. **Fiber architecture** — interruptible units of work; pure render vs atomic commit.
-3. **Concurrent rendering** — interruptible, cooperative rendering (transitions/deferred values).
-4. **Time slicing** — render large updates in ~5ms chunks, yielding to the browser.
-5. **Scheduler priorities** — lanes & tiers; urgent updates preempt transitions.
-6. **Suspense boundaries** — declarative waiting; `use()`; avoiding fallback flashes.
-7. **Selective hydration** — independent, interaction-prioritized hydration via Suspense.
-8. **Server components** — server-only, zero-JS components; the `'use client'` boundary.
-9. **Tearing in concurrent UI** — inconsistent external-store reads; `useSyncExternalStore`.
-10. **Stale closure problems** — callbacks capturing old renders; updaters/deps/refs.
+1. **React elements & JSX output** — JSX creates immutable element objects, not DOM nodes.
+2. **Render pipeline & Fiber work loop** — render/complete/commit phases and WIP trees.
+3. **ReactDOM host renderer** — host config responsibilities and DOM commit work.
+4. **Reconciliation algorithm** — state lives at (position + type + key); preserve vs remount.
+5. **Fiber architecture** — interruptible units of work; pure render vs atomic commit.
+6. **Concurrent rendering** — interruptible, cooperative rendering (transitions/deferred values).
+7. **Time slicing** — render large updates in ~5ms chunks, yielding to the browser.
+8. **Scheduler priorities** — lanes & tiers; urgent updates preempt transitions.
+9. **Suspense boundaries** — declarative waiting; `use()`; avoiding fallback flashes.
+10. **Selective hydration** — independent, interaction-prioritized hydration via Suspense.
+11. **Server components** — server-only, zero-JS components; the `'use client'` boundary.
+12. **Tearing in concurrent UI** — inconsistent external-store reads; `useSyncExternalStore`.
+13. **Stale closure problems** — callbacks capturing old renders; updaters/deps/refs.
+
+### Level 2* — Angular for React Developers (13 concepts)
+
+1. **Angular templates vs JSX** — templates are compiler input, not runtime element objects.
+2. **Ivy view model** — `TView`/`LView` and compiled instructions instead of Fiber.
+3. **DOM renderer and platform abstraction** — templates/directives/Renderer2 vs ReactDOM commits.
+4. **View identity, `@for track`, and differ** — Angular's stable list identity equivalent to keys.
+5. **Change detection strategy** — Default/OnPush, dirty marking, and binding refresh.
+6. **Signals and fine-grained reactivity** — `signal`, `computed`, `effect` mapped carefully from hooks.
+7. **Zone.js, zoneless, and dirty marking** — async discovery vs explicit reactivity.
+8. **Scheduling work without Fiber lanes** — RxJS, virtualization, workers, `@defer`, and scoped checks.
+9. **Deferrable views and loading boundaries** — `@defer` as Angular's lazy loading boundary.
+10. **Hydration, event replay, and incremental hydration** — Angular hydration equivalents to React SSR ideas.
+11. **Angular SSR vs Server Components** — why Angular SSR is not RSC.
+12. **RxJS and external state consistency** — `async` pipe, `toSignal`, and lifecycle-safe streams.
+13. **Stale captures and lifecycle cleanup** — closure and subscription pitfalls without hook deps.
 
 ### Level 3 — Browser Performance (10 concepts)
 
@@ -208,7 +232,7 @@ bun run --filter '*' build      # build everything
 1. **Edge rendering** — SSR/middleware on isolates at POPs near users; the data-gravity trap.
 2. **Micro-frontend orchestration** — independently deployed apps composed by a shell; failure isolation.
 3. **Module Federation** — runtime code sharing; shared scope negotiation; React-as-singleton;
-   dependency compatibility across teams.
+   Angular-as-singleton; dependency compatibility across teams.
 4. **WebAssembly integration** — near-native co-processor; linear-memory marshalling; the boundary cost.
 5. **IndexedDB scaling strategy** — index your queries, batch writes in one tx, cursors, tx lifecycle.
 6. **Server Components architecture** — render-only-on-server, zero-JS; the `'use client'` boundary.
@@ -219,4 +243,6 @@ bun run --filter '*' build      # build everything
 
 ## Tech stack
 
-Bun · React 19 · TypeScript · Vite · Tailwind CSS v4 · Mantine v8 · React Router.
+Bun · React 19 · TypeScript · Vite · Tailwind CSS v4 · Mantine v8 · React Router. The Angular
+level is authored inside the same workbook engine but teaches Angular framework concepts and
+React-to-Angular equivalents.

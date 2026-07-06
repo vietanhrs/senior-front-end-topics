@@ -25,7 +25,7 @@ import {
 } from 'react-router-dom';
 import { WorkbookProvider } from './context';
 import { ROADMAP } from './curriculum';
-import type { LevelMeta } from './types';
+import { getLevelLabel, getLevelRouteId, type LevelMeta } from './types';
 
 /**
  * Resolves the `:levelId` route param to a level and provides the workbook
@@ -34,7 +34,7 @@ import type { LevelMeta } from './types';
  */
 export function LevelScope({ levels }: { levels: LevelMeta[] }) {
   const { levelId } = useParams();
-  const level = levels.find((l) => String(l.level) === levelId);
+  const level = levels.find((l) => getLevelRouteId(l) === levelId);
   if (!level) return <Navigate to="/" replace />;
   return (
     <WorkbookProvider value={{ level, base: `/${levelId}`, levels }}>
@@ -48,9 +48,9 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
   const [opened, { toggle, close }] = useDisclosure(false);
   const location = useLocation();
   const activeLevelId = location.pathname.split('/')[1] ?? '';
-  const activeLevel = levels.find((l) => String(l.level) === activeLevelId);
+  const activeLevel = levels.find((l) => getLevelRouteId(l) === activeLevelId);
   const totalConcepts = levels.reduce((n, l) => n + l.concepts.length, 0);
-  const planned = ROADMAP.filter((r) => !levels.some((l) => l.level === r.level));
+  const planned = ROADMAP.filter((r) => !levels.some((l) => getLevelLabel(l) === getLevelLabel(r)));
 
   return (
     <AppShell
@@ -70,7 +70,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                 Senior Front-end Workbook
               </Title>
               <Text size="xs" c="dimmed">
-                {activeLevel ? `Level ${activeLevel.level} · ${activeLevel.title}` : 'All levels'}
+                {activeLevel ? `Level ${getLevelLabel(activeLevel)} · ${activeLevel.title}` : 'All levels'}
               </Text>
             </div>
           </Group>
@@ -90,7 +90,8 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
             onClick={close}
           />
           {levels.map((lv) => {
-            const id = String(lv.level);
+            const id = getLevelRouteId(lv);
+            const label = getLevelLabel(lv);
             const isActive = activeLevelId === id;
             return (
               <Stack key={id} gap={0}>
@@ -99,7 +100,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                   to={`/${id}`}
                   label={
                     <Text size="sm" fw={isActive ? 600 : 400}>
-                      L{lv.level} · {lv.title}
+                      L{label} · {lv.title}
                     </Text>
                   }
                   active={isActive}
@@ -139,7 +140,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                       <IconLock size={12} />
                     </ThemeIcon>
                     <Text size="xs" c="dimmed">
-                      L{r.level} · {r.title}
+                      L{getLevelLabel(r)} · {r.title}
                     </Text>
                   </Group>
                 ))}
@@ -159,7 +160,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
 /** Landing page of the hub: one card per level (+ locked planned levels). */
 export function HubOverview({ levels }: { levels: LevelMeta[] }) {
   const navigate = useNavigate();
-  const planned = ROADMAP.filter((r) => !levels.some((l) => l.level === r.level));
+  const planned = ROADMAP.filter((r) => !levels.some((l) => getLevelLabel(l) === getLevelLabel(r)));
 
   return (
     <Container size="lg" pb={80}>
@@ -174,15 +175,15 @@ export function HubOverview({ levels }: { levels: LevelMeta[] }) {
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
         {levels.map((lv) => (
           <Card
-            key={lv.level}
+            key={getLevelRouteId(lv)}
             withBorder
             radius="md"
             padding="lg"
             className="cursor-pointer transition-shadow hover:shadow-md"
-            onClick={() => navigate(`/${lv.level}`)}
+            onClick={() => navigate(`/${getLevelRouteId(lv)}`)}
           >
             <Group justify="space-between" align="flex-start">
-              <Badge variant="light">Level {lv.level}</Badge>
+              <Badge variant="light">Level {getLevelLabel(lv)}</Badge>
               <IconArrowRight size={16} className="opacity-40" />
             </Group>
             <Title order={4} mt={6}>
@@ -203,10 +204,10 @@ export function HubOverview({ levels }: { levels: LevelMeta[] }) {
         ))}
 
         {planned.map((r) => (
-          <Card key={r.level} withBorder radius="md" padding="lg" style={{ opacity: 0.55 }}>
+          <Card key={getLevelLabel(r)} withBorder radius="md" padding="lg" style={{ opacity: 0.55 }}>
             <Group justify="space-between" align="flex-start">
               <Badge variant="light" color="gray">
-                Level {r.level}
+                Level {getLevelLabel(r)}
               </Badge>
               <IconLock size={16} className="opacity-40" />
             </Group>

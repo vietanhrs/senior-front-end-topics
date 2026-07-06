@@ -81,6 +81,10 @@ pitfalls"). The React Compiler (React 19) can auto-memoize, reducing the need fo
 - Stabilize with `useMemo`/`useCallback`, hoisting constants, and primitive deps.
 - Only memoize when feeding a memoized child / dep array or when the computation is expensive.
 
+## Angular equivalent
+
+Angular's closest equivalent is OnPush input reference checks plus signal invalidation. New object identities can still cause unnecessary work, while in-place mutation can hide changes. Use stable inputs for OnPush components, computed for derived values, and immutable updates for data crossing component/store boundaries.
+
 ## References
 
 - [React: memo](https://react.dev/reference/react/memo)

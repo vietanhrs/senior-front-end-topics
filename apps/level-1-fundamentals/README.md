@@ -55,3 +55,7 @@ the same navigation, rendering, and UI primitives.
   separate chunks by Vite — visible in the Network tab and in the build output.
 - **Web Worker**: uses the `new Worker(new URL('./x.worker.ts', import.meta.url), { type:
   'module' })` syntax that Vite supports natively.
+
+## Angular equivalent
+
+This level uses React for the interactive workbook UI. When a concept mentions React as the example framework, read it together with Level 2*: Angular usually maps the same browser primitive through templates, change detection, signals, Zone.js/zoneless mode, or RxJS rather than through JSX and Fiber.

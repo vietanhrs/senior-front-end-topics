@@ -87,6 +87,10 @@ SameSite=Lax (default):
 - SameSite (Lax by default) + a token for side-effecting operations.
 - Understand why XSS nullifies CSRF defenses.
 
+## Angular equivalent
+
+Angular also escapes interpolation by default: {{ user.bio }} is text, not HTML. The dangerous escape hatch is property binding to HTML with trusted values, especially [innerHTML] plus DomSanitizer.bypassSecurityTrustHtml; treat that with the same suspicion as React's dangerouslySetInnerHTML. Angular sanitizes several DOM sinks, but sanitizer bypass APIs must only wrap already-trusted content.
+
 ## References
 
 - [OWASP: XSS](https://owasp.org/www-community/attacks/xss/)

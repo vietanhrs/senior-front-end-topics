@@ -73,6 +73,10 @@ split.
 - Understand the trade-off: number of requests vs chunk size; avoid waterfalls.
 - Know how to prefetch to eliminate the latency when users navigate.
 
+## Angular equivalent
+
+Angular's closest component-level equivalent is @defer: it creates lazy template blocks with @placeholder, @loading, and @error states plus triggers like viewport, interaction, idle, timer, or a condition. Route-level lazy loading uses dynamic loadComponent / loadChildren, so the React split point React.lazy + Suspense usually maps to either Angular router lazy loading or @defer, depending on whether the boundary is a route or a region inside a page.
+
 ## References
 
 - [React: lazy](https://react.dev/reference/react/lazy)

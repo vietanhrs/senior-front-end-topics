@@ -77,6 +77,10 @@ invalidation.
 - Client caches should be **keyed**, and mutations should invalidate the affected keys.
 - Watch for derived-data misses, cached errors, and "clear all" anti-patterns.
 
+## Angular equivalent
+
+Angular apps usually implement the same model in a service/store: cache by key, expose Observable or signal state, then invalidate keys after mutations. The UI consumes via async pipe or toSignal; route resolvers and service workers can add route/network-layer invalidation.
+
 ## References
 
 - [MDN: HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
