@@ -41,6 +41,8 @@ export default defineConfig({
           // One chunk per level keeps individual files reasonable.
           const m = id.match(/apps\/level-(\d+)-/);
           if (m) return `level-${m[1]}`;
+          const appendix = id.match(/apps\/appendix-([^/]+)\//);
+          if (appendix) return `appendix-${appendix[1]}`;
           return undefined;
         },
       },

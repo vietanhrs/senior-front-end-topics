@@ -25,7 +25,7 @@ import {
 } from 'react-router-dom';
 import { WorkbookProvider } from './context';
 import { ROADMAP } from './curriculum';
-import { getLevelLabel, getLevelRouteId, type LevelMeta } from './types';
+import { getLevelLabel, getLevelRouteId, getSectionLabel, type LevelMeta } from './types';
 
 /**
  * Resolves the `:levelId` route param to a level and provides the workbook
@@ -70,7 +70,9 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                 Senior Front-end Workbook
               </Title>
               <Text size="xs" c="dimmed">
-                {activeLevel ? `Level ${getLevelLabel(activeLevel)} · ${activeLevel.title}` : 'All levels'}
+                {activeLevel
+                  ? `${getSectionLabel(activeLevel)} ${getLevelLabel(activeLevel)} · ${activeLevel.title}`
+                  : 'All levels'}
               </Text>
             </div>
           </Group>
@@ -92,6 +94,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
           {levels.map((lv) => {
             const id = getLevelRouteId(lv);
             const label = getLevelLabel(lv);
+            const sectionLabel = getSectionLabel(lv);
             const isActive = activeLevelId === id;
             return (
               <Stack key={id} gap={0}>
@@ -100,7 +103,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                   to={`/${id}`}
                   label={
                     <Text size="sm" fw={isActive ? 600 : 400}>
-                      L{label} · {lv.title}
+                      {sectionLabel} {label} · {lv.title}
                     </Text>
                   }
                   active={isActive}
@@ -140,7 +143,7 @@ export function HubShell({ levels }: { levels: LevelMeta[] }) {
                       <IconLock size={12} />
                     </ThemeIcon>
                     <Text size="xs" c="dimmed">
-                      L{getLevelLabel(r)} · {r.title}
+                      {getSectionLabel(r)} {getLevelLabel(r)} · {r.title}
                     </Text>
                   </Group>
                 ))}
@@ -183,7 +186,9 @@ export function HubOverview({ levels }: { levels: LevelMeta[] }) {
             onClick={() => navigate(`/${getLevelRouteId(lv)}`)}
           >
             <Group justify="space-between" align="flex-start">
-              <Badge variant="light">Level {getLevelLabel(lv)}</Badge>
+              <Badge variant="light">
+                {getSectionLabel(lv)} {getLevelLabel(lv)}
+              </Badge>
               <IconArrowRight size={16} className="opacity-40" />
             </Group>
             <Title order={4} mt={6}>
@@ -207,7 +212,7 @@ export function HubOverview({ levels }: { levels: LevelMeta[] }) {
           <Card key={getLevelLabel(r)} withBorder radius="md" padding="lg" style={{ opacity: 0.55 }}>
             <Group justify="space-between" align="flex-start">
               <Badge variant="light" color="gray">
-                Level {getLevelLabel(r)}
+                {getSectionLabel(r)} {getLevelLabel(r)}
               </Badge>
               <IconLock size={16} className="opacity-40" />
             </Group>

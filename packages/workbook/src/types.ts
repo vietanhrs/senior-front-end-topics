@@ -30,6 +30,8 @@ export interface ConceptModule {
 export interface LevelMeta {
   /** e.g. 1 */
   level: number;
+  /** Optional section noun when this is not a numbered level, e.g. "Appendix". */
+  sectionLabel?: string;
   /** Optional display label when the level is not a plain integer, e.g. "2*". */
   levelLabel?: string;
   /** Optional stable route segment, e.g. "2-star". Defaults to String(level). */
@@ -44,9 +46,14 @@ export interface LevelMeta {
 /** One row in the global roadmap sidebar (all levels of the curriculum). */
 export interface RoadmapLevel {
   level: number;
+  sectionLabel?: string;
   levelLabel?: string;
   title: string;
   concepts: string[];
+}
+
+export function getSectionLabel(level: Pick<LevelMeta | RoadmapLevel, 'sectionLabel'>) {
+  return level.sectionLabel ?? 'Level';
 }
 
 export function getLevelLabel(level: Pick<LevelMeta | RoadmapLevel, 'level' | 'levelLabel'>) {

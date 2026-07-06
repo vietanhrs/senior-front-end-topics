@@ -2,17 +2,18 @@ import { Card, Container, Group, SimpleGrid, Stack, Text, Title } from '@mantine
 import { IconArrowRight } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { useWorkbook } from './context';
-import { getLevelLabel } from './types';
+import { getLevelLabel, getSectionLabel } from './types';
 
 export function Overview() {
   const { level, base } = useWorkbook();
   const levelLabel = getLevelLabel(level);
+  const sectionLabel = getSectionLabel(level);
   const navigate = useNavigate();
   return (
     <Container size="lg" pb={80}>
       <Stack gap="xs" mb="xl">
         <Title order={1}>
-          Level {levelLabel} — {level.title}
+          {sectionLabel} {levelLabel} — {level.title}
         </Title>
         <Text c="dimmed" size="lg">
           {level.tagline}

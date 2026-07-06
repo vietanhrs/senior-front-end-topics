@@ -1,9 +1,10 @@
 # Senior Front-end Topics
 
 Documentation & exercises for practicing **in-depth front-end knowledge** at a senior level.
-Each *level* is its own **interactive SPA workbook** (Bun + React + TypeScript + Vite +
-Tailwind + Mantine), where each *concept* has 3 parts. Some levels teach React directly, and
-Level 2* teaches Angular equivalents for engineers who already know React well:
+Each *level* or appendix is its own **interactive SPA workbook** (Bun + React + TypeScript +
+Vite + Tailwind + Mantine), where each *concept* has 3 parts. Some levels teach React directly,
+Level 2* teaches Angular equivalents for engineers who already know React well, and appendix
+sections cover adjacent senior front-end infrastructure topics like GraphQL and Nginx:
 
 - **Theory** — in-depth markdown to understand the concept + references to online sources.
 - **Demo** — an **interactive example you can observe in the browser** (open DevTools to see).
@@ -42,7 +43,11 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-9-performance-metrics/ # ✅ Level 9 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   └── level-10-frontend-architecture/ # ✅ Level 10 SPA workbook (10 concepts)
+│   ├── level-10-frontend-architecture/ # ✅ Level 10 SPA workbook (10 concepts)
+│   │   └── src/concepts/<slug>/
+│   ├── appendix-graphql/         # ✅ Appendix GraphQL SPA workbook (9 concepts)
+│   │   └── src/concepts/<slug>/
+│   └── appendix-nginx/           # ✅ Appendix Nginx SPA workbook (9 concepts)
 │       └── src/concepts/<slug>/
 ```
 
@@ -70,12 +75,14 @@ bun run dev:l7        # run Level 7
 bun run dev:l8        # run Level 8
 bun run dev:l9        # run Level 9
 bun run dev:l10       # run Level 10
+bun run dev:graphql   # run Appendix GraphQL
+bun run dev:nginx     # run Appendix Nginx
 # or directly:
 bun run --filter level-10-frontend-architecture dev
 bun run --filter '*' build      # build everything
 ```
 
-## Roadmap (10 core levels + Level 2*)
+## Roadmap (core levels + supplements)
 
 | Level | Topic | Status |
 |---|---|---|
@@ -90,6 +97,8 @@ bun run --filter '*' build      # build everything
 | 8 | Concurrency & Streams | ✅ Done |
 | 9 | Performance Metrics in Practice | ✅ Done |
 | 10 | Modern Frontend System Architecture | ✅ Done |
+| Appendix GraphQL | GraphQL for Front-end Engineers | ✅ Done |
+| Appendix Nginx | Nginx for Front-end Engineers | ✅ Done |
 
 ### Level 1 — Fundamentals (10 concepts)
 
@@ -241,8 +250,32 @@ bun run --filter '*' build      # build everything
 9. **Distributed UI consistency** — tabs/devices as replicas; consistency models; BroadcastChannel + Web Locks.
 10. **Frontend system design trade-offs** — drive architecture from constraints; name what you trade away.
 
+### Appendix GraphQL — GraphQL for Front-end Engineers (9 concepts)
+
+1. **Schema, types, and resolvers** — contract-first graphs, nullability, resolver ownership.
+2. **Queries, variables, and fragments** — reusable selection sets without overfetching.
+3. **Mutations and error semantics** — typed inputs, domain errors, partial data, retries.
+4. **Pagination and connections** — cursor pagination, edge metadata, stable infinite lists.
+5. **Normalized client cache** — identity, references, optimistic layers, invalidation.
+6. **N+1, batching, and query cost** — DataLoader, depth limits, complexity budgets.
+7. **Subscriptions and realtime updates** — WebSocket/SSE pushes, ordering, reconnect semantics.
+8. **Security, governance, and evolution** — auth boundaries, persisted queries, schema deprecation.
+9. **Client architecture and generated types** — operation ownership, codegen, colocated fragments.
+
+### Appendix Nginx — Nginx for Front-end Engineers (9 concepts)
+
+1. **Request lifecycle and config selection** — server blocks, locations, phases, final handlers.
+2. **Static SPA hosting and fallback** — immutable assets, `try_files`, and deep-link routing.
+3. **Reverse proxy and upstream headers** — proxying APIs with host, scheme, and client IP context.
+4. **TLS, HTTP/2, and HTTP/3** — certificate termination, ALPN, QUIC, and transport trade-offs.
+5. **Compression and cache headers** — gzip/Brotli, `Cache-Control`, ETag, and CDN behavior.
+6. **Load balancing and health checks** — upstream pools, keepalive, failure handling.
+7. **Routing, rewrites, root, and alias** — URI matching, rewrite flow, and path mapping traps.
+8. **Security headers and rate limiting** — CSP, HSTS, frame policy, and request throttling.
+9. **Observability and debugging** — access logs, error logs, upstream timing, and config validation.
+
 ## Tech stack
 
-Bun · React 19 · TypeScript · Vite · Tailwind CSS v4 · Mantine v8 · React Router. The Angular
-level is authored inside the same workbook engine but teaches Angular framework concepts and
-React-to-Angular equivalents.
+Bun · React 19 · TypeScript · Vite · Tailwind CSS v4 · Mantine v8 · React Router. The Angular,
+GraphQL, and Nginx supplements are authored inside the same workbook engine but teach their own
+framework, API, and infrastructure concepts.

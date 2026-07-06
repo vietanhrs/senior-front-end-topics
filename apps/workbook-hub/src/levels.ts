@@ -14,6 +14,8 @@ import { LEVEL as level7 } from '../../level-7-web-platform-internals/src/concep
 import { LEVEL as level8 } from '../../level-8-concurrency-streams/src/concepts';
 import { LEVEL as level9 } from '../../level-9-performance-metrics/src/concepts';
 import { LEVEL as level10 } from '../../level-10-frontend-architecture/src/concepts';
+import { LEVEL as appendixGraphql } from '../../appendix-graphql/src/concepts';
+import { LEVEL as appendixNginx } from '../../appendix-nginx/src/concepts';
 
 export const LEVELS: LevelMeta[] = [
   level1,
@@ -27,4 +29,6 @@ export const LEVELS: LevelMeta[] = [
   level8,
   level9,
   level10,
+  appendixGraphql,
+  appendixNginx,
 ];

@@ -16,11 +16,12 @@ import { IconLock, IconStairs } from '@tabler/icons-react';
 import { NavLink as RouterNavLink, Outlet, useLocation } from 'react-router-dom';
 import { useLevel } from './context';
 import { ROADMAP } from './curriculum';
-import { getLevelLabel } from './types';
+import { getLevelLabel, getSectionLabel } from './types';
 
 export function Layout() {
   const level = useLevel();
   const currentLevelLabel = getLevelLabel(level);
+  const sectionLabel = getSectionLabel(level);
   const [opened, { toggle, close }] = useDisclosure(false);
   const location = useLocation();
 
@@ -39,7 +40,7 @@ export function Layout() {
             </ThemeIcon>
             <div>
               <Title order={5} lh={1}>
-                Level {currentLevelLabel} · {level.title}
+                {sectionLabel} {currentLevelLabel} · {level.title}
               </Title>
               <Text size="xs" c="dimmed">
                 {level.tagline}
@@ -101,7 +102,7 @@ export function Layout() {
                     <IconLock size={12} />
                   </ThemeIcon>
                   <Text size="xs" c="dimmed">
-                    L{getLevelLabel(l)} · {l.title}
+                    {getSectionLabel(l)} {getLevelLabel(l)} · {l.title}
                   </Text>
                 </Group>
               </Tooltip>
