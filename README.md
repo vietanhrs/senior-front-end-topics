@@ -41,7 +41,7 @@ senior-front-end-topics/
 │   │   └── src/concepts/<slug>/
 │   ├── level-8-concurrency-streams/ # ✅ Level 8 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
-│   ├── level-9-performance-metrics/ # ✅ Level 9 SPA workbook (10 concepts)
+│   ├── level-9-performance-metrics/ # ✅ Level 9 SPA workbook (11 concepts)
 │   │   └── src/concepts/<slug>/
 │   ├── level-10-frontend-architecture/ # ✅ Level 10 SPA workbook (10 concepts)
 │   │   └── src/concepts/<slug>/
@@ -223,7 +223,7 @@ bun run --filter '*' build      # build everything
 9. **Shared memory models** — SC-DRF, atomics as barriers, store-release/load-acquire, wait/notify.
 10. **Deterministic UI under async** — beat the stale-response race: latest-not-last, abort, idempotency.
 
-### Level 9 — Performance Metrics in Practice (10 concepts)
+### Level 9 — Performance Metrics in Practice (11 concepts)
 
 1. **First Input Delay (FID)** — input-delay-only of the first interaction; why a busy thread inflates it.
 2. **Interaction to Next Paint (INP)** — full interaction latency (delay + processing + presentation).
@@ -231,10 +231,11 @@ bun run --filter '*' build      # build everything
 4. **Largest Contentful Paint (LCP)** — largest viewport element; evolving candidates; the four sub-parts.
 5. **PerformanceObserver API** — one async, buffered API behind every metric; entry types, `takeRecords`.
 6. **Long Tasks API** — tasks > 50ms block the thread; Total Blocking Time; LoAF attribution.
-7. **Browser memory leak detection** — detached DOM, listeners, caches; snapshots, Performance Monitor, WeakMap.
-8. **Accessibility tree** — role + name + state for assistive tech; accname priority; pruning.
-9. **ARIA live regions internals** — polite vs assertive, status/alert, atomic/relevant, register-first.
-10. **Pointer events model** — unified mouse/touch/pen; pointer capture, coalesced events, `touch-action`.
+7. **Long Animation Frames (LoAF)** — frame-level blocking, rendering timing, and per-script attribution for responsiveness debugging.
+8. **Browser memory leak detection** — detached DOM, listeners, caches; snapshots, Performance Monitor, WeakMap.
+9. **Accessibility tree** — role + name + state for assistive tech; accname priority; pruning.
+10. **ARIA live regions internals** — polite vs assertive, status/alert, atomic/relevant, register-first.
+11. **Pointer events model** — unified mouse/touch/pen; pointer capture, coalesced events, `touch-action`.
 
 ### Level 10 — Modern Frontend System Architecture (10 concepts)
 
