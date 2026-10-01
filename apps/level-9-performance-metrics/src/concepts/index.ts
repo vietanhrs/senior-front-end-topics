@@ -5,6 +5,7 @@ import { cumulativeLayoutShift } from './cumulative-layout-shift';
 import { largestContentfulPaint } from './largest-contentful-paint';
 import { performanceObserver } from './performance-observer';
 import { longTasks } from './long-tasks';
+import { longAnimationFrames } from './long-animation-frames';
 import { memoryLeakDetection } from './memory-leak-detection';
 import { accessibilityTree } from './accessibility-tree';
 import { ariaLiveRegions } from './aria-live-regions';
@@ -21,6 +22,7 @@ export const LEVEL: LevelMeta = {
     largestContentfulPaint,
     performanceObserver,
     longTasks,
+    longAnimationFrames,
     memoryLeakDetection,
     accessibilityTree,
     ariaLiveRegions,
